@@ -1,74 +1,77 @@
-🏛️ MUSEWANGI: Smart Museum Inventory Management System
-Project Based Learning (PBL) Semester 7
-Sistem Inventaris Digital Museum Blambangan Banyuwangi untuk membantu Dinas Kebudayaan dan Pariwisata Kabupaten Banyuwangi dalam mengelola data koleksi museum secara terstruktur, aman, dan terdigitalisasi.
+# 🏛️ MUSEWANGI: Sistem Informasi Koleksi Museum Blambangan Banyuwangi Berbasis QR Code
+
+merupakan aplikasi berbasis web yang dikembangkan untuk membantu digitalisasi pengelolaan koleksi museum serta memberikan akses informasi koleksi secara interaktif kepada pengunjung melalui pemindaian QR Code.
 
 # 🎯 Visi & Tujuan Proyek
 
-### Smart QR-Based Restaurant Ordering System
+MUSEWANGI (Museum Banyuwangi Information System) merupakan aplikasi berbasis web yang dikembangkan untuk mendukung digitalisasi pengelolaan koleksi Museum Blambangan Banyuwangi di bawah Dinas Kebudayaan dan Pariwisata Kabupaten Banyuwangi. Sistem ini bertujuan mempermudah pengelolaan informasi koleksi museum serta memberikan akses informasi yang interaktif kepada pengunjung melalui teknologi QR Code.
 
-MUSEWANGI (Museum Inventory System Banyuwangi) merupakan purwarupa sistem inventaris digital berbasis web yang dirancang untuk membantu Dinas Kebudayaan dan Pariwisata Kabupaten Banyuwangi dalam mengelola koleksi Museum Blambangan secara terstruktur, terdigitalisasi, dan mudah diakses. Sistem ini mengintegrasikan manajemen inventaris dengan teknologi QR Code sehingga informasi koleksi dapat disajikan secara interaktif kepada pengunjung tanpa mengungkap data inventaris internal yang bersifat rahasia.
+Melalui pemindaian QR Code pada setiap koleksi, pengunjung dapat memperoleh informasi lengkap mengenai koleksi museum secara digital, sedangkan admin dapat mengelola seluruh data koleksi secara terpusat, sehingga proses dokumentasi, pengelolaan, dan penyebaran informasi menjadi lebih efektif, efisien, dan terdigitalisasi.
 
-🌟 Fitur Utama (Core Features)
+# Fitur Utama (Core Features)
 
 🏷️ Interactive QR Code Collection
+Setiap koleksi museum memiliki QR Code unik yang dapat dipindai oleh pengunjung untuk menampilkan informasi koleksi secara digital, meliputi:
 
-Setiap koleksi museum memiliki QR Code unik yang dapat dipindai oleh pengunjung untuk menampilkan informasi digital secara langsung, meliputi:
+📸 Foto koleksi
+📝 Deskripsi koleksi
+🎙️ Voice Narration (Audio)
+⭐ Ulasan pengunjung
 
-📸 Foto koleksi berkualitas tinggi
-🎙️ Voice Narration (Audio/VN) sebagai panduan
-📝 Deskripsi sejarah, asal-usul, fungsi, serta informasi budaya koleksi
 🏺 Digital Collection Management
+Admin museum dapat mengelola seluruh informasi koleksi melalui fitur Create, Read, Update, Delete (CRUD). Data yang dikelola meliputi:
 
-Admin museum dapat mengelola seluruh data koleksi secara digital melalui fitur Create, Read, Update, Delete (CRUD). Data yang dikelola meliputi nomor registrasi, nama koleksi, kategori, kondisi, lokasi penyimpanan, foto, serta informasi inventaris lainnya sehingga proses administrasi menjadi lebih efisien dan terdokumentasi.
+📸 Foto koleksi
+🆔 Nomor registrasi
+🏛️ Nama koleksi
+🏷️ Kategori koleksi
+🏺 Jenis benda
+📍 Asal koleksi
+📅 Tahun pembuatan
+✅ Kondisi koleksi
+🎙️ File audio (voice narration)
+🔳 QR Code koleksi
+
+Fitur ini membantu proses pengelolaan data koleksi menjadi lebih terstruktur, terdokumentasi, dan mudah diperbarui.
 
 📂 Collection Category Management
+Sistem menyediakan fitur pengelolaan kategori untuk mengelompokkan koleksi berdasarkan jenis atau karakteristiknya, seperti:
 
-Sistem menyediakan pengelolaan kategori koleksi untuk mengelompokkan benda berdasarkan jenisnya, seperti:
+🏺 Arkeologi
+👘 Etnografi
+🪙 Numismatik
+🏺 Keramik
+📜 Sejarah
+🎨 Seni Rupa
+📚 Kategori lainnya
 
-Arkeologi
-Etnografi
-Numismatik
-Keramik
-Sejarah
-Seni Rupa
-dan kategori lainnya.
+Pengelompokan kategori memudahkan proses pencarian, pengelolaan, serta penyajian informasi koleksi kepada pengunjung.
 
-Pengelompokan ini memudahkan proses pencarian serta penyajian informasi koleksi.
+⭐ Visitor Review
+Pengunjung dapat memberikan ulasan terhadap koleksi museum setelah mengakses informasi melalui QR Code. Fitur ini memungkinkan museum memperoleh masukan mengenai kualitas informasi dan pengalaman pengunjung, sehingga dapat menjadi bahan evaluasi untuk meningkatkan layanan museum.
 
-📜 Inventory History & Activity Tracking
-
-Seluruh aktivitas pengelolaan inventaris dicatat dalam sistem sehingga admin dapat melihat riwayat perubahan data koleksi, mulai dari penambahan, pembaruan, hingga perubahan kondisi koleksi. Fitur ini membantu menjaga akurasi data serta mendukung proses dokumentasi inventaris museum secara berkelanjutan.
-
----
-
-🚀 Quick Start (Panduan Instalasi & Penggunaan)
+# 🚀 Quick Start (Panduan Instalasi & Penggunaan)
 
 1️⃣ Clone Repository
-
 git clone https://github.com/fitriaayupratiwi/Musewangi_MVP.git
 cd Musewangi_MVP
 
 2️⃣ Install Dependency PHP
-
 Install seluruh package Laravel menggunakan Composer dengan perintah:
 composer install
 
 3️⃣ Install Dependency JavaScript
-
 Install seluruh package frontend dengan perintah:
 npm install
 
 4️⃣ Buat File Environment
-
 Salin file .env.example menjadi .env dengan perintah:
 copy .env.example .env
 
 5️⃣ Generate Application Key
-
 php artisan key:generate
 
 6️⃣ Konfigurasi Database
-
 Buka file .env
 
 Ubah konfigurasi berikut sesuai database yang dimiliki.
@@ -90,13 +93,10 @@ DB_USERNAME=root
 DB_PASSWORD=
 
 7️⃣ Buat Database
-
 Masuk ke http://localhost/phpmyadmin lalu buat database.
-
 CREATE DATABASE inventaris;
 
 8️⃣ Jalankan Migration
-
 Membuat seluruh tabel database dengan perintah:
 php artisan migrate
 
@@ -104,16 +104,23 @@ dan seeder dengan perintah:
 php artisan migrate --seed
 
 🔟 Compile Asset Frontend
-
 Mode Development dengan perintah:
 npm run dev
 
 1️⃣1️⃣ Jalankan Laravel
 php artisan serve
 
----
-
 # Tech Stack
 
-- Laravel
-- Tailwind CSS
+| Category          | Technology                      |
+| ----------------- | ------------------------------- |
+| Backend           | Laravel 12, PHP 8.2             |
+| Frontend          | Blade, Tailwind CSS, JavaScript |
+| Database          | MySQL                           |
+| Build Tool        | Vite, NPM                       |
+| Authentication    | Laravel Breeze                  |
+| QR Code           | Simple QrCode                   |
+| Audio             | HTML5 Audio Player              |
+| Version Control   | Git, GitHub                     |
+| Development Tools | Composer, VS Code, XAMPP        |
+| UI Library        | Font Awesome                    |

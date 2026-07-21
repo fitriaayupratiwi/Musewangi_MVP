@@ -44,7 +44,6 @@ Seluruh aktivitas pengelolaan inventaris dicatat dalam sistem sehingga admin dap
 🚀 Quick Start (Panduan Instalasi & Penggunaan)
 
 1️⃣ Clone Repository
-Pastikan Python 3.11 dan Git sudah terinstal di komputermu, lalu jalankan perintah berikut di terminal:
 
 git clone https://github.com/fitriaayupratiwi/Musewangi_MVP.git
 cd Musewangi_MVP

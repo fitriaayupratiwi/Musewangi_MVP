@@ -1,179 +1,120 @@
-# 🍽️ DineQR
+🏛️ MUSEWANGI: Smart Museum Inventory Management System
+Project Based Learning (PBL) Semester 7
+Sistem Inventaris Digital Museum Blambangan Banyuwangi untuk membantu Dinas Kebudayaan dan Pariwisata Kabupaten Banyuwangi dalam mengelola data koleksi museum secara terstruktur, aman, dan terdigitalisasi.
+
+# 🎯 Visi & Tujuan Proyek
 
 ### Smart QR-Based Restaurant Ordering System
 
-DineQR is a QR-based restaurant ordering system designed to simplify the dining experience for customers while helping restaurants manage orders, payments, and stock more efficiently.
+MUSEWANGI (Museum Inventory System Banyuwangi) merupakan purwarupa sistem inventaris digital berbasis web yang dirancang untuk membantu Dinas Kebudayaan dan Pariwisata Kabupaten Banyuwangi dalam mengelola koleksi Museum Blambangan secara terstruktur, terdigitalisasi, dan mudah diakses. Sistem ini mengintegrasikan manajemen inventaris dengan teknologi QR Code sehingga informasi koleksi dapat disajikan secara interaktif kepada pengunjung tanpa mengungkap data inventaris internal yang bersifat rahasia.
 
-## Overview
+🌟 Fitur Utama (Core Features)
 
-DineQR allows customers to scan a QR code on their table, browse menus digitally, place orders directly from their device, and complete payments without waiting for manual service. The system also provides restaurant staff and admins with tools to manage orders, tables, stock, and cashier accounts in one integrated dashboard.
+🏷️ Interactive QR Code Collection
 
----
+Setiap koleksi museum memiliki QR Code unik yang dapat dipindai oleh pengunjung untuk menampilkan informasi digital secara langsung, meliputi:
 
-# Features
+📸 Foto koleksi berkualitas tinggi
+🎙️ Voice Narration (Audio/VN) sebagai panduan
+📝 Deskripsi sejarah, asal-usul, fungsi, serta informasi budaya koleksi
+🏺 Digital Collection Management
 
-## 1. User Authentication
+Admin museum dapat mengelola seluruh data koleksi secara digital melalui fitur Create, Read, Update, Delete (CRUD). Data yang dikelola meliputi nomor registrasi, nama koleksi, kategori, kondisi, lokasi penyimpanan, foto, serta informasi inventaris lainnya sehingga proses administrasi menjadi lebih efisien dan terdokumentasi.
 
-Secure authentication system for admin and cashier accounts.
+📂 Collection Category Management
 
-### Preview
+Sistem menyediakan pengelolaan kategori koleksi untuk mengelompokkan benda berdasarkan jenisnya, seperti:
 
-![Authentication Feature](public\readme\authentication.PNG)
+Arkeologi
+Etnografi
+Numismatik
+Keramik
+Sejarah
+Seni Rupa
+dan kategori lainnya.
 
----
+Pengelompokan ini memudahkan proses pencarian serta penyajian informasi koleksi.
 
-## 2. Customer Menu Ordering
+📜 Inventory History & Activity Tracking
 
-Customers can scan QR codes and order menu items directly from their devices.
-
-### Preview
-
-![Customer Ordering Feature](public\readme\pelanggan-menu.PNG)
-
----
-
-## 3. Shopping Cart
-
-Customers can review selected menu items before confirming orders.
-
-### Preview
-
-![Cart Feature](public\readme\cart.PNG)
+Seluruh aktivitas pengelolaan inventaris dicatat dalam sistem sehingga admin dapat melihat riwayat perubahan data koleksi, mulai dari penambahan, pembaruan, hingga perubahan kondisi koleksi. Fitur ini membantu menjaga akurasi data serta mendukung proses dokumentasi inventaris museum secara berkelanjutan.
 
 ---
 
-## 4. Table Management
+🚀 Quick Start (Panduan Instalasi & Penggunaan)
 
-Restaurant staff can manage table numbers and monitor table availability.
+1️⃣ Clone Repository
+Pastikan Python 3.11 dan Git sudah terinstal di komputermu, lalu jalankan perintah berikut di terminal:
 
-### Preview
+git clone https://github.com/fitriaayupratiwi/Musewangi_MVP.git
+cd Musewangi_MVP
 
-![Table Management Feature](public\readme\table-management.PNG)
+2️⃣ Install Dependency PHP
 
----
+Install seluruh package Laravel menggunakan Composer dengan perintah:
+composer install
 
-## 5. Order & Payment Management
+3️⃣ Install Dependency JavaScript
 
-Manage customer orders, payment status, and transaction flow in real time.
+Install seluruh package frontend dengan perintah:
+npm install
 
-### Preview
+4️⃣ Buat File Environment
 
-![Order Management Feature](public\readme\order-payment.PNG)
+Salin file .env.example menjadi .env dengan perintah:
+copy .env.example .env
 
----
+5️⃣ Generate Application Key
 
-## 6. Menu Management
+php artisan key:generate
 
-Track menu stock availability to help restaurant operations run more efficiently.
+6️⃣ Konfigurasi Database
 
-### Preview
+Buka file .env
 
-![Menu Management Feature](public\readme\stock-management.PNG)
+Ubah konfigurasi berikut sesuai database yang dimiliki.
 
----
+APP_NAME=Laravel
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://127.0.0.1:8000
 
-## 7. Cashier Account Management
+LOG_CHANNEL=stack
+LOG_LEVEL=debug
 
-Admins can create and manage cashier accounts.
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=inventaris
+DB_USERNAME=root
+DB_PASSWORD=
 
-### Preview
+7️⃣ Buat Database
 
-![Cashier Account Feature](public\readme\cashier-management.PNG)
+Masuk ke http://localhost/phpmyadmin lalu buat database.
 
----
+CREATE DATABASE inventaris;
 
-## 8. Admin Dashboard
+8️⃣ Jalankan Migration
 
-Dashboard overview for monitoring restaurant activities and system management.
+Membuat seluruh tabel database dengan perintah:
+php artisan migrate
 
-### Preview
+dan seeder dengan perintah:
+php artisan migrate --seed
 
-![Admin Dashboard Feature](public\readme\admin-dashboard.PNG)
+🔟 Compile Asset Frontend
 
----
+Mode Development dengan perintah:
+npm run dev
 
-## 9. Sales Report
-
-Sales reporting feature that allows restaurants to monitor total orders and transaction history with downloadable report documents.
-
-### Preview
-
-![Admin Report Feature](public\readme\report.PNG)
-
----
-
-## 10. Category Manajement
-
-Category management feature for organizing menu categories, making it easier for restaurants to manage, update, and display menu items more efficiently.
-
-### Preview
-
-![Category Management Feature](public\readme\category.PNG)
-
----
-
-## 11. Cashier Payment 
-
-Cashier payment feature that helps cashiers process customer transactions, manage payment status, and record payments more efficiently during restaurant operations.
-
-### Preview
-
-![Cashier Payment Feature](public\readme\payment.PNG)
-
----
-
-## 12. Order Detail
-
-Order detail feature that provides complete information about customer orders, including ordered items, quantities, payment status, and transaction details for easier order tracking and management.
-
-### Preview
-
-![Order Detail Feature](public\readme\detail.PNG)
-
-
+1️⃣1️⃣ Jalankan Laravel
+php artisan serve
 
 ---
 
 # Tech Stack
 
-* Laravel
-* Tailwind CSS
-
----
-
-# My Contributions
-
-As Team Leader and Full Stack Developer, I contributed to:
-
-* Developing authentication systems
-* Building customer ordering flow
-* Developing cart functionality
-* Creating table management system
-* Building order and payment management features
-* Developing stock management features
-* Managing cashier account system
-* Building responsive UI across devices
-* Helping maintain integration between features
-* Coordinating communication and progress within the team
-
----
-
-# Challenges & Lessons Learned
-
-One of the biggest challenges during development was maintaining team productivity under tight deadlines. In the early phase, I often helped complete other team members’ tasks because I was worried the project would not finish on time. However, this made me overwhelmed and reduced team independence.
-
-Through this project, I learned that leadership is not about doing everything alone, but about building communication, accountability, and collaboration within the team. I also learned the importance of setting clear responsibilities and maintaining consistent progress tracking throughout development.
-
----
-
-# Future Improvements
-
-* Real-time order notifications
-* Multi-branch restaurant support
-* Integrated online payment gateway
-
----
-
-# License
-
-This project was created for educational and portfolio purposes.
+- Laravel
+- Tailwind CSS

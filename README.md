@@ -10,7 +10,8 @@ Melalui pemindaian QR Code pada setiap koleksi, pengunjung dapat memperoleh info
 
 # Fitur Utama (Core Features)
 
-🏷️ Interactive QR Code Collection
+## Interactive QR Code Collection
+
 Setiap koleksi museum memiliki QR Code unik yang dapat dipindai oleh pengunjung untuk menampilkan informasi koleksi secara digital, meliputi:
 
 📸 Foto koleksi
@@ -18,7 +19,8 @@ Setiap koleksi museum memiliki QR Code unik yang dapat dipindai oleh pengunjung 
 🎙️ Voice Narration (Audio)
 ⭐ Ulasan pengunjung
 
-🏺 Digital Collection Management
+## Digital Collection Management
+
 Admin museum dapat mengelola seluruh informasi koleksi melalui fitur Create, Read, Update, Delete (CRUD). Data yang dikelola meliputi:
 
 📸 Foto koleksi
@@ -34,7 +36,8 @@ Admin museum dapat mengelola seluruh informasi koleksi melalui fitur Create, Rea
 
 Fitur ini membantu proses pengelolaan data koleksi menjadi lebih terstruktur, terdokumentasi, dan mudah diperbarui.
 
-📂 Collection Category Management
+## Collection Category Management
+
 Sistem menyediakan fitur pengelolaan kategori untuk mengelompokkan koleksi berdasarkan jenis atau karakteristiknya, seperti:
 
 🏺 Arkeologi
@@ -47,7 +50,8 @@ Sistem menyediakan fitur pengelolaan kategori untuk mengelompokkan koleksi berda
 
 Pengelompokan kategori memudahkan proses pencarian, pengelolaan, serta penyajian informasi koleksi kepada pengunjung.
 
-⭐ Visitor Review
+## Visitor Review
+
 Pengunjung dapat memberikan ulasan terhadap koleksi museum setelah mengakses informasi melalui QR Code. Fitur ini memungkinkan museum memperoleh masukan mengenai kualitas informasi dan pengalaman pengunjung, sehingga dapat menjadi bahan evaluasi untuk meningkatkan layanan museum.
 
 # 🚀 Quick Start (Panduan Instalasi & Penggunaan)
@@ -74,7 +78,7 @@ php artisan key:generate
 6️⃣ Konfigurasi Database
 Buka file .env
 
-Ubah konfigurasi berikut sesuai database yang dimiliki.
+## Ubah konfigurasi berikut sesuai database yang dimiliki.
 
 APP_NAME=Laravel
 APP_ENV=local

@@ -122,27 +122,25 @@
                     </a>
                 </li> --}}
             <li>
-                <a href="{{ route('admin.menu') }}"
-                    class="flex items-center p-2 text-white rounded-lg group {{ request()->routeIs('admin.menu')
+   <a href="{{ route('admin.menu') }}"
+        class="flex items-center p-2 text-white rounded-lg group {{ request()->routeIs('admin.menu')
+            ? 'bg-[#C9981C] text-white dark:bg-gray-700 dark:text-blue-400'
+            : 'text-white dark:text-white hover:bg-[#21365E] dark:hover:bg-gray-700' }}">
+        <svg class="shrink-0 w-5 h-5 transition duration-75 {{ request()->routeIs('admin.menu')
+            ? 'text-blue-700 dark:text-blue-400 dark:group-hover:text-sky-300'
+            : 'w-5 h-5 text-white transition duration-300 group-hover:text-[#FFD86B]' }}"
+            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+            <path
+                d="m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z" />
+        </svg>
+        <span class="flex-1 ms-3 whitespace-nowrap">Koleksi</span>
+    </a>
+</li>
+                <a href="{{ route('admin.kategori.menu') }}"
+                    class="flex items-center p-2 text-white rounded-lg group {{ request()->routeIs('admin.kategori.menu')
                         ? 'bg-[#C9981C] text-white dark:bg-gray-700 dark:text-blue-400'
                         : 'text-white dark:text-white hover:bg-[#21365E] dark:hover:bg-gray-700' }}">
-                    <svg class="shrink-0 w-5 h-5 transition duration-75 {{ request()->routeIs('admin.menu')
-                        ? 'text-blue-700 dark:text-blue-400 dark:group-hover:text-sky-300'
-                        : 'w-5 h-5 text-white transition duration-300 group-hover:text-[#FFD86B]' }}"
-                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                            d="m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z" />
-                    </svg>
-                    <span class="flex-1 ms-3 whitespace-nowrap">Koleksi</span>
-
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('admin.nomormeja') }}"
-                    class="flex items-center p-2 text-white rounded-lg group {{ request()->routeIs('admin.nomormeja')
-                        ? 'bg-[#C9981C] text-white dark:bg-gray-700 dark:text-blue-400'
-                        : 'text-white dark:text-white hover:bg-[#21365E] dark:hover:bg-gray-700' }}">
-                    <svg class="shrink-0 w-5 h-5 transition duration-75 {{ request()->routeIs('admin.nomormeja')
+                    <svg class="shrink-0 w-5 h-5 transition duration-75 {{ request()->routeIs('admin.kategori.menu')
                         ? 'text-blue-700 dark:text-blue-400 dark:group-hover:text-sky-300'
                         : 'w-5 h-5 text-white transition duration-300 group-hover:text-[#FFD86B]' }}"
                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
@@ -153,12 +151,12 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('admin.kategori.menu') }}"
-                    class="flex items-center p-2 text-white rounded-lg group {{ request()->routeIs('admin.kategori.menu')
-                        ? 'bg-[#C9981C] text-white dark:bg-gray-700 dark:text-blue-400'
-                        : 'text-white dark:text-white hover:bg-[#21365E] dark:hover:bg-gray-700' }}">
+              <a href="{{ route('admin.qrcode.koleksi') }}"
+    class="flex items-center p-2 text-white rounded-lg group {{ request()->routeIs('admin.qrcode.koleksi')
+        ? 'bg-[#C9981C] text-white dark:bg-gray-700 dark:text-blue-400'
+        : 'text-white dark:text-white hover:bg-[#21365E] dark:hover:bg-gray-700' }}">
                     <svg xmlns="http://www.w3.org/2000/svg"
-                        class="shrink-0 w-5 h-5 transition duration-75 {{ request()->routeIs('admin.kategori.menu')
+                        class="shrink-0 w-5 h-5 transition duration-75 {{ request()->routeIs('admin.koleksi.qrcode')
                             ? 'text-blue-700 dark:text-blue-400 dark:group-hover:text-sky-300'
                             : 'w-5 h-5 text-white transition duration-300 group-hover:text-[#FFD86B]' }}"
                         fill="currentColor" viewBox="0 0 20 20">
@@ -199,7 +197,7 @@
                     <span class="flex-1 ms-3 whitespace-nowrap">Pengguna</span>
                 </a>
             </li>
-            {{-- <li>
+            {{-- {{<li>
                     <a href="{{ route('admin.kelolakasir') }}"
                         class="flex items-center p-2 text-gray-900 rounded-lg group {{ request()->routeIs('admin.kelolakasir')
                             ? 'bg-blue-100 text-blue-700 dark:bg-gray-700 dark:text-blue-400'
@@ -217,7 +215,7 @@
                         </svg>
                         <span class="flex-1 ms-3 whitespace-nowrap">Akun Kasir</span>
                     </a>
-                </li> --}}
+                </li> --}} --}}
             {{-- <li>
                     <a href="#"
                         class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">

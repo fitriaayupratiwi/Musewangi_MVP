@@ -14,6 +14,8 @@ use App\Models\Pesanan;
 use Carbon\Carbon;
 use DateTime;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 
 
 
@@ -317,70 +319,74 @@ class AdminController extends Controller
     return $pdf->download('laporan_transaksi.pdf');
 }
 
-    public function KategoriMenu(){
-     $kategori = Category::all();
+    public function KategoriMenu()
+    {
+        $kategori = Category::withCount('menus')
+            ->orderBy('nama')
+            ->get();
+
         return view('admin.kategoriMenu', compact('kategori'));
     }
-public function tambahKategori()
+
+    public function QRCodeKoleksi()
     {
-        $kategori = Category::all();
-        return view('admin.tambahKategori', compact('kategori'));
+        $kategori = Category::withCount('menus')
+            ->orderBy('nama')
+            ->get();
+
+        return view('admin.qrcodeKoleksi', compact('kategori'));
     }
 
-    public function storeKategori(Request $request){
+    public function tambahKategori()
+    {
+        return redirect()->route('admin.kategori.menu');
+    }
 
-        $request->validate([
-            'nama' => 'required|string|max:255|unique:categories,nama',
-            ]);
-
-            Category::create([
+    public function storeKategori(StoreCategoryRequest $request)
+    {
+        Category::create([
             'nama' => $request->nama,
-            ]);
+        ]);
 
-        $notification = array(
+        return redirect()->route('admin.kategori.menu')->with([
             'message' => 'Kategori berhasil ditambahkan',
-            'alert-type' => 'success'
-        );
-
-        return redirect()->route('admin.kategori.menu')->with($notification);
-
+            'alert-type' => 'success',
+        ]);
     }
     // End Method
-    public function editKategori($id){
-        $kategori  = Category::find($id);
-        return view('admin.editKategori', compact('kategori'));
+
+    public function editKategori($id)
+    {
+        return redirect()->route('admin.kategori.menu')->with([
+            'message' => 'Gunakan tombol edit pada tabel kategori.',
+            'alert-type' => 'info',
+        ]);
     }
      // End Method
 
-     public function updateKategori(Request $request)
-{
-    $request->validate([
-        'id' => 'required|exists:categories,id',
-        'nama' => 'required|string|max:255',
-    ]);
+     public function updateKategori(UpdateCategoryRequest $request, $id)
+    {
+        $kategori = Category::findOrFail($id);
 
-    Category::findOrFail($request->id)->update([
-        'nama' => $request->nama,
-    ]);
+        $kategori->update([
+            'nama' => $request->nama,
+        ]);
 
-    return redirect()->route('admin.kategori.menu')->with([
-        'message' => 'Kategori berhasil diperbarui',
-        'alert-type' => 'success',
-    ]);
-}
+        return redirect()->route('admin.kategori.menu')->with([
+            'message' => 'Kategori berhasil diperbarui',
+            'alert-type' => 'success',
+        ]);
+    }
 
- public function deleteKategori($id){
-    $item = Category::findOrFail($id);
-    $item->save();
+ public function deleteKategori($id)
+    {
+        $item = Category::findOrFail($id);
+        $item->delete();
 
-    $item->delete();
-
-    $notification = [
-        'message' => 'Kategori berhasil dihapus',
-        'alert-type' => 'success'
-    ];
-
-    return redirect()->back()->with($notification);
+        return redirect()->back()->with([
+            'message' => 'Kategori berhasil dihapus',
+            'alert-type' => 'success',
+        ]);
     }
 
     public function akunKasir()

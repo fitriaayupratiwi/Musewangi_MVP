@@ -1,0 +1,39 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('collections', function (Blueprint $table) {
+            $table->id();
+
+            $table->string('no_registrasi');
+            $table->string('nama_koleksi');
+
+            // kategori belum dibuat, jadi hapus dulu foreign key
+
+            $table->string('asal');
+
+            $table->enum('kondisi', [
+                'Baik',
+                'Rusak Ringan',
+                'Rusak Berat'
+            ]);
+
+            $table->text('deskripsi')->nullable();
+
+            $table->string('foto')->nullable();
+
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('collections');
+    }
+};

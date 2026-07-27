@@ -33,7 +33,11 @@ Route::get('/pesanan/{id}', [KeranjangController::class, 'detailPesanan'])->name
 Route::get('/riwayat/{nomor_meja}', [KeranjangController::class, 'riwayatPesanan'])->name('customer.riwayat');
 Route::get('/menu', [CustomerController::class, 'menu'])->name('customer.menu');
 
-
+// All Admin Dashboard
+Route::middleware('admin')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'Dashboard'])
+        ->name('admin.dashboard');
+});
 
 Route::get('/dashboard', function () {
     return view('dashboard');

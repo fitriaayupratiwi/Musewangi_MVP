@@ -8,7 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\AdminController;
-// use App\Http\Controllers\KelolaKasirController;
+use App\Http\Controllers\KelolaAdminController;
 use Illuminate\Support\Facades\Route;
 
 Route::get(
@@ -104,11 +104,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/edit/kategori/{id}', [AdminController::class, 'editKategori'])->name('admin.edit.kategori');
     Route::post('/admin/update/kategori', [AdminController::class, 'updateKategori'])->name('admin.update.kategori');
     Route::get('/admin/delete/kategori/{id}', [AdminController::class, 'deleteKategori'])->name('admin.delete.kategori');
-    // Route::get('/admin/kelolakasir', [KelolaKasirController::class, 'index'])->name('admin.kelolakasir');
-    // Route::post('/admin/kelolakasir/tambah', [KelolaKasirController::class, 'tambahkasir'])->name('admin.kelolakasir.tambah');
-    // Route::get('/admin/edit/kasir/{id}', [KelolaKasirController::class, 'edit'])->name('admin.edit.kasir');
-    // Route::get('/admin/delete/kasir/{id}', [KelolaKasirController::class, 'delete'])->name('admin.delete.kasir');
-    // Route::put('/admin/update/kasir/{id}', [KelolaKasirController::class, 'update'])->name('admin.update.kasir');
+    Route::get('/admin/kelolaadmin', [KelolaAdminController::class, 'index'])->name('admin.kelolaadmin');
+    Route::post('/admin/kelolaadmin/tambah', [KelolaAdminController::class, 'tambahAdmin'])->name('admin.kelolaadmin.tambah');
+    Route::get('/admin/edit/admin/{id}', [KelolaAdminController::class, 'edit'])->name('admin.edit.admin');
+    Route::get('/admin/delete/admin/{id}', [KelolaAdminController::class, 'delete'])->name('admin.delete.admin');
+    Route::put('/admin/update/admin/{id}', [KelolaAdminController::class, 'update'])->name('admin.update.admin');
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::put('/admin/menu/{id}/rekomendasi', [MenuController::class, 'updateRekomendasi'])->name('admin.update.rekomendasi');
 });

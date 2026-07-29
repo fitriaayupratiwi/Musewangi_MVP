@@ -342,17 +342,20 @@ class AdminController extends Controller
         return redirect()->route('admin.kategori.menu');
     }
 
-    public function storeKategori(StoreCategoryRequest $request)
-    {
-        Category::create([
-            'nama' => $request->nama,
-        ]);
+    public function storeKategori(Request $request)
+{
+    $request->validate([
+        'nama' => 'required|string|max:255|unique:categories,nama',
+    ], [
+        'nama.unique' => 'Kategori dengan nama tersebut sudah ada.',
+    ]);
 
-        return redirect()->route('admin.kategori.menu')->with([
-            'message' => 'Kategori berhasil ditambahkan',
-            'alert-type' => 'success',
-        ]);
-    }
+    Category::create([
+        'nama' => $request->nama,
+    ]);
+
+    return redirect()->route('admin.kategori.menu')->with('success', 'Kategori berhasil ditambahkan');
+}
     // End Method
 
     public function editKategori($id)

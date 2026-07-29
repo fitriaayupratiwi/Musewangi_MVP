@@ -1,4 +1,5 @@
 <x-guest-layout>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     <div class="flex flex-col flex-1 w-full lg:w-2/5">
         <div class="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
@@ -36,11 +37,28 @@
                 </div> --}}
 
                 <!-- Password -->
-                <div class="mt-4">
+                {{-- <div class="mt-4">
                     <x-input-label for="password" :value="__('Password')" />
 
                     <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required
                         autocomplete="current-password" />
+
+                    <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                </div> --}}
+
+                <!-- Password -->
+                <div class="mt-4">
+                    <x-input-label for="password" :value="__('Password')" />
+
+                    <div class="relative mt-1">
+                        <x-text-input id="password" class="block w-full pr-10" type="password" name="password" required
+                            autocomplete="current-password" />
+
+                        <button type="button" onclick="togglePassword('password', 'eyeIconLogin')"
+                            class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-blue-600">
+                            <i id="eyeIconLogin" class="fas fa-eye"></i>
+                        </button>
+                    </div>
 
                     <x-input-error :messages="$errors->get('password')" class="mt-2" />
                 </div>
@@ -114,5 +132,22 @@
             </svg>
         </button>
     </div>
+
+    <script>
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
 
 </x-guest-layout>

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use App\Models\Menu;
+use App\Models\Collection;
 use App\Models\Category;
 use App\Models\NomorMeja;
 use Intervention\Image\ImageManager;
@@ -23,150 +23,126 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $menus = Menu::all();
-        return view('admin.menu', compact('menus'));
+        $collections = Collection::all();
+        return view('admin.koleksi.index', compact('collections'));
     }
 
-    public function tambahMenu()
+    public function tambahkoleksi()
     {
-        $menus = Menu::all();
-        $categories = Category::all();
-        return view('admin.tambahMenu', compact('menus', 'categories'));
+        return view('admin.koleksi.create');
     }
 
-    public function storeMenu(Request $request){
+public function storeKoleksi(Request $request)
+{
+    $request->validate([
+        'no_registrasi'=>'required',
+        'nama_koleksi'=>'required',
+        'asal'=>'required',
+        'kondisi'=>'required',
+        'foto'=>'nullable|image|mimes:jpg,jpeg,png|max:2048'
+    ]);
+    $foto=null;
 
-        $request->validate([
-            'nama_menu' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'deskripsi' => 'nullable|string|min:10',
-            'harga' => 'required|numeric|min:1000|max:1000000',
-            'kategori' => 'required|exists:categories,id',
-            //'stok' => 'required|in:habis,tersedia',
-            ]);
-
-        if ($request->file('image')) {
-            $image = $request->file('image');
-            $manager = new ImageManager(new Driver());
-            $name_gen = hexdec(uniqid()).'.'.$image->getClientOriginalExtension();
-            $img = $manager->read($image);
-            $img->resize(300,300)->save(public_path('upload/menu/'.$name_gen));
-            $save_url = 'upload/menu/'.$name_gen;
-
-            Menu::create([
-                'nama' => $request->nama_menu,
-                'gambar' => $save_url,
-                'deskripsi' => $request->deskripsi,
-                'harga' => $request->harga,
-                'kategori_id' => $request->kategori,
-            //    'stok' => $request->stok,
-            ]);
-
-
-        }
-
-        $notification = array(
-            'message' => 'Menu berhasil ditambahkan',
-            'alert-type' => 'success'
-        );
-
-        return redirect()->route('admin.menu')->with($notification);
-
+    if($request->hasFile('foto')){
+        $foto=$request->file('foto')
+        ->store('koleksi','public');
     }
+
+    Collection::create([
+        'no_registrasi'=>$request->no_registrasi,
+        'nama_koleksi'=>$request->nama_koleksi,
+        'asal'=>$request->asal,
+        'kondisi'=>$request->kondisi,
+        'deskripsi'=>$request->deskripsi,
+        'foto'=>$foto
+    ]);
+
+
+    $notification = array(
+        'message'=>'Koleksi berhasil ditambahkan',
+        'alert-type'=>'success'
+    );
+    return redirect()
+    ->route('admin.koleksi')
+    ->with($notification);
+
+}
     // End Method
-
-   public function editMenu($id){
-        $menu = Menu::find($id);
-        $categories = Category::all();
-        return view('admin.editMenu', compact('menu', 'categories'));
-    }
+public function editCollection($id)
+{
+    $collection = Collection::find($id);
+    return view(
+        'admin.koleksi.edit',
+        compact('collection')
+    );
+}
      // End Method
 
-     public function updateMenu(Request $request){
+     public function updateCollection(Request $request){
+ $collection = Collection::find($request->id);
+    $request->validate([
+        'no_registrasi'=>'required',
+        'nama_koleksi'=>'required',
+        'asal'=>'required',
+        'kondisi'=>'required'
+    ]);
+    $data=[
+        'no_registrasi'=>$request->no_registrasi,
+        'nama_koleksi'=>$request->nama_koleksi,
+        'asal'=>$request->asal,
+        'kondisi'=>$request->kondisi,
+        'aksi'=>$request->aksi
+    ];
 
-        $menu_id = $request->id;
-
-        if ($request->file('image')) {
-            $image = $request->file('image');
-            $manager = new ImageManager(new Driver());
-            $name_gen = hexdec(uniqid()).'.'.$image->getClientOriginalExtension();
-            $img = $manager->read($image);
-            $img->resize(300,300)->save(public_path('upload/menu/'.$name_gen));
-            $save_url = 'upload/menu/'.$name_gen;
-
-            Menu::find($menu_id)->update([
-                'nama' => $request->nama_menu,
-                'gambar' => $save_url,
-                'deskripsi' => $request->deskripsi,
-                'harga' => $request->harga,
-                'kategori_id' => $request->kategori,
-            //    'stok' => $request->stok,
-            ]);
-            $notification = array(
-                'message' => 'Menu Updated Successfully',
-                'alert-type' => 'success'
-            );
-
-            return redirect()->route('admin.menu')->with($notification);
-
-        } else {
-
-            Menu::find($menu_id)->update([
-                'nama' => $request->nama_menu,
-                'deskripsi' => $request->deskripsi,
-                'harga' => $request->harga,
-                'kategori_id' => $request->kategori,
-            //    'stok' => $request->stok,
-
-            ]);
-            $notification = array(
-                'message' => 'Menu Updated Successfully',
-                'alert-type' => 'success'
-            );
-
-            return redirect()->route('admin.menu')->with($notification);
+    if($request->hasFile('foto')){
+        if($collection->foto){
+            Storage::disk('public')
+            ->delete($collection->foto);
 
         }
+
+        $data['foto']=$request->file('foto')
+        ->store('koleksi','public');
+    }
+    $collection->update($data);
+
+
+
+    return redirect()
+    ->route('admin.koleksi')
+    ->with([
+        'message'=>'Koleksi berhasil diperbarui',
+        'alert-type'=>'success'
+    ]);
 
     }
     // End Method
 
-     public function deleteMenu($id){
-        $item = Menu::find($id);
-        $imgPath = public_path($item->gambar);
+    public function deleteCollection($id)
+{
 
-    if (file_exists($imgPath)) {
-        unlink($imgPath);
+    $item = Collection::find($id);
+
+
+    if($item->foto){
+
+        Storage::disk('public')
+        ->delete($item->foto);
+
     }
+
 
     $item->delete();
 
-        $notification = array(
-            'message' => 'Menu Delete Successfully',
-            'alert-type' => 'success'
-        );
 
-        return redirect()->back()->with($notification);
+    return redirect()
+    ->back()
+    ->with([
+        'message'=>'Koleksi berhasil dihapus',
+        'alert-type'=>'success'
+    ]);
 
-    }
-    // End Method
-
-    public function updateStok(Request $request, $id)
-    {
-        $request->validate([
-            'stok_baru' => 'required|in:habis,tersedia',
-        ]);
-        $menu = Menu::findOrFail($id);
-        $menu->stok = $request->stok_baru;
-        $menu->save();
-
-        $notification = array(
-            'message' => 'Stok menu berhasil diperbarui',
-            'alert-type' => 'success'
-        );
-
-        return redirect()->back()->with($notification);
-    }
+}
 
     public function nomorMeja()
     {
@@ -595,9 +571,6 @@ class AdminController extends Controller
                 }
             }
         }
-
-        // Reset semua menu menjadi bukan best seller
-        Menu::query()->update(['is_best_seller' => 0]);
 
         // Tandai best seller utama
         if ($bestSeller) {

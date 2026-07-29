@@ -217,7 +217,7 @@
                         </svg>
                         <span class="flex-1 ms-3 whitespace-nowrap">Akun Kasir</span>
                     </a>
-                </li> --}} --}}
+                </li> --}} 
             {{-- <li>
                 <a href="{{ route('admin.kelolakasir') }}"
                     class="flex items-center p-2 text-gray-900 rounded-lg group {{ request()->routeIs('admin.kelolakasir')

@@ -21,11 +21,20 @@ use App\Http\Requests\UpdateCategoryRequest;
 
 class AdminController extends Controller
 {
-    public function index()
-    {
-        $collections = Collection::all();
-        return view('admin.koleksi.index', compact('collections'));
+    public function index(Request $request)
+{
+    $query = Collection::query();
+
+    // Pencarian
+    if ($request->filled('cari')) {
+        $query->where('nama_koleksi', 'like', '%' . $request->cari . '%')
+              ->orWhere('no_registrasi', 'like', '%' . $request->cari . '%');
     }
+
+    $koleksis = $query->paginate(10);
+
+    return view('admin.koleksi.index', compact('koleksis'));
+}
 
     public function tambahkoleksi()
     {
@@ -296,22 +305,22 @@ public function editCollection($id)
 }
 
     public function KategoriMenu()
-    {
-        $kategori = Category::withCount('menus')
-            ->orderBy('nama')
-            ->get();
+{
+    $kategori = Category::withCount('koleksis')
+        ->orderBy('nama')
+        ->get();
 
-        return view('admin.kategoriMenu', compact('kategori'));
-    }
+    return view('admin.kategoriMenu', compact('kategori'));
+}
 
     public function QRCodeKoleksi()
-    {
-        $kategori = Category::withCount('menus')
-            ->orderBy('nama')
-            ->get();
+{
+    $kategori = Category::withCount('koleksis')
+        ->orderBy('nama')
+        ->get();
 
-        return view('admin.qrcodeKoleksi', compact('kategori'));
-    }
+    return view('admin.qrcodeKoleksi', compact('kategori'));
+}
 
     public function tambahKategori()
     {

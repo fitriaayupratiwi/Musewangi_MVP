@@ -2,21 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
-    /** @use HasFactory<\Database\Factories\CategoryFactory> */
-    use HasFactory;
-    protected $guarded = [];
-    public function menus()
-    {
-        return $this->hasMany(Menu::class, 'kategori_id');
-    }
+    protected $fillable = [
+        'nama'
+    ];
 
-    public function koleksis()
+    public function koleksis(): HasMany
     {
-        return $this->hasMany(Koleksi::class, 'kategori_id');
+        return $this->hasMany(Collection::class, 'category_id');
     }
 }

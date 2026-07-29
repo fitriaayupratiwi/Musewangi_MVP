@@ -22,7 +22,8 @@ class UpdateCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'id' => 'required|exists:categories,id',
+            'nama' => 'required|string|max:255|unique:categories,nama,' . $this->id,
         ];
     }
 }

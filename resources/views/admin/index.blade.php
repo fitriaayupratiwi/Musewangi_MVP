@@ -135,11 +135,19 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
                     <input type="hidden" name="role" value="admin">
 
                     <div class="mb-4">
-                        <label for="password"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                        <input name="password" type="password" id="password"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                            required />
+                        <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Password
+                        </label>
+
+                        <input name="password" type="password" id="password" minlength="8" required
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+               focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
+               dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+
+                        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                            <i class="fas fa-circle-info mr-1 text-blue-500"></i>
+                            Password harus terdiri dari minimal <strong>8 karakter</strong>.
+                        </p>
                     </div>
 
                     <button type="submit"

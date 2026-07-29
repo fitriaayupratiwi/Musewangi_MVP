@@ -8,6 +8,7 @@ use App\Http\Controllers\PesananController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CollectionController;
+use App\Http\Controllers\KelolaAdminController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -149,7 +150,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/delete/kategori/{id}', [AdminController::class, 'deleteKategori'])
         ->name('admin.delete.kategori');
 
-
+    //Akun Admin
+    Route::get('/admin/kelolaadmin', [KelolaAdminController::class, 'index'])->name('admin.kelolaadmin');
+    Route::post('/admin/kelolaadmin/tambah', [KelolaAdminController::class, 'tambahAdmin'])->name('admin.kelolaadmin.tambah');
+    Route::get('/admin/edit/admin/{id}', [KelolaAdminController::class, 'edit'])->name('admin.edit.admin');
+    Route::get('/admin/delete/admin/{id}', [KelolaAdminController::class, 'delete'])->name('admin.delete.admin');
+    Route::put('/admin/update/admin/{id}', [KelolaAdminController::class, 'update'])->name('admin.update.admin');
 
     // Collection Musewangi
     Route::get('/admin/koleksi', [CollectionController::class, 'index'])->name('admin.koleksi');

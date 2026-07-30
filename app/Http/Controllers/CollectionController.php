@@ -12,40 +12,86 @@ class CollectionController extends Controller
     public function index()
     {
         $collections = Collection::latest()->get();
+
         return view(
             'admin.koleksi.index',
             compact('collections')
         );
     }
 
+
     public function create()
     {
         return view('admin.koleksi.create');
     }
 
+    public function show($id)
+    {
+        $collection = Collection::findOrFail($id);
+
+        return view(
+            'admin.koleksi.detail',
+            compact('collection')
+        );
+    }
+
+
     public function store(Request $request)
     {
         $request->validate([
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'no_registrasi' => 'required|string|max:100',
-            'nama_koleksi' => 'required|string|max:255',
-            'asal' => 'required|string|max:255',
-            'kondisi' => 'required|in:Baik,Rusak Ringan,Rusak Berat',
+            'foto' => [
+                'nullable',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048'
+            ],
+
+            'voice_over' => [
+                'nullable',
+                'mimes:mp3,wav,ogg,webm',
+                'max:10240'
+            ],
+
+
+            'no_registrasi' => 'required',
+            'nama_koleksi' => 'required',
+            'asal' => 'required',
+            'kondisi' => 'required',
 
         ]);
 
-        $foto = null;
-        if ($request->hasFile('foto')) {
 
+        // UPLOAD FOTO
+
+        $foto = null;
+        if($request->hasFile('foto')){
             $foto = $request->file('foto')
-                ->store('koleksi', 'public');
+                ->store('koleksi','public');
 
         }
 
+        // UPLOAD VOICE OVER
+  
+        $voiceOver = null;
+        if($request->hasFile('voice_over')){
+
+            $voiceOver = $request->file('voice_over')
+                ->store('rekam-suara','public');
+
+        }
+
+        // SIMPAN DATABASE
+
         Collection::create([
+
             'foto' => $foto,
+            'voice_over' => $voiceOver,
             'no_registrasi' => $request->no_registrasi,
+            'no_registrasi_lama' => $request->no_registrasi_lama,
             'nama_koleksi' => $request->nama_koleksi,
+            'kategori' => $request->kategori,
+            'jenis_benda' => $request->jenis_benda,
+            'tahun_pembuatan' => $request->tahun_pembuatan,
             'asal' => $request->asal,
             'kondisi' => $request->kondisi,
             'deskripsi' => $request->deskripsi,
@@ -54,81 +100,151 @@ class CollectionController extends Controller
         return redirect()
             ->route('admin.koleksi')
             ->with([
-                'message' => 'Koleksi berhasil ditambahkan',
-                'alert-type' => 'success'
+                'message'=>'Koleksi berhasil ditambahkan',
+                'alert-type'=>'success'
+
             ]);
+
     }
 
-    public function show(Collection $collection)
+    public function edit($id)
     {
-        return view(
-            'admin.koleksi.detail',
-            compact('collection')
-        );
-    }
 
-    public function edit(Collection $collection)
-    {
+        $collection = Collection::findOrFail($id);
+
         return view(
             'admin.koleksi.edit',
             compact('collection')
         );
+
     }
 
-    public function update(Request $request, Collection $collection)
+    public function update(Request $request, $id)
     {
+    $collection = Collection::findOrFail($id);
         $request->validate([
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'no_registrasi' => 'required|string|max:100',
-            'nama_koleksi' => 'required|string|max:255',
-            'asal' => 'required|string|max:255',
-            'kondisi' => 'required|in:Baik,Rusak Ringan,Rusak Berat',
+            'foto' => [
+                'nullable',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048'
+            ],
+
+
+            'voice_over' => [
+                'nullable',
+                'mimes:mp3,wav,ogg,webm',
+                'max:10240'
+            ],
+
+
+            'no_registrasi' => 'required',
+            'nama_koleksi' => 'required',
+            'asal' => 'required',
+            'kondisi' => 'required',
         ]);
+
+
+
 
         $data = [
             'no_registrasi' => $request->no_registrasi,
+            'no_registrasi_lama' => $request->no_registrasi_lama,
             'nama_koleksi' => $request->nama_koleksi,
+            'kategori' => $request->kategori,
+            'jenis_benda' => $request->jenis_benda,
+            'tahun_pembuatan' => $request->tahun_pembuatan,
             'asal' => $request->asal,
             'kondisi' => $request->kondisi,
+            'deskripsi' => $request->deskripsi,
         ];
 
-        if ($request->hasFile('foto')) {
-            if ($collection->foto) {
+        // UPDATE FOTO
+
+        if($request->hasFile('foto')){
+
+            if($collection->foto){
                 Storage::disk('public')
                     ->delete($collection->foto);
+
             }
 
             $data['foto'] = $request->file('foto')
-                ->store('koleksi', 'public');
+                ->store('koleksi','public');
+
+
+        }
+
+        // UPDATE VOICE
+
+        if($request->hasFile('voice_over')){
+            if($collection->voice_over){
+
+
+                Storage::disk('public')
+                    ->delete($collection->voice_over);
+            }
+
+            $data['voice_over'] = $request->file('voice_over')
+                ->store('rekam-suara','public');
+
+
         }
 
         $collection->update($data);
-
         return redirect()
+
             ->route('admin.koleksi')
+
             ->with([
-                'message' => 'Koleksi berhasil diperbarui',
-                'alert-type' => 'success'
+
+                'message'=>'Koleksi berhasil diperbarui',
+
+                'alert-type'=>'success'
+
             ]);
 
     }
 
-    public function destroy(Collection $collection)
-    {
-        if ($collection->foto) {
-            Storage::disk('public')
-                ->delete($collection->foto);
-        }
-        $collection->delete();
+
+  public function destroy($id)
+{
+
+    $collection = Collection::findOrFail($id);
 
 
-        return redirect()
-            ->route('admin.koleksi')
-            ->with([
-                'message' => 'Koleksi berhasil dihapus',
-                'alert-type' => 'success'
-            ]);
+    // Hapus Foto
+    if($collection->foto){
+
+        Storage::disk('public')
+            ->delete($collection->foto);
 
     }
 
+
+    // Hapus Voice
+    if($collection->voice_over){
+
+        Storage::disk('public')
+            ->delete($collection->voice_over);
+
+    }
+
+
+    $collection->delete();
+
+
+    return redirect()
+
+        ->route('admin.koleksi')
+
+        ->with([
+
+            'message'=>'Koleksi berhasil dihapus',
+
+            'alert-type'=>'success'
+
+        ]);
+
+}
 }

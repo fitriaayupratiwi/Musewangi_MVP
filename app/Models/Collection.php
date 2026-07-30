@@ -9,12 +9,17 @@ class Collection extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'foto',
-        'no_registrasi',
-        'nama_koleksi',
-        'asal',
-        'kondisi',
-        'deskripsi',
-    ];
+   protected $fillable = [
+    'foto',
+    'voice_over',
+    'no_registrasi',
+    'no_registrasi_lama',
+    'nama_koleksi',
+    'kategori',
+    'jenis_benda',
+    'tahun_pembuatan',
+    'asal',
+    'kondisi',
+    'deskripsi',
+];
 }

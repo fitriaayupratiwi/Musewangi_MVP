@@ -153,6 +153,7 @@ Route::middleware('auth')->group(function () {
 
     // Collection Musewangi
     Route::get('/admin/koleksi', [CollectionController::class, 'index'])->name('admin.koleksi');
+    Route::get('/admin/koleksi/detail/{id}', [CollectionController::class, 'show'])->name('admin.koleksi.detail');
     Route::get('/admin/koleksi/tambah', [CollectionController::class, 'create'])->name('admin.koleksi.create');
     Route::post('/admin/koleksi', [CollectionController::class, 'store'])->name('admin.koleksi.store');
     Route::get('/admin/koleksi/edit/{id}', [CollectionController::class, 'edit'])->name('admin.koleksi.edit');

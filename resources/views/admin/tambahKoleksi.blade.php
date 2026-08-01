@@ -26,7 +26,7 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
     @include('admin.body.header')
 
 <main class="pt-16 transition-all duration-300 p-4
-    dark:bg-gray-900
+    dark:bg-gray-900_
     lg:ml-64 z-10">
 
     <nav class="flex text-gray-500 mb-5 mt-5 ml-5" aria-label="Breadcrumb">

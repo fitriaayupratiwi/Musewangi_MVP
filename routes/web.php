@@ -101,7 +101,6 @@ Route::middleware('auth')->group(function () {
     // Route::get('/admin/delete/kasir/{id}', [KelolaKasirController::class, 'delete'])->name('admin.delete.kasir');
     // Route::put('/admin/update/kasir/{id}', [KelolaKasirController::class, 'update'])->name('admin.update.kasir');
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::put('/admin/menu/{id}/rekomendasi', [MenuController::class, 'updateRekomendasi'])->name('admin.update.rekomendasi');
 });
     // Dashboard Admin
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
@@ -207,24 +206,14 @@ Route::middleware('auth')->group(function () {
     Route::put('/admin/update/admin/{id}', [KelolaAdminController::class, 'update'])->name('admin.update.admin');
 
     // Collection Musewangi
-Route::get('/admin/koleksi', [CollectionController::class, 'index'])
-    ->name('admin.koleksi.index');
-
-Route::get('/admin/koleksi/tambah', [CollectionController::class, 'create'])
-    ->name('admin.koleksi.create');
-
-Route::post('/admin/koleksi', [CollectionController::class, 'store'])
-    ->name('admin.koleksi.store');
-
-Route::get('/admin/koleksi/edit/{id}', [CollectionController::class, 'edit'])
-    ->name('admin.koleksi.edit');
-
-Route::put('/admin/koleksi/{id}', [CollectionController::class, 'update'])
-    ->name('admin.koleksi.update');
-
-Route::delete('/admin/koleksi/{id}', [CollectionController::class, 'destroy'])
-    ->name('admin.koleksi.destroy');
+    Route::get('/admin/koleksi', [CollectionController::class, 'index'])->name('admin.koleksi');
+    Route::get('/admin/koleksi/detail/{id}', [CollectionController::class, 'show'])->name('admin.koleksi.detail');
+    Route::get('/admin/koleksi/tambah', [CollectionController::class, 'create'])->name('admin.koleksi.create');
+    Route::post('/admin/koleksi', [CollectionController::class, 'store'])->name('admin.koleksi.store');
+    Route::get('/admin/koleksi/edit/{id}', [CollectionController::class, 'edit'])->name('admin.koleksi.edit');
+    Route::put('/admin/koleksi/{id}', [CollectionController::class, 'update'])->name('admin.koleksi.update');
+    Route::delete('/admin/koleksi/{id}', [CollectionController::class, 'destroy'])->name('admin.koleksi.delete');
+});
 
 
 require __DIR__ . '/auth.php';
-});

@@ -9,28 +9,44 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('collections', function (Blueprint $table) {
+
             $table->id();
 
             $table->string('no_registrasi');
+
+            $table->string('no_registrasi_lama')
+                ->nullable();
+
             $table->string('nama_koleksi');
 
-            // kategori belum dibuat, jadi hapus dulu foreign key
+            $table->string('kategori')
+                ->nullable();
+
+            $table->string('jenis_benda')
+                ->nullable();
+
+            $table->string('tahun_pembuatan')
+                ->nullable();
 
             $table->string('asal');
 
-            $table->enum('kondisi', [
+            $table->enum('kondisi',[
                 'Baik',
                 'Rusak Ringan',
                 'Rusak Berat'
             ]);
 
-            $table->text('deskripsi')->nullable();
+            $table->text('deskripsi')
+                ->nullable();
 
             $table->string('foto')->nullable();
 
+            $table->string('voice_over')->nullable();
             $table->timestamps();
+
         });
     }
+
 
     public function down(): void
     {

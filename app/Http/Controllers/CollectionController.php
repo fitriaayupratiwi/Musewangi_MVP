@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Category;
 use App\Models\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -9,19 +9,38 @@ use Illuminate\Support\Facades\Storage;
 class CollectionController extends Controller
 {
 
-    public function index()
-    {
-        $collections = Collection::latest()->get();
-        return view(
-            'admin.koleksi.index',
-            compact('collections')
-        );
+    // public function index()
+    // {
+    //     dd('Masuk Controller');
+    //     $collections = Collection::latest()->get();
+    //     return view(
+    //         'Admin.koleksi.index',
+    //         compact('collections')
+    //     );
+    // }
+
+    public function index(Request $request)
+{
+    $query = Collection::query();
+
+    if ($request->filled('cari')) {
+        $query->where('nama_koleksi', 'like', '%' . $request->cari . '%')
+              ->orWhere('no_registrasi', 'like', '%' . $request->cari . '%');
     }
 
+    $collections = $query->paginate(10);
+
+    return view('admin.koleksi.index', compact('collections'));
+}
+
+
+
     public function create()
-    {
-        return view('admin.koleksi.create');
-    }
+{
+    $categories = Category::orderBy('nama')->get();
+
+    return view('admin.koleksi.create', compact('categories'));
+}
 
     public function store(Request $request)
     {
@@ -52,7 +71,7 @@ class CollectionController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.koleksi')
+            ->route('admin.koleksi.index')
             ->with([
                 'message' => 'Koleksi berhasil ditambahkan',
                 'alert-type' => 'success'
@@ -105,7 +124,7 @@ class CollectionController extends Controller
         $collection->update($data);
 
         return redirect()
-            ->route('admin.koleksi')
+            ->route('admin.koleksi.index')
             ->with([
                 'message' => 'Koleksi berhasil diperbarui',
                 'alert-type' => 'success'
@@ -123,7 +142,7 @@ class CollectionController extends Controller
 
 
         return redirect()
-            ->route('admin.koleksi')
+            ->route('admin.koleksi.index')
             ->with([
                 'message' => 'Koleksi berhasil dihapus',
                 'alert-type' => 'success'

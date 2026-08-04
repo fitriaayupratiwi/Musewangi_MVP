@@ -60,7 +60,6 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- @forelse ($koleksis as $koleksi) --}}
                     @forelse ($collections as $collection)
                         <tr
                             class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200">
@@ -69,41 +68,29 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
                                     class="w-14 h-14 rounded overflow-hidden bg-gray-100 flex items-center justify-center">
                                     @if ($collection->foto)
                                         <img src="{{ asset($collection->foto) }}" class="w-full h-full object-cover"
-                                            alt="{{ $collection->nama_koleksi }}">
+                                            alt="{{ $collection->nama }}">
                                     @else
                                         <i class="fas fa-image text-gray-300"></i>
                                     @endif
                                 </div>
                             </td>
                             <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">
-                                {{ $collection->no_registrasi }}</td>
-                            <td class="px-4 py-3">{{ $collection->nama_koleksi }}</td>
+                                {{ $collection->no_registrasi_baru }}</td>
+                            <td class="px-4 py-3">{{ $collection->nama }}</td>
                             <td class="px-4 py-3">{{ $collection->kategori->nama ?? '-' }}</td>
                             <td class="px-4 py-3">{{ $collection->jenis_benda }}</td>
                             <td class="px-4 py-3">{{ $collection->asal ?? '-' }}</td>
                             <td class="px-4 py-3">
-                                {{-- @php
-                                    $badge = match ($koleksi->kondisi) {
+                                @php
+                                    $badge = match ($collection->kondisi) {
                                         'baik' => 'bg-green-100 text-green-700',
                                         'rusak_ringan' => 'bg-yellow-100 text-yellow-700',
                                         'rusak_berat' => 'bg-red-100 text-red-700',
                                         default => 'bg-gray-100 text-gray-700',
                                     };
-                                @endphp --}}
-                                @php
-                                    $badge = match ($collection->kondisi) {
-                                        'Baik' => 'bg-green-100 text-green-700',
-                                        'Rusak Ringan' => 'bg-yellow-100 text-yellow-700',
-                                        'Rusak Berat' => 'bg-red-100 text-red-700',
-                                        default => 'bg-gray-100 text-gray-700',
-                                    };
                                 @endphp
-                                {{-- <span class="px-2 py-1 rounded-full text-xs font-semibold {{ $badge }}">
-                                    {{ $koleksi->kondisiLabel() }}
-                                </span> --}}
-
                                 <span class="px-2 py-1 rounded-full text-xs font-semibold {{ $badge }}">
-                                    {{ $collection->kondisi }}
+                                    {{ $collection->kondisiLabel() }}
                                 </span>
                             </td>
                             <td class="px-4 py-3">
@@ -114,7 +101,7 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
                                     <a href="{{ route('admin.koleksi.edit', $collection->id) }}"
                                         class="inline-flex items-center justify-center w-7 h-7 rounded bg-blue-500 hover:bg-blue-600 text-white"
                                         title="Edit"><i class="fas fa-pen text-xs"></i></a>
-                                    <button type="button" {{-- onclick="hapusKoleksi('{{ route('admin.koleksi.destroy', $collection->id) }}', '{{ addslashes($collection->nama) }}')" --}}
+                                    <button type="button"
                                         onclick="hapusKoleksi('{{ route('admin.koleksi.delete', $collection->id) }}', '{{ addslashes($collection->nama) }}')"
                                         class="inline-flex items-center justify-center w-7 h-7 rounded bg-red-500 hover:bg-red-600 text-white"
                                         title="Hapus"><i class="fas fa-trash text-xs"></i></button>

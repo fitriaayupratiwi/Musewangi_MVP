@@ -111,7 +111,7 @@ class KoleksiController extends Controller
     public function show(Koleksi $koleksi)
     {
         $koleksi->load('kategori');
-        return view('admin.koleksi.show', compact('koleksi'));
+        return view('admin.koleksi.detail', compact('koleksi'));
     }
 
     /**

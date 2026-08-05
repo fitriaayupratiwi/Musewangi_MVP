@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Category;
 use App\Models\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -21,9 +21,11 @@ class CollectionController extends Controller
 
 
     public function create()
-    {
-        return view('admin.koleksi.create');
-    }
+{
+    $categories = Category::orderBy('nama')->get();
+
+    return view('admin.koleksi.create', compact('categories'));
+}
 
     public function show($id)
     {
@@ -98,7 +100,7 @@ class CollectionController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.koleksi')
+            ->route('admin.koleksi.index')
             ->with([
                 'message'=>'Koleksi berhasil ditambahkan',
                 'alert-type'=>'success'

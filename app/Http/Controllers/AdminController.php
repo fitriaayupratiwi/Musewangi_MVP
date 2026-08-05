@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\Collection;
 use App\Models\Category;
-use App\Models\NomorMeja;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use App\Models\Transaksi;
@@ -379,7 +378,6 @@ public function tambahKategori()
         $kategori  = Category::find($id);
         return view('admin.editKategori', compact('kategori'));
     }
-     // End Method
 
      public function updateKategori(Request $request)
 {

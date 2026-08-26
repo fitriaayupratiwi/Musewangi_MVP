@@ -4,268 +4,502 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Admin MUSEWANGI | Kelola Admin</title>
 
-    <title>Admin DineQR | Kelola Admin</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icon -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    @vite([
+        'resources/css/app.css',
+        'resources/js/app.js'
+    ])
+
 </head>
 
-<body x-data="{ 'darkMode': false, 'sidebarToggle': false }" x-init="darkMode = JSON.parse(localStorage.getItem('darkMode'));
-$watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))" :class="{ 'dark bg-gray-900': darkMode === true }"
-    class=" relative min-w-screen">
+<body
+    x-data="{sidebarToggle:false}"
+    class="bg-[#F8F5ED] font-['Plus_Jakarta_Sans']">
 
-    @include('admin.body.sidebar')
-    <!-- OVERLAY (klik → tutup sidebar) -->
-    <div x-show="sidebarToggle" @click="sidebarToggle = false" class="fixed inset-0 z-40 bg-black/50 lg:hidden"
-        x-transition.opacity></div>
-    @include('admin.body.header')
+@include('admin.body.sidebar')
 
-    <main class="pt-16 transition-all duration-300 p-4
-    dark:bg-gray-900
-    lg:ml-64 z-10">
-        <div class=" py-2 overflow-x-auto shadow-md sm:rounded-lg">
-            {{-- <h2 class="text-center mb-5 font-bold dark:text-white">Daftar Akun Admin</h2>
-            <button onclick="showPopUpAdd()"
-                class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-1 rounded mb-5 ml-5">
-                <i class="fas fa-plus px-1"></i>Tambah
-                Admin
-            </button> --}}
+<div
+    x-show="sidebarToggle"
+    @click="sidebarToggle=false"
+    class="fixed inset-0 bg-black/50 z-40 lg:hidden">
+</div>
 
-            <!-- Judul -->
-            <h2 class="text-center mb-5 font-bold dark:text-white">
-                Daftar Akun Admin
+@include('admin.body.header')
+
+<main class="pt-24 lg:ml-64 p-5">
+    <div class="mx-auto max-w-6xl">
+
+{{-- TITLE SECTION --}}
+<div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+    <div>
+        <h1 class="text-3xl font-bold text-[#162544]">
+            Daftar Pengguna
+        </h1>
+
+        <p class="text-gray-500 mt-2">
+            Kelola semua akun administrator sistem MUSEWANGI, tambah, ubah, atau hapus data admin.
+        </p>
+    </div>
+
+<button
+    type="button"
+    onclick="openModal()"
+    class="
+        bg-[#C9981C]
+        hover:bg-[#A77C14]
+        text-white
+        px-5
+        py-3
+        rounded-lg
+        shadow
+        flex
+        items-center
+        gap-2
+        transition
+    "
+>
+    <i class="fa fa-plus"></i>
+
+    Tambah Pengguna
+</button>
+
+</div>
+
+    {{-- STATISTIK --}}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+
+        <div
+            class="bg-[#1D2745] rounded-2xl p-5 shadow">
+
+            <p class="text-xs uppercase tracking-wider text-yellow-300">
+
+                Total Admin
+
+            </p>
+
+            <h2 class="text-3xl font-bold text-white mt-2">
+
+                {{ $users->count() }}
+
             </h2>
 
-            <!-- Tombol -->
-            <div class="flex justify-end px-5 mb-5">
-                <button onclick="showPopUpAdd()"
-                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition">
-                    <i class="fas fa-plus mr-2"></i>
-                    Tambah Admin
-                </button>
-            </div>
+        </div>
 
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th scope="col" class="px-6 py-3">Nama</th>
-                        <th scope="col" class="px-6 py-3">Email</th>
-                        <th scope="col" class="px-6 py-3">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($users as $admin)
-                        <tr
-                            class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200">
-                            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ $admin->name }}
-                            </td>
-                            <td class="px-6 py-4">
-                                {{ $admin->email }}
-                            </td>
+        <div
+            class="bg-[#8C6315] rounded-2xl p-5 shadow">
 
+            <p class="text-xs uppercase tracking-wider text-yellow-200">
 
-                            <td class="px-6 py-4">
-                                <div class="flex items-center gap-2">
+                Administrator Aktif
 
-                                    <!-- Edit -->
-                                    <button type="button"
-                                        onclick="showPopUpEdit('{{ $admin->id }}', '{{ $admin->name }}', '{{ $admin->email }}')"
-                                        class="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition duration-200"
-                                        title="Edit">
-                                        <i class="fas fa-pen-to-square"></i>
-                                    </button>
+            </p>
 
-                                    <!-- Hapus -->
-                                    <a href="{{ route('admin.delete.admin', $admin->id) }}"
-                                        onclick="confirmDelete(event, this.href)"
-                                        class="w-9 h-9 flex items-center justify-center rounded-lg bg-red-500 hover:bg-red-600 text-white transition duration-200"
-                                        title="Hapus">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
+            <h2 class="text-3xl font-bold text-white mt-2">
 
+                {{ $users->count() }}
+
+            </h2>
+
+        </div>
+
+        <div
+            class="bg-[#25543C] rounded-2xl p-5 shadow">
+
+            <p class="text-xs uppercase tracking-wider text-green-200">
+
+                Sistem
+
+            </p>
+
+            <h2 class="text-3xl font-bold text-white mt-2">
+
+                MUSEWANGI
+
+            </h2>
+
+        </div>
+
+    </div>
+
+{{-- CARD DAFTAR ADMIN --}}
+<div
+    class="
+        bg-white
+        rounded-2xl
+        shadow-lg
+        overflow-hidden
+        border
+        border-[#E8DCC0]
+    "
+>
+
+    <div class="overflow-x-auto">
+
+        <table class="w-full text-sm">
+
+            {{-- TABLE HEADER --}}
+            <thead
+                class="
+                    bg-[#E9DEC7]
+                    text-[#162544]
+                "
+            >
+                <tr>
+                    <th class="px-6 py-4 text-left">
+                        No
+                    </th>
+
+                    <th class="px-6 py-4 text-left">
+                        Nama
+                    </th>
+
+                    <th class="px-6 py-4 text-left">
+                        Username
+                    </th>
+
+                    <th class="px-6 py-4 text-left">
+                        Email
+                    </th>
+
+                    <th class="px-6 py-4 text-left">
+                        Role
+                    </th>
+
+                    <th class="px-6 py-4 text-center">
+                        Aksi
+                    </th>
+                </tr>
+            </thead>
+
+            {{-- TABLE BODY --}}
+            <tbody>
+
+                @forelse($users as $user)
+
+                <tr
+                    class="
+                        border-b
+                        hover:bg-[#faf7ef]
+                        transition
+                    "
+                >
+                    {{-- NO --}}
+                    <td class="px-6 py-4 text-gray-600">
+                        {{ $loop->iteration }}
+                    </td>
+
+                    {{-- NAMA --}}
+                    <td class="px-6 py-4">
+
+                        <div class="flex items-center gap-3">
+
+                            <div
+                                class="
+                                    w-12
+                                    h-12
+                                    rounded-lg
+                                    bg-[#E8DCC0]
+                                    text-[#162544]
+                                    flex
+                                    items-center
+                                    justify-center
+                                    font-bold
+                                "
+                            >
+                                {{ strtoupper(substr($user->name,0,1)) }}
+                            </div>
+
+                            <div>
+                                <div class="font-semibold text-[#162544]">
+                                    {{ $user->name }}
                                 </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-        </div>
 
-        </div>
-        </div>
+                                <div class="text-xs text-gray-500">
+                                    Administrator MUSEWANGI
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </td>
+
+                    {{-- USERNAME --}}
+                    <td class="px-6 py-4 text-gray-600">
+                        {{ $user->username }}
+                    </td>
+
+                    {{-- EMAIL --}}
+                    <td class="px-6 py-4 text-gray-600">
+                        {{ $user->email }}
+                    </td>
+
+                    {{-- ROLE --}}
+                    <td class="px-6 py-4">
+
+                        @if(strtolower($user->role) == 'super admin')
+
+                            <span
+                                class="
+                                    inline-flex
+                                    items-center
+                                    gap-1
+                                    px-3
+                                    py-1
+                                    rounded-full
+                                    bg-red-100
+                                    text-red-600
+                                    text-xs
+                                    font-semibold
+                                "
+                            >
+                                <i class="fa-solid fa-crown"></i>
+                                Super Admin
+                            </span>
+
+                        @else
+
+                            <span
+                                class="
+                                    inline-flex
+                                    items-center
+                                    gap-1
+                                    px-3
+                                    py-1
+                                    rounded-full
+                                    bg-[#F8E8BF]
+                                    text-[#8A6510]
+                                    text-xs
+                                    font-semibold
+                                "
+                            >
+                                <i class="fa-solid fa-user"></i>
+                                Admin
+                            </span>
+
+                        @endif
+
+                    </td>
+
+                    {{-- AKSI --}}
+                <td class="px-6 py-4">
+
+                <div class="flex justify-center gap-2">
+
+        {{-- EDIT --}}
+                <a
+                    href="{{ route('admin.edit.admin',$user->id) }}"
+                    class="
+                        w-8
+                        h-8
+                        rounded
+                        bg-gray-100
+                        hover:bg-gray-200
+                        flex
+                        items-center
+                        justify-center
+                    "
+                >
+                    <i class="fa fa-pen text-xs"></i>
+                </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                @empty
+
+                <tr>
+
+                    <td
+                        colspan="6"
+                        class="
+                            py-16
+                            text-center
+                            text-gray-500
+                        "
+                    >
+                        <div class="flex flex-col items-center gap-3">
+
+                            <div
+                                class="
+                                    w-16
+                                    h-16
+                                    rounded-full
+                                    bg-[#F5F1E8]
+                                    flex
+                                    items-center
+                                    justify-center
+                                "
+                            >
+                                <i
+                                    class="
+                                        fa-solid
+                                        fa-users
+                                        text-2xl
+                                        text-[#C9981C]
+                                    "
+                                ></i>
+                            </div>
+
+                            <p>
+                                Belum ada data administrator
+                            </p>
+
+                        </div>
+                    </td>
+
+                </tr>
+
+                @endforelse
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{{-- FOOTER INFO --}}
+
+<div
+    class="mt-5 flex flex-col md:flex-row md:justify-between md:items-center gap-3">
+
+    <div class="text-sm text-gray-500">
+
+        Total Administrator :
+
+        <span class="font-semibold text-[#162544]">
+
+            {{ $users->count() }}
+
+        </span>
+
+    </div>
+
+    <div class="text-xs text-gray-400">
+
+        Sistem Informasi Koleksi Museum Banyuwangi (MUSEWANGI)
+
+    </div>
+
+</div>
+
+</div>
+
+</main>
+{{-- NOTIFIKASI --}}
+
+@if(session('success'))
+
+<div
+    id="alertSuccess"
+    class="fixed top-6 right-6 z-50 bg-green-600 text-white px-5 py-3 rounded-lg shadow-lg flex items-center gap-3">
+
+    <i class="fa-solid fa-circle-check"></i>
+
+    <span>
+
+        {{ session('success') }}
+
+    </span>
+
+</div>
+
+@endif
+
+
+@if(session('error'))
+
+<div
+    id="alertError"
+    class="fixed top-6 right-6 z-50 bg-red-600 text-white px-5 py-3 rounded-lg shadow-lg flex items-center gap-3">
+
+    <i class="fa-solid fa-circle-xmark"></i>
+
+    <span>
+
+        {{ session('error') }}
+
+    </span>
+
+</div>
+
+@endif
+
+
+<script>
+
+setTimeout(function(){
+
+    let success = document.getElementById("alertSuccess");
+
+    if(success){
+
+        success.style.opacity="0";
+
+        success.style.transition="0.4s";
+
+        setTimeout(()=>success.remove(),400);
+
+    }
+
+},3000);
+
+
+setTimeout(function(){
+
+    let error = document.getElementById("alertError");
+
+    if(error){
+
+        error.style.opacity="0";
+
+        error.style.transition="0.4s";
+
+        setTimeout(()=>error.remove(),400);
+
+    }
+
+},3000);
 
 
 
-        <div id="popUpAdd" class="hidden fixed inset-0 z-50 flex items-center justify-center">
-            <!-- Overlay -->
-            <div class="absolute inset-0 bg-black bg-opacity-50" onclick="hidePopUpAdd()"></div>
+document.querySelectorAll("form").forEach(form => {
 
-            <!-- Modal content -->
-            <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-md z-10 p-6">
-                <!-- Close button -->
-                <button onclick="hidePopUpAdd()"
-                    class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 dark:hover:text-white text-xl font-bold">
-                    &times;
-                </button>
+    if(form.querySelector("button")){
 
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Tambah Admin</h3>
+        form.addEventListener("submit", function(e){
 
-                <form action="{{ route('admin.kelolaadmin.tambah') }}"method="POST">
-                    @csrf
-                    <div class="mb-4">
-                        <label for="name"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama</label>
-                        <input type="text" id="name" name="name"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                            required />
-                    </div>
+            if(form.action.includes("delete")){
 
-                    <div class="mb-4">
-                        <label for="email"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                        <input type="email" name="email" id="email"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                            placeholder="" required />
-                    </div>
-
-                    <input type="hidden" name="role" value="admin">
-
-                    <div class="mb-4">
-                        <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                            Password
-                        </label>
-
-                        <input name="password" type="password" id="password" minlength="8" required
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
-               focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-               dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
-
-                        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                            <i class="fas fa-circle-info mr-1 text-blue-500"></i>
-                            Password harus terdiri dari minimal <strong>8 karakter</strong>.
-                        </p>
-                    </div>
-
-                    <button type="submit"
-                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg text-sm transition duration-300">
-                        Tambah
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Modal Edit Kasir -->
-        <div id="popUpEdit" class="hidden fixed inset-0 z-50 flex items-center justify-center">
-            <div class="absolute inset-0 bg-black bg-opacity-50" onclick="hidePopUpEdit()"></div>
-            <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-md z-10 p-6">
-                <button onclick="hidePopUpEdit()"
-                    class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 dark:hover:text-white text-xl font-bold">&times;</button>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Edit Admin</h3>
-                <form id="editKasirForm" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <div class="mb-4">
-                        <label for="edit_name"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama</label>
-                        <input type="text" id="edit_name" name="name"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
-                               focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-                               dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                            required />
-                    </div>
-                    <div class="mb-4">
-                        <label for="edit_email"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                        <input type="email" id="edit_email" name="email"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
-                               focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-                               dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                            required />
-                    </div>
-                    <div class="mb-4">
-                        <label for="edit_password"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password
-                            (opsional)</label>
-                        <input type="password" id="edit_password" name="password"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
-                               focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-                               dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                            placeholder="Kosongkan jika tidak diubah" />
-                    </div>
-                    <button type="submit"
-                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg text-sm transition duration-300">
-                        Update
-                    </button>
-                </form>
-            </div>
-    </main>
-
-    <script>
-        @if (Session::has('message'))
-            var type = "{{ Session::get('alert-type', 'info') }}"
-            switch (type) {
-                case 'info':
-                    toastr.info(" {{ Session::get('message') }} ");
-                    break;
-                case 'success':
-                    toastr.success(" {{ Session::get('message') }} ");
-                    break;
-                case 'warning':
-                    toastr.warning(" {{ Session::get('message') }} ");
-                    break;
-                case 'error':
-                    toastr.error(" {{ Session::get('message') }} ");
-                    break;
-            }
-        @endif
-    </script>
-
-    <script>
-        function showPopUpAdd() {
-            document.getElementById('popUpAdd').classList.remove('hidden');
-        }
-
-        function hidePopUpAdd() {
-            document.getElementById('popUpAdd').classList.add('hidden');
-        }
-
-        function showPopUpEdit(id, name, email) {
-            document.getElementById('popUpEdit').classList.remove('hidden');
-            document.getElementById('edit_name').value = name;
-            document.getElementById('edit_email').value = email;
-            document.getElementById('editKasirForm').action = '/admin/update/admin/' + id;
-        }
-
-        function hidePopUpEdit() {
-            document.getElementById('popUpEdit').classList.add('hidden');
-        }
-    </script>
-
-    <script>
-        function confirmDelete(event, url) {
-            event.preventDefault();
-
-            Swal.fire({
-                title: 'Hapus Akun Admin?',
-                text: "Akun yang dihapus tidak dapat dikembalikan.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#dc2626',
-                cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Ya, Hapus',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = url;
+                if(!confirm("Yakin ingin menghapus administrator ini?")){
+                    e.preventDefault();
                 }
-            });
-        }
-    </script>
+
+            }
+
+        });
+
+    }
+
+});
+
+</script>
 
 </body>
-
 </html>

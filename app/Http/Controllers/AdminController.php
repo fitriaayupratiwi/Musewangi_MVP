@@ -74,6 +74,13 @@ class AdminController extends Controller
             'voice_over'=>$voice
         ]);
 
+            DB::table('aktivitas')->insert([
+            'aktivitas' => 'Tambah Koleksi',
+            'objek' => $request->nama_koleksi,
+            'keterangan' => 'Koleksi berhasil ditambahkan ke sistem',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         return redirect()
             ->route('admin.koleksi')
@@ -146,7 +153,13 @@ class AdminController extends Controller
 
 
         $collection->update($data);
-
+        DB::table('aktivitas')->insert([
+        'aktivitas' => 'Edit Koleksi',
+        'objek' => $request->nama_koleksi,
+        'keterangan' => 'Data koleksi berhasil diperbarui',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
 
         return redirect()
             ->route('admin.koleksi')
@@ -171,7 +184,13 @@ class AdminController extends Controller
             Storage::disk('public')->delete($collection->voice_over);
         }
 
-
+        DB::table('aktivitas')->insert([
+        'aktivitas' => 'Hapus Koleksi',
+        'objek' => $collection->nama_koleksi,
+        'keterangan' => 'Koleksi berhasil dihapus dari sistem',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
         $collection->delete();
 
 
@@ -180,107 +199,8 @@ class AdminController extends Controller
             ->with([
                 'message'=>'Koleksi berhasil dihapus',
                 'alert-type'=>'success'
-            ]);
-    }
+            ]); }
 
-
-
-    // ======================
-    // KATEGORI
-    // ======================
-
-    public function KategoriMenu()
-    {
-        $kategori = Category::latest()->get();
-
-        return view(
-            'admin.kategoriMenu',
-            compact('kategori')
-        );
-    }
-
-
-    public function tambahKategori()
-    {
-        return view('admin.tambahKategori');
-    }
-
-
-    public function storeKategori(Request $request)
-    {
-        $request->validate([
-            'nomor' => 'required|integer|min:1|unique:nomor_mejas,nomor',
-            'status' => 'required|in:tersedia,terisi,reservasi,rusak',
-        ]);
-
-        // Cek apakah nomor meja sudah ada
-        $existingMeja = NomorMeja::where('nomor', $request->nomor)->first();
-        if ($existingMeja) {
-            $notification = array(
-                'message' => 'Nomor meja sudah ada',
-                'alert-type' => 'error'
-            );
-            return redirect()->back()->with($notification);
-        }
-        // Jika belum ada, simpan nomor meja baru
-        if ($request->status == 'tersedia') {
-            NomorMeja::create([
-                'nomor' => $request->nomor,
-                'status' => 'tersedia',
-            ]);
-        } else {
-            NomorMeja::create([
-                'nomor' => $request->nomor,
-                'status' => $request->status,
-            ]);
-        }
-
-        $notification = array(
-            'message' => 'Nomor meja berhasil ditambahkan',
-            'alert-type' => 'success'
-        );
-
-        return redirect()->route('admin.nomormeja')->with($notification);
-
-    }
-    // End Method
-
-    public function editNomorMeja($id){
-        $nomor_meja = NomorMeja::find($id);
-        return view('admin.editNomormeja', compact('nomor_meja'));
-    }
-
-    public function updateNomorMeja(Request $request){
-
-        $nomor_meja_id = $request->id;
-
-            NomorMeja::find($nomor_meja_id)->update([
-                'nomor' => $request->nomor,
-                'status' => $request->status,
-            ]);
-
-            $notification = array(
-                'message' => 'Nomor Meja Updated Successfully',
-                'alert-type' => 'success'
-            );
-
-            return redirect()->route('admin.nomormeja')->with($notification);
-
-    }
-
-    public function deleteNomorMeja($id){
-        $item = NomorMeja::find($id);
-        
-    $item->delete();
-
-        $notification = array(
-            'message' => 'Nomor Meja Delete Successfully',
-            'alert-type' => 'success'
-        );
-
-        return redirect()->back()->with($notification);
-
-    }
 
     public function AdminLaporan(){
         return view('admin.laporan');
@@ -345,10 +265,6 @@ class AdminController extends Controller
     return $pdf->download('laporan_transaksi.pdf');
 }
 
-    public function KategoriMenu(){
-     $kategori = Category::all();
-        return view('admin.kategoriMenu', compact('kategori'));
-    }
 public function tambahKategori()
     {
         $kategori = Category::all();
@@ -364,6 +280,13 @@ public function tambahKategori()
             Category::create([
             'nama' => $request->nama,
             ]);
+            DB::table('aktivitas')->insert([
+            'aktivitas' => 'Tambah Kategori',
+            'objek' => $request->nama,
+            'keterangan' => 'Kategori berhasil ditambahkan',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         $notification = array(
             'message' => 'Kategori berhasil ditambahkan',
@@ -389,6 +312,13 @@ public function tambahKategori()
     Category::findOrFail($request->id)->update([
         'nama' => $request->nama,
     ]);
+        DB::table('aktivitas')->insert([
+        'aktivitas' => 'Edit Kategori',
+        'objek' => $request->nama,
+        'keterangan' => 'Kategori berhasil diperbarui',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
 
     return redirect()->route('admin.kategori.menu')->with([
         'message' => 'Kategori berhasil diperbarui',
@@ -400,6 +330,13 @@ public function tambahKategori()
     $item = Category::findOrFail($id);
     $item->save();
 
+        DB::table('aktivitas')->insert([
+        'aktivitas' => 'Hapus Kategori',
+        'objek' => $item->nama,
+        'keterangan' => 'Kategori berhasil dihapus',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
     $item->delete();
 
     $notification = [
@@ -409,46 +346,86 @@ public function tambahKategori()
 
     return redirect()->back()->with($notification);
     }
+// ======================
+// DASHBOARD MUSEWANGI
+// ======================
 
-    public function akunKasir()
-    {
-        $kasirs = DB::table('users')
-            ->where('role','kasir')
-            ->get();
+public function dashboard()
+{
+    $totalKoleksi = Collection::count();
+
+    $totalKategori = Category::count();
+
+    $aktivitas = DB::table('aktivitas')
+        ->latest()
+        ->take(5)
+        ->get();
+
+    return view(
+        'admin.dashboard',
+        compact(
+            'totalKoleksi',
+            'totalKategori',
+            'aktivitas'
+        )
+    );
+}
+
+public function riwayat()
+{
+    $search = request('search');
+
+    $aktivitas = DB::table('aktivitas')
+        ->when($search, function ($query) use ($search) {
+
+            $query->where(function ($q) use ($search) {
+
+                $q->where('aktivitas', 'like', '%' . $search . '%')
+                  ->orWhere('objek', 'like', '%' . $search . '%')
+                  ->orWhere('keterangan', 'like', '%' . $search . '%');
+
+            });
+
+        })
+        ->latest()
+        ->paginate(10)
+        ->withQueryString();
+
+    return view(
+        'admin.riwayat',
+        compact('aktivitas')
+    );
+}
+public function hapusRiwayat($id)
+{
+    DB::table('aktivitas')
+        ->where('id', $id)
+        ->delete();
+
+    return redirect()
+        ->route('admin.riwayat')
+        ->with('success', 'Riwayat berhasil dihapus');
+}
 
 
-        return view(
-            'admin.akunkasir',
-            compact('kasirs')
-        );
-    }
+public function bulkDeleteRiwayat(Request $request)
+{
+    $request->validate([
+        'ids' => 'required|string',
+    ]);
 
+    $ids = explode(',', $request->ids);
 
+    DB::table('aktivitas')
+        ->whereIn('id', $ids)
+        ->delete();
 
-    // ======================
-    // DASHBOARD MUSEWANGI
-    // ======================
-
-    public function dashboard()
-    {
-        $totalKoleksi = Collection::count();
-
-        $totalKategori = Category::count();
-
-
-        $koleksiTerbaru = Collection::latest()
-            ->take(5)
-            ->get();
-
-
-        return view(
-            'admin.dashboard',
-            compact(
-                'totalKoleksi',
-                'totalKategori',
-                'koleksiTerbaru'
-            )
-        );
-    }
+    return redirect()
+        ->route('admin.riwayat')
+        ->with([
+            'message' => 'Riwayat aktivitas berhasil dihapus.',
+            'alert-type' => 'success'
+        ]);
+}
 
 }

@@ -33,10 +33,7 @@ class="fixed inset-0 bg-black/50 z-40 lg:hidden">
 
 @include('admin.body.header')
 
-
-
-<main class="pt-20 lg:ml-64 p-8">
-
+<main class="pt-24 lg:ml-64 p-5">
 
 <div class="max-w-7xl mx-auto">
 
@@ -54,13 +51,19 @@ Detail Koleksi
 </h1>
 
 
-<div class="text-sm text-gray-500 mt-2 mb-8">
+<div class="text-sm text-gray-500 mb-3 flex items-center gap-2">
+    <a
+        href="{{ route('admin.koleksi.index') }}"
+        class="hover:text-[#C9981C] transition"
+    >
+        Daftar Koleksi
+    </a>
 
-Dashboard 
->
-Koleksi
->
-Detail Koleksi
+    <span class="text-gray-400">></span>
+
+    <span class="text-[#C9981C] font-medium">
+        Detail Koleksi
+    </span>
 
 </div>
 
@@ -422,7 +425,7 @@ Belum ada rekaman suara
 
 <a
 
-href="{{route('admin.koleksi')}}"
+href="{{route('admin.koleksi.index')}}"
 
 class="
 bg-[#162544]

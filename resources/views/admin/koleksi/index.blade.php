@@ -12,6 +12,17 @@
 <link rel="stylesheet" 
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
+{{-- TOASTR --}}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"
+    rel="stylesheet">
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 @vite(['resources/css/app.css','resources/js/app.js'])
 
 </head>
@@ -47,7 +58,7 @@ class="fixed inset-0 bg-black/50 z-40 lg:hidden">
 
 
 {{-- CONTENT --}}
-<main class="pt-20 lg:ml-64 p-8">
+<main class="pt-24 lg:ml-64 p-5">
 
 
 <div class="max-w-7xl mx-auto">
@@ -58,14 +69,9 @@ class="fixed inset-0 bg-black/50 z-40 lg:hidden">
 
 <div>
 
-<h1 
-class="
-text-3xl
-font-bold
-text-[#162544]
-">
+<h1 class="text-3xl font-bold text-[#162544]">
 
-Koleksi
+Daftar Koleksi
 
 </h1>
 
@@ -382,32 +388,27 @@ justify-center
 
 
 {{-- DELETE --}}
+{{-- DELETE --}}
 <button
-
-@click="
-deleteModal=true;
-deleteId={{$collection->id}};
-deleteName='{{$collection->nama_koleksi}}';
-deleteUrl='{{route('admin.koleksi.delete',$collection->id)}}'
-"
-
-class="
-w-8
-h-8
-rounded
-bg-gray-100
-hover:bg-red-100
-flex
-items-center
-justify-center
-"
-
+    type="button"
+    onclick="konfirmasiHapus(
+        '{{ $collection->id }}',
+        '{{ addslashes($collection->nama_koleksi) }}',
+        '{{ route('admin.koleksi.delete', $collection->id) }}'
+    )"
+    class="
+        w-8
+        h-8
+        rounded
+        bg-gray-100
+        hover:bg-red-100
+        flex
+        items-center
+        justify-center
+    "
 >
-
-<i class="fa fa-trash text-red-500 text-xs"></i>
-
+    <i class="fa fa-trash text-red-500 text-xs"></i>
 </button>
-
 
 </div>
 
@@ -462,222 +463,52 @@ Belum ada data koleksi
 
 </main>
 
-
-{{-- MODAL HAPUS KOLEKSI --}}
-
-<div
-
-x-show="deleteModal"
-
-x-transition
-
-class="
-fixed
-inset-0
-z-50
-flex
-items-center
-justify-center
-bg-black/50
-"
-
-
->
-
-
-{{-- CARD MODAL --}}
+{{-- POPUP SUCCESS --}}
+@if(session('message'))
 
 <div
-
-@click.away="deleteModal=false"
-
-class="
-bg-[#F8F5ED]
-w-[420px]
-rounded-2xl
-shadow-2xl
-p-8
-relative
-text-center
-border
-border-[#E8DCC0]
-"
-
+    x-data="{ show: true }"
+    x-show="show"
+    x-transition
+    x-init="setTimeout(() => show = false, 3000)"
+    class="fixed top-5 right-5 z-[100] w-80"
 >
 
+    <div class="bg-white rounded-xl shadow-lg border border-green-200 p-4 flex items-start gap-3">
 
-{{-- CLOSE BUTTON --}}
+        {{-- ICON --}}
+        <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center shrink-0">
 
-<button
+            <i class="fa-solid fa-check text-green-600"></i>
 
-@click="deleteModal=false"
+        </div>
 
-class="
-absolute
-right-5
-top-3
-text-3xl
-text-gray-700
-"
+        {{-- TEXT --}}
+        <div class="flex-1">
 
->
+            <p class="font-semibold text-[#162544]">
+                Berhasil
+            </p>
 
-×
+            <p class="text-sm text-gray-500 mt-1">
+                {{ session('message') }}
+            </p>
 
-</button>
+        </div>
 
+        {{-- CLOSE --}}
+        <button
+            @click="show = false"
+            class="text-gray-400 hover:text-gray-600"
+        >
+            <i class="fa-solid fa-xmark"></i>
+        </button>
 
-{{-- ICON WARNING --}}
-
-<div class="flex justify-center mb-5">
-
-
-<div
-
-class="
-w-16
-h-16
-rounded-full
-bg-red-100
-flex
-items-center
-justify-center
-"
-
->
-
-
-<i
-
-class="
-fa-solid
-fa-triangle-exclamation
-text-red-600
-text-3xl
-"
-
-></i>
-
+    </div>
 
 </div>
 
-
-</div>
-
-
-{{-- TITLE --}}
-
-<h2
-
-class="
-text-xl
-font-bold
-text-[#162544]
-mb-4
-"
-
->
-
-Hapus Koleksi
-
-</h2>
-
-
-{{-- DESCRIPTION --}}
-
-<p
-
-class="
-text-sm
-text-gray-700
-leading-relaxed
-mb-6
-"
-
->
-
-Anda yakin menghapus koleksi
-
-<br>
-
-<b
-
-class="text-[#162544]"
-
-x-text="'&quot;'+deleteName+'&quot;'"
-
->
-
-</b>
-
-<br>
-
-Data yang dihapus tidak dapat dikembalikan.
-
-</p>
-{{-- BUTTON MODAL --}}
-
-<div class="flex justify-center gap-4">
-
-
-{{-- BATAL --}}
-
-<button
-
-@click="deleteModal=false"
-
-class="
-px-6
-py-2
-rounded-lg
-border
-border-red-500
-text-red-600
-hover:bg-red-50
-"
-
->
-
-Batal
-
-</button>
-
-
-
-{{-- HAPUS --}}
-
-<form
-
-:action="deleteUrl"
-
-method="POST"
-
->
-
-@csrf
-
-@method('DELETE')
-
-
-<button
-
-class="
-px-6
-py-2
-rounded-lg
-bg-red-600
-hover:bg-red-700
-text-white
-"
-
->
-
-<i class="fa fa-trash"></i>
-
-Hapus
-
-</button>
-
+@endif
 
 </form>
 
@@ -690,6 +521,85 @@ Hapus
 
 </div>
 
+{{-- TOASTR SUCCESS --}}
+@if(session('message'))
+
+<script>
+
+    toastr.options = {
+        closeButton: true,
+        progressBar: true,
+        positionClass: "toast-top-right",
+        timeOut: 3000,
+        extendedTimeOut: 1000,
+        showDuration: 300,
+        hideDuration: 300,
+        showMethod: "slideDown",
+        hideMethod: "slideUp"
+    };
+
+    toastr.success("{{ session('message') }}");
+
+</script>
+
+@endif
+
+<script>
+
+function konfirmasiHapus(id, nama, url) {
+
+    Swal.fire({
+        title: 'Hapus Koleksi?',
+        html: `
+            Anda yakin ingin menghapus koleksi
+            <strong>"${nama}"</strong>?
+            <br>
+            <span style="color:#6b7280;font-size:14px;">
+                Data yang dihapus tidak dapat dikembalikan.
+            </span>
+        `,
+        icon: 'warning',
+
+        showCancelButton: true,
+
+        confirmButtonText: '<i class="fa-solid fa-trash"></i> Ya, Hapus',
+        cancelButtonText: 'Batal',
+
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#6b7280',
+
+        reverseButtons: true,
+
+        customClass: {
+            popup: 'rounded-2xl',
+            confirmButton: 'rounded-lg px-5 py-2',
+            cancelButton: 'rounded-lg px-5 py-2'
+        }
+
+    }).then((result) => {
+
+        if (result.isConfirmed) {
+
+            let form = document.createElement('form');
+
+            form.action = url;
+            form.method = 'POST';
+
+            form.innerHTML = `
+                @csrf
+                @method('DELETE')
+            `;
+
+            document.body.appendChild(form);
+
+            form.submit();
+        }
+
+    });
+
+}
+
+</script>
 
 </body>
 

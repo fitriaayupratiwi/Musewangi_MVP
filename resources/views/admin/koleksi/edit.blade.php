@@ -25,7 +25,7 @@ class="fixed inset-0 bg-black/50 z-40 lg:hidden">
 @include('admin.body.header')
 
 {{-- CONTENT --}}
-<main class="pt-20 lg:ml-64 p-8">
+<main class="pt-24 lg:ml-64 p-5">
 
 <div class="max-w-7xl mx-auto">
 
@@ -34,12 +34,20 @@ class="fixed inset-0 bg-black/50 z-40 lg:hidden">
 Edit Koleksi
 </h1>
 
-<div class="text-sm text-gray-500 mt-2 mb-8">
-Dashboard
->
-Detail
->
-Edit
+<div class="text-sm text-gray-500 mb-3 flex items-center gap-2">
+    <a
+        href="{{ route('admin.koleksi.index') }}"
+        class="hover:text-[#C9981C] transition"
+    >
+        Daftar Koleksi
+    </a>
+
+    <span class="text-gray-400">></span>
+
+    <span class="text-[#C9981C] font-medium">
+        Edit Koleksi
+    </span>
+
 </div>
 
 {{-- FORM --}}
@@ -191,21 +199,21 @@ text-sm
 Kategori
 </label>
 
-<input
-type="text"
-name="kategori"
-value="{{$collection->kategori}}"
-class="
-w-full
-mt-2
-mb-4
-border
-border-[#C9981C]
-rounded-lg
-p-3
-text-sm
-">
+<select
+    name="kategori"
+    class="w-full mt-1 border border-[#C9981C] rounded px-3 py-2 text-sm"
+>
+    @foreach($categories as $category)
 
+        <option
+            value="{{ $category->nama }}"
+            {{ $collection->kategori == $category->nama ? 'selected' : '' }}
+        >
+            {{ $category->nama }}
+        </option>
+
+    @endforeach
+</select>
 
 {{-- JENIS BENDA --}}
 <label class="font-semibold text-[#162544]">
@@ -586,7 +594,7 @@ hidden>
 <div class="mt-8 flex justify-end gap-3">
 
 
-<a href="{{route('admin.koleksi')}}" 
+<a href="{{route('admin.koleksi.index')}}" 
 
 class="
 border

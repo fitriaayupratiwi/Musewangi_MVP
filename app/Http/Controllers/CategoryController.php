@@ -1,66 +1,89 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Http\Requests\StoreCategoryRequest;
-use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $kategori = Category::withCount('koleksis')->get();
+
+        return view('admin.kategoriKoleksi', compact('kategori'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return redirect()->route('admin.kategori.index');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreCategoryRequest $request)
+    public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama' => 'required|string|max:255',
+        ]);
+
+        Category::create([
+            'nama' => $request->nama,
+        ]);
+        DB::table('aktivitas')->insert([
+        'aktivitas' => 'Tambah Kategori',
+        'objek' => $request->nama,
+        'keterangan' => 'Kategori berhasil ditambahkan',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+        return redirect()
+            ->route('admin.kategori.index')
+            ->with('success', 'Kategori berhasil ditambahkan');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Category $category)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Category $category)
     {
-        //
+        return view('admin.kategori.edit', compact('category'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateCategoryRequest $request, Category $category)
+    public function update(Request $request, Category $category)
     {
-        //
+        $request->validate([
+            'nama' => 'required|string|max:255',
+        ]);
+
+        $category->update([
+            'nama' => $request->nama,
+        ]);
+        DB::table('aktivitas')->insert([
+            'aktivitas' => 'Edit Kategori',
+            'objek' => $request->nama,
+            'keterangan' => 'Kategori berhasil diperbarui',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return redirect()
+            ->route('admin.kategori.index')
+            ->with('success', 'Kategori berhasil diupdate');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Category $category)
     {
-        //
+        $namaKategori = $category->nama;
+
+        $category->delete();
+
+        DB::table('aktivitas')->insert([
+            'aktivitas' => 'Hapus Kategori',
+            'objek' => $namaKategori,
+            'keterangan' => 'Kategori berhasil dihapus',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return redirect()
+            ->route('admin.kategori.index')
+            ->with('success', 'Kategori berhasil dihapus');
     }
 }

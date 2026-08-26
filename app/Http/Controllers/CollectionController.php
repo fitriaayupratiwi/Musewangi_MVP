@@ -5,6 +5,7 @@ use App\Models\Category;
 use App\Models\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class CollectionController extends Controller
 {
@@ -20,7 +21,7 @@ class CollectionController extends Controller
     }
 
 
-    public function create()
+public function create()
 {
     $categories = Category::orderBy('nama')->get();
 
@@ -99,28 +100,33 @@ class CollectionController extends Controller
             'deskripsi' => $request->deskripsi,
         ]);
 
-        return redirect()
-            ->route('admin.koleksi.index')
-            ->with([
-                'message'=>'Koleksi berhasil ditambahkan',
-                'alert-type'=>'success'
+        DB::table('aktivitas')->insert([
+        'aktivitas' => 'Tambah Koleksi',
+        'objek' => $request->nama_koleksi,
+        'keterangan' => 'Koleksi berhasil ditambahkan ke sistem',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
 
-            ]);
-
-    }
-
-    public function edit($id)
-    {
-
-        $collection = Collection::findOrFail($id);
-
-        return view(
-            'admin.koleksi.edit',
-            compact('collection')
-        );
+         return redirect()
+        ->route('admin.koleksi.index')
+        ->with([
+            'message'=>'Koleksi berhasil ditambahkan',
+            'alert-type'=>'success'
+        ]);
 
     }
 
+public function edit($id)
+{
+    $collection = Collection::findOrFail($id);
+    $categories = Category::all();
+
+    return view('admin.koleksi.edit', compact(
+        'collection',
+        'categories'
+    ));
+}
     public function update(Request $request, $id)
     {
     $collection = Collection::findOrFail($id);
@@ -194,16 +200,18 @@ class CollectionController extends Controller
         }
 
         $collection->update($data);
+        DB::table('aktivitas')->insert([
+        'aktivitas' => 'Edit Koleksi',
+        'objek' => $collection->nama_koleksi,
+        'keterangan' => 'Data koleksi berhasil diperbarui',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
         return redirect()
-
-            ->route('admin.koleksi')
-
+            ->route('admin.koleksi.index')
             ->with([
-
                 'message'=>'Koleksi berhasil diperbarui',
-
                 'alert-type'=>'success'
-
             ]);
 
     }
@@ -232,20 +240,20 @@ class CollectionController extends Controller
 
     }
 
-
+    $namaKoleksi = $collection->nama_koleksi;
     $collection->delete();
-
-
+    DB::table('aktivitas')->insert([
+        'aktivitas' => 'Hapus Koleksi',
+        'objek' => $namaKoleksi,
+        'keterangan' => 'Koleksi berhasil dihapus dari sistem',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
     return redirect()
-
-        ->route('admin.koleksi')
-
+        ->route('admin.koleksi.index')
         ->with([
-
             'message'=>'Koleksi berhasil dihapus',
-
             'alert-type'=>'success'
-
         ]);
 
 }

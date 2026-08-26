@@ -9,10 +9,12 @@ class Koleksi extends Model
 {
     use HasFactory;
 
+    protected $table = 'collections';
+
     protected $guarded = [];
 
     /**
-     * Label kondisi koleksi untuk ditampilkan di tampilan (badge, dsb).
+     * Label kondisi koleksi
      */
     public const KONDISI_LABELS = [
         'baik' => 'Baik',
@@ -20,11 +22,17 @@ class Koleksi extends Model
         'rusak_berat' => 'Rusak Berat',
     ];
 
+    /**
+     * Relasi kategori
+     */
     public function kategori()
     {
-        return $this->belongsTo(Category::class, 'kategori_id');
+        return $this->belongsTo(Category::class, 'category_id');
     }
 
+    /**
+     * Menampilkan label kondisi
+     */
     public function kondisiLabel(): string
     {
         return self::KONDISI_LABELS[$this->kondisi] ?? $this->kondisi;

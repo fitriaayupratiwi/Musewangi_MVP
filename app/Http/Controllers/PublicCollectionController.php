@@ -14,11 +14,29 @@ class PublicCollectionController extends Controller
      */
     public function home()
     {
-        $collections = Collection::with('category')->latest()->get();
-        $categories = Category::withCount('koleksis')->get();
-        $totalCollections = Collection::count();
-        $totalCategories = Category::count();
-        $featuredCollection = Collection::with('category')->first();
+        try {
+            $collections = Collection::with('category')->latest()->get();
+            $categories = Category::withCount('koleksis')->get();
+            $totalCollections = Collection::count();
+            $totalCategories = Category::count();
+            $featuredCollection = Collection::with('category')->first();
+        } catch (\Throwable $e) {
+            try {
+                \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+                \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+                $collections = Collection::with('category')->latest()->get();
+                $categories = Category::withCount('koleksis')->get();
+                $totalCollections = Collection::count();
+                $totalCategories = Category::count();
+                $featuredCollection = Collection::with('category')->first();
+            } catch (\Throwable $ex) {
+                $collections = collect();
+                $categories = collect();
+                $totalCollections = 0;
+                $totalCategories = 0;
+                $featuredCollection = null;
+            }
+        }
 
         return view('public.home', compact('collections', 'categories', 'totalCollections', 'totalCategories', 'featuredCollection'));
     }

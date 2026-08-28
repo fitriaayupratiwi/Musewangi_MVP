@@ -39,16 +39,25 @@ return [
                 if ($custom && file_exists($custom)) {
                     return $custom;
                 }
-                $default = database_path('database.sqlite');
-                $dir = dirname($default);
-                if (!is_dir($dir)) {
-                    @mkdir($dir, 0777, true);
+                $paths = [
+                    database_path('database.sqlite'),
+                    '/var/www/html/database/database.sqlite',
+                    '/tmp/database.sqlite',
+                ];
+                foreach ($paths as $path) {
+                    $dir = dirname($path);
+                    if (!is_dir($dir)) {
+                        @mkdir($dir, 0777, true);
+                    }
+                    if (!file_exists($path)) {
+                        @touch($path);
+                        @chmod($path, 0777);
+                    }
+                    if (file_exists($path)) {
+                        return $path;
+                    }
                 }
-                if (!file_exists($default)) {
-                    @touch($default);
-                    @chmod($default, 0777);
-                }
-                return $default;
+                return '/tmp/database.sqlite';
             })(),
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', false),

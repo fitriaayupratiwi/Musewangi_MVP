@@ -153,8 +153,10 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::delete('/riwayat/bulk-delete', [AdminController::class, 'bulkDeleteRiwayat'])
         ->name('admin.riwayat.bulkDelete');
 
-    Route::delete('/riwayat/{id}', [AdminController::class, 'hapusRiwayat'])
+    Route::match(['get', 'delete'], '/riwayat/{id}', [AdminController::class, 'hapusRiwayat'])
         ->name('admin.riwayat.delete');
+    Route::match(['get', 'delete'], '/riwayat/hapus/{id}', [AdminController::class, 'hapusRiwayat'])
+        ->name('admin.riwayat.hapus');
 
     // ── KELOLA ADMIN / PENGGUNA ────────────────────────
     Route::get('/kelolaadmin', [KelolaAdminController::class, 'index'])

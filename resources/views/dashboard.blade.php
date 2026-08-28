@@ -1,17 +1,13 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
-                </div>
-            </div>
-        </div>
-    </div>
-</x-app-layout>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0;url={{ route('admin.dashboard') }}">
+    <title>Mengalihkan ke Dashboard MUSEWANGI...</title>
+</head>
+<body style="background:#F8F5ED; font-family:sans-serif; display:flex; justify-content:center; align-items:center; min-height:100vh;">
+    <script>
+        window.location.replace("{{ route('admin.dashboard') }}");
+    </script>
+</body>
+</html>

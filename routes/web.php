@@ -38,11 +38,11 @@ Route::get('/koleksi', [CollectionController::class, 'index'])
     ->name('collection.index');
 
 // =====================================================
-// DASHBOARD USER (Breeze default)
+// DASHBOARD REDIRECT (Arahkan langsung ke Admin Dashboard Musewangi)
 // =====================================================
 Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+    return redirect()->route('admin.dashboard');
+})->middleware(['auth'])->name('dashboard');
 
 // =====================================================
 // PROFILE

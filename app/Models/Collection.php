@@ -308,7 +308,7 @@ class Collection extends Model
     }
 
     /**
-     * Narasi Bahasa Inggris untuk Placard & Audio Guide Voice
+     * Narasi Bahasa Inggris untuk Placard & Audio Guide Voice (Terjemahan Kontekstual & Akurat)
      */
     public function deskripsiEn(): string
     {
@@ -316,49 +316,126 @@ class Collection extends Model
             return $this->attributes['deskripsi_en'];
         }
 
-        $desc = $this->deskripsi ?? '';
-        $descLower = strtolower($desc . ' ' . $this->nama_koleksi . ' ' . $this->jenis_benda);
+        $desc = trim($this->deskripsi ?? '');
+        if (empty($desc)) {
+            $nama = ucwords($this->nama_koleksi);
+            return "Historical artifact {$nama} preserved and cataloged at Museum Blambangan Banyuwangi.";
+        }
 
         // If the description is already in English
-        if (str_starts_with(trim($desc), 'This ') || str_starts_with(trim($desc), 'The ') || str_starts_with(trim($desc), 'An ')) {
+        if (preg_match('/^(This|The|An|A|In|Ancient|Historical|Sacred|Traditional)\s+/i', $desc)) {
             return $desc;
         }
 
-        // Specific high-precision matches based on artifact description contents
-        if (str_contains($descLower, 'bodhisattva') || str_contains($descLower, 'padmasana') || str_contains($descLower, 'ardhaparyanka')) {
-            return 'This Bodhisattva is an oval-shaped clay tablet depicting a Dhyani Bodhisattva seated in the center upon a lotus throne (Padmasana) in the Ardhaparyanka position (with the right leg dangling downward and the left leg crossed on the seat). The right hand is displayed in the Waramudra position (slightly open), while the left hand holds a lotus stalk (Utpala). The Bodhisattva figure wears a crown and a necklace as additional adornments. Furthermore, there are five lines of inscription written in Old Javanese script.';
+        // Dynamic contextual translation mapping for Indonesian museum descriptions
+        return self::translateIndonesianToEnglish($desc, $this->nama_koleksi, $this->category?->nama ?? $this->kategori);
+    }
+
+    /**
+     * Mesin Penerjemah Kontekstual Narasi Museum Indonesia -> Inggris
+     */
+    public static function translateIndonesianToEnglish(string $text, ?string $namaKoleksi = null, ?string $kategori = null): string
+    {
+        $nama = ucwords($namaKoleksi ?? 'Artifact');
+
+        // Specific high-precision historical translations
+        $lower = strtolower($text . ' ' . $namaKoleksi);
+
+        if (str_contains($lower, 'genta') || str_contains($lower, 'lonceng')) {
+            $origin = str_contains($lower, 'banyuwangi') ? 'in Banyuwangi' : 'during the classical kingdom era';
+            return "Genta is a sacred bronze ritual bell traditionally used by high priests during Hindu-Buddhist religious ceremonies to invoke sacred divine presence and maintain spiritual resonance. Cast with intricate traditional metalcraft, it is officially preserved and cataloged with significant cultural reverence at Museum Blambangan Banyuwangi.";
         }
 
-        if (str_contains($descLower, 'stupika') || (str_contains($descLower, 'stupa') && str_contains($descLower, 'tanah liat'))) {
-            return 'This Stupika is a miniature Buddhist votive stupa crafted from terracotta, historically deposited in sacred temples or sanctuaries during religious pilgrimage rituals in ancient Blambangan. Preserved and cataloged with high cultural significance at Museum Blambangan.';
+        if (str_contains($lower, 'bodhisattva') || str_contains($lower, 'ardhaparyanka')) {
+            return 'This Bodhisattva is an oval-shaped clay tablet depicting a Dhyani Bodhisattva seated in the center upon a lotus throne (Padmasana) in the Ardhaparyanka position. The right hand is displayed in the Waramudra position, while the left hand holds a lotus stalk. Preserved at Museum Blambangan.';
         }
 
-        if (str_contains($descLower, 'wadah air') || (str_contains($descLower, 'wadah') && str_contains($descLower, 'bibir terbuka'))) {
-            return 'This ancient terracotta water vessel features an open rim with slight historic patina. Handcrafted with traditional pottery techniques, it was used for household water storage and ceremonial purposes in early Blambangan settlements.';
+        if (str_contains($lower, 'stupika')) {
+            return 'This Stupika is a miniature Buddhist votive stupa crafted from terracotta, historically deposited in sacred sanctuaries during pilgrimage rituals in ancient Blambangan.';
         }
 
-        if (str_contains($descLower, 'keris') || str_contains($descLower, 'pamor') || str_contains($descLower, 'luk') || str_contains($descLower, 'senjata')) {
-            return 'A sacred traditional kris dagger from the Blambangan kingdom era, forged with layered steel metallurgy displaying spiritual pamor patterns. It represents an esteemed cultural symbol of bravery, heritage protection, and Javanese royal identity.';
+        // Contextual dictionary replacement for arbitrary custom museum descriptions
+        $dictionary = [
+            '//i' => '',
+            '/\bmerupakan\b/iu' => 'is',
+            '/\badalah\b/iu' => 'is',
+            '/\bsebuah\b/iu' => 'a',
+            '/\bseorang\b/iu' => 'a',
+            '/\bkeris bersejarah\b/iu' => 'a historic traditional kris dagger',
+            '/\bkeris\b/iu' => 'traditional kris dagger',
+            '/\bgenta\b/iu' => 'ritual bell (Genta)',
+            '/\barca perunggu\b/iu' => 'bronze statue',
+            '/\barca batu\b/iu' => 'stone sculpture',
+            '/\barca\b/iu' => 'sacred statue',
+            '/\bnaskah lontar\b/iu' => 'ancient palm-leaf manuscript',
+            '/\bnaskah kuno\b/iu' => 'ancient historical manuscript',
+            '/\bnaskah\b/iu' => 'manuscript',
+            '/\bkain batik tulis\b/iu' => 'traditional hand-drawn batik cloth',
+            '/\bkain batik\b/iu' => 'batik textile',
+            '/\bguci keramik\b/iu' => 'ceramic stoneware jar',
+            '/\bguci\b/iu' => 'historical jar',
+            '/\bmata uang kuno\b/iu' => 'ancient currency coin',
+            '/\bmata uang\b/iu' => 'currency coin',
+            '/\bkoin\b/iu' => 'coin',
+            '/\bterbuat dari\b/iu' => 'crafted from',
+            '/\bberbahan\b/iu' => 'made of',
+            '/\bperunggu\b/iu' => 'bronze',
+            '/\bbesi meteorit\b/iu' => 'meteorite iron',
+            '/\bbatu andesit\b/iu' => 'andesite volcanic stone',
+            '/\bkayu timoho\b/iu' => 'timoho wood',
+            '/\bkayu jati\b/iu' => 'teak wood',
+            '/\btanah liat\b/iu' => 'terracotta clay',
+            '/\bdaun lontar\b/iu' => 'palm leaves',
+            '/\bpeninggalan era\b/iu' => 'relic from the era of',
+            '/\bpeninggalan zaman\b/iu' => 'heritage artifact from the period of',
+            '/\bpeninggalan\b/iu' => 'historical relic of',
+            '/\bera puncak kejayaan\b/iu' => 'the golden peak era of',
+            '/\bkerajaan blambangan\b/iu' => 'the Kingdom of Blambangan',
+            '/\bkerajaan majapahit\b/iu' => 'the Majapahit Empire',
+            '/\bkerajaan\b/iu' => 'the Kingdom of',
+            '/\babad ke-(\d+)\b/iu' => 'the $1th century',
+            '/\babad ke-(\d+) masehi\b/iu' => 'the $1th century AD',
+            '/\btahun (\d+)\b/iu' => 'the year $1',
+            '/\bdigunakan untuk\b/iu' => 'used for',
+            '/\bdigunakan sebagai\b/iu' => 'used as',
+            '/\bsarana upacara\b/iu' => 'ceremonial rituals',
+            '/\bupacara ritual adat\b/iu' => 'traditional customary rituals',
+            '/\bupacara keagamaan\b/iu' => 'religious ceremonies',
+            '/\balat tukar resmi\b/iu' => 'official trade currency',
+            '/\balat musik tradisional\b/iu' => 'traditional musical instrument',
+            '/\bpewarnaan alami\b/iu' => 'natural organic dye',
+            '/\bmotif gajah oling\b/iu' => 'iconic Gajah Oling motif',
+            '/\bmelambangkan\b/iu' => 'symbolizing',
+            '/\bmendokumentasikan\b/iu' => 'documenting',
+            '/\bperang puputan bayu\b/iu' => 'the Puputan Bayu Battle (1771)',
+            '/\bjalur sutra maritim\b/iu' => 'the maritime silk trade routes',
+            '/\bselat bali\b/iu' => 'the Bali Strait',
+            '/\bdinasti ming\b/iu' => 'the Ming Dynasty',
+            '/\bdesa adat kemiren\b/iu' => 'Kemiren Osing Heritage Village',
+            '/\bkecamatan\b/iu' => 'District,',
+            '/\bkabupaten banyuwangi\b/iu' => 'Banyuwangi Regency',
+            '/\bbanyuwangi\b/iu' => 'Banyuwangi',
+            '/\bberasal dari\b/iu' => 'originating from',
+            '/\bditemukan di\b/iu' => 'discovered in',
+            '/\bdengan pamor\b/iu' => 'featuring pamor pattern',
+            '/\bwarangka\b/iu' => 'scabbard',
+            '/\bbilah\b/iu' => 'blade',
+            '/\bdihiasi\b/iu' => 'adorned with',
+            '/\bukiran khas\b/iu' => 'distinctive carvings of',
+            '/\bkondisi baik\b/iu' => 'in well-preserved condition',
+            '/\bsangat terawat\b/iu' => 'highly well-preserved',
+            '/\butuh\b/iu' => 'intact',
+            '/\bmuseum blambangan\b/iu' => 'Museum Blambangan Banyuwangi',
+        ];
+
+        $translated = preg_replace(array_keys($dictionary), array_values($dictionary), $text);
+        $translated = ucfirst(trim($translated));
+
+        // Ensure proper ending punctuation
+        if (!str_ends_with($translated, '.') && !str_ends_with($translated, '!') && !str_ends_with($translated, '?')) {
+            $translated .= '.';
         }
 
-        if (str_contains($descLower, 'arca') || str_contains($descLower, 'patung') || str_contains($descLower, 'statue')) {
-            return 'This historical stone statue is carved from volcanic andesite stone, representing sacred deity figures and artistic sculpture traditions of the Hindu-Buddhist classical era in East Java and Blambangan.';
-        }
-
-        if (str_contains($descLower, 'koin') || str_contains($descLower, 'kepeng') || str_contains($descLower, 'uang')) {
-            return 'An authentic numismatic coin collection representing ancient trade currency and maritime commerce in the coastal kingdom of Blambangan and the Majapahit empire.';
-        }
-
-        if (str_contains($descLower, 'batik') || str_contains($descLower, 'gajah oling') || str_contains($descLower, 'kain')) {
-            return 'A traditional Banyuwangi hand-drawn textile featuring the iconic Gajah Oling motif, symbolizing wisdom, continuous life, and ancestral reverence in Osing cultural traditions.';
-        }
-
-        if (!empty($desc)) {
-            $nama = ucwords($this->nama_koleksi);
-            $kat = $this->kategori ?? 'Historical Artifact';
-            return "{$nama} is an authentic {$kat} artifact officially preserved and cataloged at Museum Blambangan Banyuwangi, showcasing the significant cultural heritage and historical craftsmanship of the Blambangan civilization.";
-        }
-
-        return 'This historical artifact represents the rich cultural heritage and Blambangan civilization of Banyuwangi. Preserved and cataloged with high historical value for educational and cultural heritage purposes at the Blambangan Museum.';
+        return $translated;
     }
 }

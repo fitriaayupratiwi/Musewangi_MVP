@@ -604,17 +604,51 @@
                         });
                     }, { threshold: 0.1 });
 
-                    document.querySelectorAll('.reveal-item').forEach(el => {
-                        observer.observe(el);
+                    document.querySelectorAll('.reveal-item').forEach(el => observer.observe(el));
+
+                    // Scroll Progress & Top Button
+                    window.addEventListener('scroll', () => {
+                        const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+                        this.scrollProgress = totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0;
+                        this.showScrollTop = window.scrollY > 280;
                     });
 
-                    // Scroll Progress & Scroll to top listener
-                    window.addEventListener('scroll', () => {
-                        const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
-                        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                        this.scrollProgress = height > 0 ? Math.min(100, Math.max(0, (winScroll / height) * 100)) : 0;
-                        this.showScrollTop = winScroll > 200;
-                    }, { passive: true });
+                    // Pre-load natural speech voices
+                    if ('speechSynthesis' in window) {
+                        window.speechSynthesis.getVoices();
+                        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+                            window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+                        }
+                    }
+
+                    // Audio element events
+                    const audio = document.getElementById('audio-player');
+                    if (audio) {
+                        audio.addEventListener('timeupdate', () => {
+                            if (audio.duration && !isNaN(audio.duration)) {
+                                this.audioProgress = (audio.currentTime / audio.duration) * 100;
+                                this.audioTime = this.formatTime(audio.currentTime) + ' / ' + this.formatTime(audio.duration);
+                            }
+                        });
+                        audio.addEventListener('play', () => { this.isPlaying = true; });
+                        audio.addEventListener('pause', () => { this.isPlaying = false; });
+                        audio.addEventListener('ended', () => {
+                            this.isPlaying = false;
+                            this.audioProgress = 0;
+                            this.audioTime = '0:00 / ' + this.formatTime(audio.duration || 84);
+                        });
+                    }
+                },
+
+                setLang(newLang) {
+                    if (this.lang !== newLang) {
+                        this.stopAudio();
+                        this.lang = newLang;
+                    }
+                },
+
+                toggleLang() {
+                    this.setLang(this.lang === 'id' ? 'en' : 'id');
                 },
 
                 get currentPhoto() {
@@ -622,13 +656,6 @@
                     if (this.activeAngle === 'samping' && this.fotoSamping) return this.fotoSamping;
                     if (this.activeAngle === 'belakang' && this.fotoBelakang) return this.fotoBelakang;
                     return this.defaultPhoto;
-                },
-
-                toggleLang() {
-                    this.lang = this.lang === 'id' ? 'en' : 'id';
-                    if (this.isPlaying) {
-                        this.stopAudio();
-                    }
                 },
 
                 shareCollection() {
@@ -644,61 +671,114 @@
                     }
                 },
 
+                formatTime(sec) {
+                    const m = Math.floor(sec / 60);
+                    const s = Math.floor(sec % 60);
+                    return m + ':' + (s < 10 ? '0' : '') + s;
+                },
+
                 toggleAudio() {
                     const audio = document.getElementById('audio-player');
-                    if (audio && audio.src && !audio.src.endsWith('/') && !audio.src.includes('undefined')) {
-                        if (this.isPlaying) {
-                            audio.pause();
-                            this.isPlaying = false;
-                        } else {
+                    const hasRealAudio = audio && audio.src && !audio.src.endsWith('/') && !audio.src.includes('undefined') && !audio.src.includes('null');
+
+                    if (hasRealAudio) {
+                        if (audio.paused) {
                             audio.play().then(() => {
                                 this.isPlaying = true;
                             }).catch(() => {
-                                this.playSpeech();
+                                this.toggleSpeech();
                             });
+                        } else {
+                            audio.pause();
+                            this.isPlaying = false;
                         }
                     } else {
-                        this.playSpeech();
+                        this.toggleSpeech();
                     }
                 },
 
-                playSpeech() {
-                    if ('speechSynthesis' in window) {
-                        if (this.isPlaying) {
-                            window.speechSynthesis.cancel();
-                            this.isPlaying = false;
-                            return;
-                        }
-
-                        window.speechSynthesis.cancel();
-
-                        const namaKoleksi = "{{ addslashes($collection->nama_koleksi) }}";
-                        const deskripsiId = "{{ addslashes(str_replace(["\r", "\n"], ' ', $collection->deskripsi ?? '')) }}";
-                        const deskripsiEn = "{{ addslashes(str_replace(["\r", "\n"], ' ', $collection->deskripsiEn())) }}";
-
-                        const text = this.lang === 'id'
-                            ? (namaKoleksi + '. ' + deskripsiId)
-                            : (namaKoleksi + '. ' + deskripsiEn);
-
-                        const utterance = new SpeechSynthesisUtterance(text);
-                        utterance.lang = this.lang === 'id' ? 'id-ID' : 'en-US';
-                        utterance.rate = 0.92;
-
-                        utterance.onstart = () => {
-                            this.isPlaying = true;
-                        };
-
-                        utterance.onend = () => {
-                            this.isPlaying = false;
-                            this.audioProgress = 0;
-                        };
-
-                        utterance.onerror = () => {
-                            this.isPlaying = false;
-                        };
-
-                        window.speechSynthesis.speak(utterance);
+                toggleSpeech() {
+                    if (!('speechSynthesis' in window)) {
+                        alert('Browser Anda tidak mendukung pemutar suara otomatis.');
+                        return;
                     }
+
+                    // 1. If currently speaking and active -> Pause
+                    if (window.speechSynthesis.speaking && !window.speechSynthesis.paused && this.isPlaying) {
+                        window.speechSynthesis.pause();
+                        this.isPlaying = false;
+                        return;
+                    }
+
+                    // 2. If currently paused -> Resume
+                    if (window.speechSynthesis.paused) {
+                        window.speechSynthesis.resume();
+                        this.isPlaying = true;
+                        return;
+                    }
+
+                    // 3. Otherwise start new speech playback
+                    window.speechSynthesis.cancel();
+
+                    const namaKoleksi = "{{ addslashes($collection->nama_koleksi) }}";
+                    const deskripsiId = "{{ addslashes(str_replace(["\r", "\n"], ' ', $collection->deskripsi ?? '')) }}";
+                    const deskripsiEn = "{{ addslashes(str_replace(["\r", "\n"], ' ', $collection->deskripsiEn())) }}";
+
+                    const textToRead = this.lang === 'id'
+                        ? (namaKoleksi + '. ' + deskripsiId)
+                        : (namaKoleksi + '. ' + deskripsiEn);
+
+                    const utterance = new SpeechSynthesisUtterance(textToRead);
+                    utterance.lang = this.lang === 'id' ? 'id-ID' : 'en-US';
+                    utterance.rate = 0.88; // Natural, clear pacing for museum docent
+                    utterance.pitch = 1.0; // Warm, realistic natural pitch
+
+                    // Select highest quality human-like Natural HD voice
+                    const voices = window.speechSynthesis.getVoices();
+                    const targetLangPrefix = this.lang === 'id' ? 'id' : 'en';
+
+                    const naturalVoice = voices.find(v =>
+                        v.lang.toLowerCase().startsWith(targetLangPrefix) &&
+                        (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Online') || v.name.includes('Neural') || v.name.includes('Enhanced') || v.name.includes('Premium'))
+                    ) || voices.find(v => v.lang.toLowerCase().startsWith(targetLangPrefix));
+
+                    if (naturalVoice) {
+                        utterance.voice = naturalVoice;
+                    }
+
+                    const totalLength = textToRead.length;
+                    const estimatedSeconds = Math.max(15, Math.round(totalLength / 13));
+                    let elapsed = 0;
+
+                    utterance.onstart = () => {
+                        this.isPlaying = true;
+                        this.audioTime = '0:00 / ' + this.formatTime(estimatedSeconds);
+                    };
+
+                    utterance.onboundary = (event) => {
+                        if (event.charIndex) {
+                            const pct = Math.min(100, Math.round((event.charIndex / totalLength) * 100));
+                            this.audioProgress = pct;
+                            elapsed = Math.round((event.charIndex / totalLength) * estimatedSeconds);
+                            this.audioTime = this.formatTime(elapsed) + ' / ' + this.formatTime(estimatedSeconds);
+                        }
+                    };
+
+                    utterance.onend = () => {
+                        this.isPlaying = false;
+                        this.audioProgress = 100;
+                        this.audioTime = this.formatTime(estimatedSeconds) + ' / ' + this.formatTime(estimatedSeconds);
+                        setTimeout(() => {
+                            this.audioProgress = 0;
+                            this.audioTime = '0:00 / ' + this.formatTime(estimatedSeconds);
+                        }, 1200);
+                    };
+
+                    utterance.onerror = () => {
+                        this.isPlaying = false;
+                    };
+
+                    window.speechSynthesis.speak(utterance);
                 },
 
                 stopAudio() {
@@ -718,7 +798,13 @@
                     const rect = event.currentTarget.getBoundingClientRect();
                     const clickX = event.clientX - rect.left;
                     const width = rect.width;
-                    this.audioProgress = Math.max(0, Math.min(100, (clickX / width) * 100));
+                    const pct = Math.max(0, Math.min(100, (clickX / width) * 100));
+                    this.audioProgress = pct;
+
+                    const audio = document.getElementById('audio-player');
+                    if (audio && audio.duration) {
+                        audio.currentTime = (pct / 100) * audio.duration;
+                    }
                 }
             };
         }

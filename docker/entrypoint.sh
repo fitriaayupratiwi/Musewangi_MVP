@@ -2,20 +2,21 @@
 
 echo "🚀 Starting MUSEWANGI Production Container..."
 
-# Ensure directories exist
-mkdir -p /var/www/html/storage/framework/cache/data
-mkdir -p /var/www/html/storage/framework/sessions
-mkdir -p /var/www/html/storage/framework/views
-mkdir -p /var/www/html/storage/app/public
-mkdir -p /var/www/html/public/upload/qrcode
-mkdir -p /var/www/html/bootstrap/cache
-mkdir -p /var/www/html/database
+# Ensure directories exist (including /run/nginx required by Alpine Nginx)
+mkdir -p /run/nginx \
+         /var/www/html/storage/framework/cache/data \
+         /var/www/html/storage/framework/sessions \
+         /var/www/html/storage/framework/views \
+         /var/www/html/storage/app/public \
+         /var/www/html/public/upload/qrcode \
+         /var/www/html/bootstrap/cache \
+         /var/www/html/database
 
 # Ensure sqlite database exists
 touch /var/www/html/database/database.sqlite
 
 # Permissions
-chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/upload /var/www/html/database
+chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/upload /var/www/html/database /run/nginx
 
 # Link storage
 php artisan storage:link --force 2>/dev/null || true

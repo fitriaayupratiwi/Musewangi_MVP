@@ -50,14 +50,15 @@ COPY --from=frontend /app/public/build /var/www/html/public/build
 RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs
 
 # Copy Nginx configuration & entrypoint script
+RUN mkdir -p /run/nginx /etc/nginx/http.d
 COPY docker/nginx.conf /etc/nginx/http.d/default.conf
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Create database and storage with write permissions
-RUN mkdir -p /var/www/html/database /var/www/html/storage /var/www/html/bootstrap/cache && \
+RUN mkdir -p /var/www/html/database /var/www/html/storage /var/www/html/bootstrap/cache /run/nginx && \
     touch /var/www/html/database/database.sqlite && \
-    chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database && \
+    chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database /run/nginx && \
     chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
 
 EXPOSE 80

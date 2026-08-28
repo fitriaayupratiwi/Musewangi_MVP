@@ -41,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
                         @chmod($dbPath, 0777);
                         Artisan::call('migrate', ['--force' => true]);
                         Artisan::call('db:seed', ['--force' => true]);
-                    } elseif (!Schema::hasTable('collections')) {
+                    } elseif (!Schema::hasTable('collections') || \App\Models\Collection::count() === 0) {
                         Artisan::call('migrate', ['--force' => true]);
                         Artisan::call('db:seed', ['--force' => true]);
                     }

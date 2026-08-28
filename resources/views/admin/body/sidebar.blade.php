@@ -254,6 +254,19 @@
                 </a>
             </li>
 
+            {{-- LOGOUT / KELUAR --}}
+            <li class="pt-2 mt-2 border-t border-white/10">
+                <button type="button" onclick="handleLogout()"
+                    class="flex w-full items-center p-2.5 rounded-xl text-red-400 hover:bg-red-500/15 hover:text-red-300 transition duration-200 text-left">
+                    <svg class="shrink-0 w-5 h-5 text-red-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+                    </svg>
+                    <span class="ms-3 text-xs tracking-wide font-bold">
+                        Keluar / Sign Out
+                    </span>
+                </button>
+            </li>
+
         </ul>
     </div>
 

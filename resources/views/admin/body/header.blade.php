@@ -151,6 +151,7 @@
                     <button
                         id="signoutBtn"
                         type="button"
+                        onclick="handleLogout()"
                         class="mt-1 flex w-full items-center gap-3 rounded-xl px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 transition"
                     >
                         <i class="fa-solid fa-arrow-right-from-bracket text-sm"></i>
@@ -168,25 +169,31 @@
     </form>
 
     <script>
-        document.getElementById("signoutBtn")?.addEventListener("click", function () {
-            Swal.fire({
-                title: "Yakin ingin keluar?",
-                text: "Sesi login Anda akan berakhir.",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#C9981C",
-                cancelButtonColor: "#6B7280",
-                confirmButtonText: "Ya, Keluar",
-                cancelButtonText: "Batal",
-                reverseButtons: true,
-                customClass: {
-                    popup: "rounded-2xl shadow-xl border border-[#E8DCC0]"
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
+        function handleLogout() {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: "Yakin ingin keluar?",
+                    text: "Sesi login Anda akan berakhir.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#C9981C",
+                    cancelButtonColor: "#6B7280",
+                    confirmButtonText: "Ya, Keluar",
+                    cancelButtonText: "Batal",
+                    reverseButtons: true,
+                    customClass: {
+                        popup: "rounded-2xl shadow-xl border border-[#E8DCC0]"
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('logout-form').submit();
+                    }
+                });
+            } else {
+                if (confirm("Yakin ingin keluar dari akun Admin?")) {
                     document.getElementById('logout-form').submit();
                 }
-            });
-        });
+            }
+        }
     </script>
 </header>

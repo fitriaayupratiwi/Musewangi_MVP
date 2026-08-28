@@ -535,7 +535,7 @@
                         </div>
                         <div class="flex items-center justify-between">
                             <span>Sesi III</span>
-                            <span class="font-bold text-[#162544]">13:00 WIB – 15:00 WIB</span>
+                            <span class="font-bold text-[#162544]">13:00 WIB – 16:00 WIB</span>
                         </div>
                     </div>
                 </div>

@@ -34,9 +34,24 @@ return [
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DB_URL'),
-            'database' => env('DB_DATABASE', database_path('database.sqlite')),
+            'database' => (function() {
+                $custom = env('DB_DATABASE');
+                if ($custom && file_exists($custom)) {
+                    return $custom;
+                }
+                $default = database_path('database.sqlite');
+                $dir = dirname($default);
+                if (!is_dir($dir)) {
+                    @mkdir($dir, 0777, true);
+                }
+                if (!file_exists($default)) {
+                    @touch($default);
+                    @chmod($default, 0777);
+                }
+                return $default;
+            })(),
             'prefix' => '',
-            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', false),
             'busy_timeout' => null,
             'journal_mode' => null,
             'synchronous' => null,

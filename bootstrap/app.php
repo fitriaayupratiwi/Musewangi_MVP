@@ -4,15 +4,22 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
-// Ensure sqlite database exists on any boot
-$dbDir = dirname(__DIR__) . '/database';
-$dbFile = $dbDir . '/database.sqlite';
-if (!is_dir($dbDir)) {
-    @mkdir($dbDir, 0777, true);
-}
-if (!file_exists($dbFile)) {
-    @touch($dbFile);
-    @chmod($dbFile, 0777);
+// 1. Ensure SQLite database file exists in multiple locations
+$dbFiles = [
+    dirname(__DIR__) . '/database/database.sqlite',
+    '/var/www/html/database/database.sqlite',
+    '/tmp/database.sqlite',
+];
+
+foreach ($dbFiles as $file) {
+    $dir = dirname($file);
+    if (!is_dir($dir)) {
+        @mkdir($dir, 0777, true);
+    }
+    if (!file_exists($file)) {
+        @touch($file);
+        @chmod($file, 0777);
+    }
 }
 
 return Application::configure(basePath: dirname(__DIR__))

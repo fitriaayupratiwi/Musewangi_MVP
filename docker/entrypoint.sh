@@ -27,6 +27,11 @@ if [ "$RUN_MIGRATIONS" = "true" ] || [ "$RUN_MIGRATIONS" = "1" ]; then
     php artisan migrate --force --seed || php artisan migrate --force || true
 fi
 
-echo "✨ MUSEWANGI Ready! Starting Nginx & PHP-FPM..."
+# Configure Nginx port from Railway's $PORT env variable (default: 80)
+TARGET_PORT="${PORT:-80}"
+sed -i "s/listen 80;/listen ${TARGET_PORT};/g" /etc/nginx/http.d/default.conf || true
+sed -i "s/listen \[::\]:80;/listen \[::\]:${TARGET_PORT};/g" /etc/nginx/http.d/default.conf || true
+
+echo "✨ MUSEWANGI Ready on Port ${TARGET_PORT}! Starting PHP-FPM & Nginx..."
 php-fpm -D
 exec nginx -g "daemon off;"

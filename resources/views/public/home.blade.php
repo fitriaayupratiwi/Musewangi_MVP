@@ -205,7 +205,7 @@
 
     <!-- TOPBAR / HEADER -->
     <header class="sticky top-0 z-30 bg-[#F8F5ED]/95 backdrop-blur-md border-b border-[#E8DCC0] shadow-xs">
-        <div class="max-w-xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full overflow-hidden border border-[#C9981C] bg-[#162544] flex-shrink-0 shadow-xs">
                     <img src="{{ asset('src/images/logo-museum.jpeg') }}" alt="Logo Musewangi" class="w-full h-full object-cover">
@@ -234,32 +234,32 @@
     </header>
 
     <!-- CONTENT WRAPPER -->
-    <main class="max-w-xl mx-auto w-full px-4 py-4 flex-1 space-y-5">
+    <main class="max-w-5xl mx-auto w-full px-4 py-4 flex-1 space-y-5">
 
         <!-- 1. HERO BANNER CARD (REVEAL ITEM 1) -->
-        <div class="reveal-item is-visible relative overflow-hidden rounded-3xl navy-gradient-card text-white p-6 shadow-xl border border-[#C9981C]/40 spring-card">
+        <div class="reveal-item is-visible relative overflow-hidden rounded-3xl navy-gradient-card text-white p-6 md:p-8 shadow-xl border border-[#C9981C]/40 spring-card">
             <!-- Decorative Gapura Background (Right side) -->
-            <div class="absolute right-0 bottom-0 top-0 w-36 pointer-events-none opacity-25 flex items-end justify-end pr-2 pb-1">
-                <img src="{{ asset('src/images/gapura1.png') }}" alt="Gapura" class="w-28 h-auto object-contain">
+            <div class="absolute right-0 bottom-0 top-0 w-44 md:w-64 pointer-events-none opacity-25 flex items-end justify-end pr-2 pb-1">
+                <img src="{{ asset('src/images/gapura1.png') }}" alt="Gapura" class="w-28 md:w-44 h-auto object-contain">
             </div>
 
-            <div class="relative z-10 space-y-2.5">
+            <div class="relative z-10 space-y-2.5 max-w-lg">
                 <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-[#C9981C]/25 border border-[#C9981C]/50 text-[#FFD86B]">
                     <i class="fa-solid fa-landmark text-[9px]"></i>
                     <span>Museum Blambangan Banyuwangi</span>
                 </div>
 
-                <h2 class="text-2xl font-black text-[#FFD86B] tracking-wide leading-tight drop-shadow-sm">
+                <h2 class="text-2xl md:text-3xl font-black text-[#FFD86B] tracking-wide leading-tight drop-shadow-sm">
                     MUSEWANGI
                 </h2>
 
-                <p class="text-xs text-gray-200 leading-relaxed max-w-[280px]">
+                <p class="text-xs md:text-sm text-gray-200 leading-relaxed">
                     Panduan interaktif & eksplorasi warisan budaya Blambangan Banyuwangi berbasis QR Code.
                 </p>
 
                 <div class="pt-2">
                     <a href="{{ route('public.scan') }}"
-                        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl gold-gradient-bg text-[#162544] font-black text-xs shadow-lg shadow-[#C9981C]/30 hover:brightness-110 transition spring-tap pulse-ring">
+                        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl gold-gradient-bg text-[#162544] font-black text-xs md:text-sm shadow-lg shadow-[#C9981C]/30 hover:brightness-110 transition spring-tap">
                         <i class="fa-solid fa-qrcode text-sm"></i>
                         <span>Pindai QR Etalase</span>
                     </a>
@@ -341,7 +341,7 @@
                 <span class="text-[10px] text-gray-400 font-medium">Ketuk untuk detail & audio</span>
             </div>
 
-            <div class="space-y-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
                 @forelse($collections as $item)
                     @php
                         $kategoriNama = $item->category ? $item->category->nama : ($item->kategori ?? 'Umum');
@@ -398,7 +398,7 @@
                         </div>
                     </a>
                 @empty
-                    <div class="bg-white rounded-2xl p-8 text-center border border-[#E8DCC0] text-gray-400 space-y-2 shadow-xs">
+                    <div class="col-span-full bg-white rounded-2xl p-8 text-center border border-[#E8DCC0] text-gray-400 space-y-2 shadow-xs">
                         <i class="fa-solid fa-box-open text-3xl text-[#C9981C]/50 block"></i>
                         <p class="text-xs font-medium">Belum ada data koleksi museum yang terdaftar.</p>
                     </div>
@@ -451,37 +451,39 @@
     </button>
 
     <!-- FLOATING APP BOTTOM NAVIGATION BAR -->
-    <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#E8DCC0] shadow-lg">
-        <div class="max-w-xl mx-auto px-6 py-2 flex items-center justify-between">
-            <!-- Home -->
+    <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#E8DCC0] shadow-xl md:bottom-5 md:max-w-md md:mx-auto md:rounded-3xl md:border md:border-[#EDD9A3]/80 md:shadow-2xl">
+        <div class="max-w-md mx-auto px-4 py-2 flex items-center justify-between">
+            <!-- 1. Home -->
             <a href="{{ route('home') }}"
-                class="flex flex-col items-center gap-1 text-[#C9981C] font-bold text-[10px] transition spring-tap">
-                <i class="fa-solid fa-house text-base"></i>
-                <span>Beranda</span>
+                class="flex-1 flex flex-col items-center justify-center gap-1 text-[#C9981C] font-bold text-[10px] md:text-[11px] transition spring-tap py-1">
+                <i class="fa-solid fa-house text-base md:text-lg"></i>
+                <span class="leading-none">Beranda</span>
             </a>
 
-            <!-- Scan Button Raised (Center Highlight) -->
-            <a href="{{ route('public.scan') }}"
-                class="flex flex-col items-center -mt-5 group spring-tap"
-                aria-label="Scan QR Code">
-                <div class="w-13 h-13 rounded-full gold-gradient-bg text-[#162544] flex items-center justify-center text-xl shadow-lg shadow-[#C9981C]/40 border-4 border-[#F8F5ED] group-hover:scale-108 transition transform pulse-ring">
-                    <i class="fa-solid fa-qrcode"></i>
-                </div>
-                <span class="text-[9px] font-extrabold text-[#162544] mt-0.5">Scan QR</span>
-            </a>
+            <!-- 2. Scan Button (Floating Center Highlight) -->
+            <div class="flex-1 flex justify-center -mt-6">
+                <a href="{{ route('public.scan') }}"
+                    class="flex flex-col items-center group spring-tap focus:outline-none"
+                    aria-label="Scan QR Code">
+                    <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-[#B78921] via-[#D4AF37] to-[#F3D376] text-[#162544] flex items-center justify-center text-xl shadow-xl shadow-[#C9981C]/40 border-4 border-[#F8F5ED] md:border-white group-hover:scale-105 group-active:scale-95 transition-all duration-200">
+                        <i class="fa-solid fa-qrcode"></i>
+                    </div>
+                    <span class="text-[10px] font-black text-[#162544] mt-1 tracking-tight leading-none">Scan QR</span>
+                </a>
+            </div>
 
-            <!-- Info Museum -->
+            <!-- 3. Info Museum -->
             <button type="button" @click="infoModal = true"
-                class="flex flex-col items-center gap-1 text-gray-400 hover:text-[#162544] font-medium text-[10px] transition spring-tap">
-                <i class="fa-solid fa-circle-info text-base"></i>
-                <span>Info Museum</span>
+                class="flex-1 flex flex-col items-center justify-center gap-1 text-gray-400 hover:text-[#162544] font-medium text-[10px] md:text-[11px] transition spring-tap py-1">
+                <i class="fa-solid fa-circle-info text-base md:text-lg"></i>
+                <span class="leading-none">Info Museum</span>
             </button>
 
-            <!-- Admin Login -->
+            <!-- 4. Admin Login -->
             <a href="{{ route('login') }}"
-                class="flex flex-col items-center gap-1 text-gray-400 hover:text-[#162544] font-medium text-[10px] transition spring-tap">
-                <i class="fa-solid fa-user-shield text-base"></i>
-                <span>Petugas</span>
+                class="flex-1 flex flex-col items-center justify-center gap-1 text-gray-400 hover:text-[#162544] font-medium text-[10px] md:text-[11px] transition spring-tap py-1">
+                <i class="fa-solid fa-user-shield text-base md:text-lg"></i>
+                <span class="leading-none">Petugas</span>
             </a>
         </div>
     </nav>

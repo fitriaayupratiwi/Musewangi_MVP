@@ -44,7 +44,7 @@ COPY . .
 COPY --from=frontend /app/public/build /var/www/html/public/build
 
 # Install PHP production dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs
 
 # Copy Nginx configuration & entrypoint script
 COPY docker/nginx.conf /etc/nginx/http.d/default.conf

@@ -107,14 +107,16 @@
                     <table class="w-full text-left text-xs border-collapse">
                         <thead>
                             <tr class="bg-[#F8F5ED] text-[#162544] font-bold border-b border-[#E8DCC0]">
-                                <th class="py-3.5 px-4 w-12 text-center">
-                                    <input type="checkbox" id="checkAll" class="rounded border-gray-300 text-[#C9981C] focus:ring-[#C9981C] cursor-pointer">
-                                </th>
                                 <th class="py-3.5 px-4">Waktu</th>
                                 <th class="py-3.5 px-4">Aktivitas</th>
                                 <th class="py-3.5 px-4">Objek / Target</th>
                                 <th class="py-3.5 px-4">Keterangan</th>
-                                <th class="py-3.5 px-4 text-center w-20">Aksi</th>
+                                <th class="py-3.5 px-4 text-center w-28">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span>Aksi</span>
+                                        <input type="checkbox" id="checkAll" class="rounded border-gray-300 text-[#C9981C] focus:ring-[#C9981C] cursor-pointer" title="Pilih Semua">
+                                    </div>
+                                </th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-[#F2E9D6] text-gray-700">
@@ -129,10 +131,6 @@
                                     };
                                 @endphp
                                 <tr class="hover:bg-[#FAF8F3] transition">
-                                    <td class="py-3 px-4 text-center">
-                                        <input type="checkbox" name="aktivitas[]" value="{{ $item->id }}"
-                                            class="activity-checkbox rounded border-gray-300 text-[#C9981C] focus:ring-[#C9981C] cursor-pointer">
-                                    </td>
                                     <td class="py-3 px-4 whitespace-nowrap text-gray-500 font-mono text-[11px]">
                                         {{ \Carbon\Carbon::parse($item->created_at)->format('d M Y H:i') }}
                                     </td>
@@ -149,16 +147,21 @@
                                         {{ $item->keterangan ?: '-' }}
                                     </td>
                                     <td class="py-3 px-4 text-center">
-                                        <button type="button" onclick="hapusRiwayat('{{ route('admin.riwayat.hapus', $item->id) }}')"
-                                            class="w-7 h-7 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border border-red-200 transition inline-flex items-center justify-center"
-                                            title="Hapus Catatan Ini">
-                                            <i class="fa-solid fa-trash text-xs"></i>
-                                        </button>
+                                        <div class="flex items-center justify-center gap-2.5">
+                                            <button type="button" onclick="hapusRiwayat('{{ route('admin.riwayat.hapus', $item->id) }}')"
+                                                class="w-7 h-7 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border border-red-200 transition inline-flex items-center justify-center"
+                                                title="Hapus Catatan Ini">
+                                                <i class="fa-solid fa-trash text-xs"></i>
+                                            </button>
+                                            <input type="checkbox" name="aktivitas[]" value="{{ $item->id }}"
+                                                class="activity-checkbox rounded border-gray-300 text-[#C9981C] focus:ring-[#C9981C] cursor-pointer"
+                                                title="Pilih untuk hapus massal">
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="py-12 text-center text-gray-400">
+                                    <td colspan="5" class="py-12 text-center text-gray-400">
                                         <i class="fa-solid fa-clock-rotate-left text-3xl text-gray-300 mb-2 block"></i>
                                         <p class="text-xs font-medium">Belum ada catatan riwayat aktivitas di sistem.</p>
                                     </td>

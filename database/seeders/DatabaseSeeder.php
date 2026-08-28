@@ -3,10 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
-use App\Models\Menu;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,27 +14,44 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // 1. Super Admin Musewangi
+        User::updateOrCreate(
+            ['email' => 'admin@gmail.com'],
+            [
+                'name' => 'Administrator Musewangi',
+                'username' => 'admin',
+                'role' => 'admin',
+                'password' => Hash::make('admin123'),
+                'email_verified_at' => now(),
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'bapak',
-            'email' => 'admin@gmail.com',
-            'role' => 'admin',
-            'password' => 'admin',
-        ]);
-        User::factory()->create([
-            'name' => 'kasir',
-            'email' => 'kasir@gmail.com',
-            'role' => 'kasir',
-            'password' => 'kasir',
-        ]);
+        // 2. Petugas / Kasir
+        User::updateOrCreate(
+            ['email' => 'kasir@gmail.com'],
+            [
+                'name' => 'Petugas Loket',
+                'username' => 'petugas',
+                'role' => 'kasir',
+                'password' => Hash::make('petugas123'),
+                'email_verified_at' => now(),
+            ]
+        );
 
-        $categories = ['Makanan', 'Minuman', 'Camilan'];
+        // 3. Kategori Kuratorial Museum
+        $categories = [
+            'Arkeologi',
+            'Etnografi',
+            'Numismatika & Heraldika',
+            'Filologi',
+            'Keramologi',
+            'Seni Rupa & Kriya',
+            'Teknologi Tradisional',
+            'Geologi'
+        ];
 
         foreach ($categories as $category) {
-            Category::create(['nama' => $category]);
+            Category::firstOrCreate(['nama' => $category]);
         }
-
-        //Menu::factory()->count(10)->create();
     }
 }

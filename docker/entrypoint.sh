@@ -19,6 +19,12 @@ touch /var/www/html/database/database.sqlite
 # Full permissions
 chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/upload /var/www/html/database /run/nginx /var/log/nginx
 
+# Clear all runtime caches
+php artisan optimize:clear 2>/dev/null || true
+php artisan view:clear 2>/dev/null || true
+php artisan route:clear 2>/dev/null || true
+php artisan config:clear 2>/dev/null || true
+
 # Link storage
 php artisan storage:link --force 2>/dev/null || true
 

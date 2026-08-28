@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\Collection;
 use App\Models\Category;
+use App\Models\CollectionReview;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use App\Models\Transaksi;
@@ -353,8 +354,14 @@ public function tambahKategori()
 public function dashboard()
 {
     $totalKoleksi = Collection::count();
-
     $totalKategori = Category::count();
+    $totalUlasan = CollectionReview::count();
+    $pendingUlasan = CollectionReview::pending()->count();
+    $approvedUlasan = CollectionReview::approved()->count();
+    $avgRating = round((float)(CollectionReview::approved()->avg('rating') ?: 0), 1);
+
+    $koleksisTerbaru = Collection::with('category')->latest()->take(5)->get();
+    $ulasanTerbaru = CollectionReview::with('collection')->latest()->take(5)->get();
 
     $aktivitas = DB::table('aktivitas')
         ->latest()
@@ -366,6 +373,12 @@ public function dashboard()
         compact(
             'totalKoleksi',
             'totalKategori',
+            'totalUlasan',
+            'pendingUlasan',
+            'approvedUlasan',
+            'avgRating',
+            'koleksisTerbaru',
+            'ulasanTerbaru',
             'aktivitas'
         )
     );

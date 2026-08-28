@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Koleksi;
+use App\Models\Collection;
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -19,21 +19,23 @@ class QRCodeController extends Controller
     {
         $this->pastikanFolderQRCode();
 
-        $query = Koleksi::query();
+        $query = Collection::query();
 
         if ($request->filled('cari')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('nama_koleksi', 'like', '%' . $request->cari . '%')
-                    ->orWhere('no_registrasi', 'like', '%' . $request->cari . '%')
-                    ->orWhere('no_registrasi_lama', 'like', '%' . $request->cari . '%');
+            $keyword = $request->cari;
+            $query->where(function ($q) use ($keyword) {
+                $q->where('nama_koleksi', 'like', '%' . $keyword . '%')
+                    ->orWhere('no_registrasi', 'like', '%' . $keyword . '%')
+                    ->orWhere('no_registrasi_lama', 'like', '%' . $keyword . '%')
+                    ->orWhere('kategori', 'like', '%' . $keyword . '%');
             });
         }
 
         $koleksis = $query->latest()->paginate(12)->withQueryString();
 
-        $totalKoleksi = Koleksi::count();
-        $totalQr = Koleksi::whereNotNull('qr_code')->count();
-        $totalKosong = Koleksi::whereNull('qr_code')->count();
+        $totalKoleksi = Collection::count();
+        $totalQr = Collection::whereNotNull('qr_code')->count();
+        $totalKosong = Collection::whereNull('qr_code')->count();
 
         return view('admin.qrcode.index', compact(
             'koleksis',
@@ -43,14 +45,14 @@ class QRCodeController extends Controller
         ));
     }
 
-    public function generate(Koleksi $koleksi)
+    public function generate(Collection $koleksi)
     {
         $this->pastikanFolderQRCode();
 
-        $namaQr = 'upload/qrcode/koleksi-' . $koleksi->id . '.svg';
+        $namaQr = 'upload/qrcode/koleksi-' . $koleksi->kode_unik . '.svg';
 
         QrCode::size(300)->generate(
-            route('collection.show', $koleksi->id),
+            $koleksi->publicUrl(),
             public_path($namaQr)
         );
 
@@ -61,19 +63,34 @@ class QRCodeController extends Controller
         return back()->with('success', 'QR Code berhasil dibuat');
     }
 
-    public function download(Koleksi $koleksi)
+    public function download(Collection $koleksi)
     {
+        $this->pastikanFolderQRCode();
+
         if (!$koleksi->qr_code || !file_exists(public_path($koleksi->qr_code))) {
-            return back()->with('error', 'QR Code belum tersedia');
+            $namaQr = 'upload/qrcode/koleksi-' . $koleksi->kode_unik . '.svg';
+            QrCode::size(300)->generate(
+                $koleksi->publicUrl(),
+                public_path($namaQr)
+            );
+            $koleksi->update(['qr_code' => $namaQr]);
         }
 
         return response()->download(
             public_path($koleksi->qr_code),
-            'QR-' . $koleksi->nama_koleksi . '.svg'
+            'QR-' . \Illuminate\Support\Str::slug($koleksi->nama_koleksi) . '.svg'
         );
     }
 
-    public function destroy(Koleksi $koleksi)
+    /**
+     * Tampilan Cetak Label Etalase Koleksi Museum (Sesuai Standar Placard Museum)
+     */
+    public function cetakLabel(Collection $koleksi)
+    {
+        return view('admin.qrcode.label-cetak', compact('koleksi'));
+    }
+
+    public function destroy(Collection $koleksi)
     {
         $nama = $koleksi->nama_koleksi;
 
@@ -81,7 +98,7 @@ class QRCodeController extends Controller
             $path = public_path($koleksi->qr_code);
 
             if (file_exists($path)) {
-                unlink($path);
+                @unlink($path);
             }
         }
 

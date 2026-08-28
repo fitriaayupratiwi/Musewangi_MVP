@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('collections', function (Blueprint $table) {
-            $table->string('qr_code')->nullable()->after('voice_over');
+            $table->string('qr_code')->nullable()->after('rekam_suara');
         });
     }
 

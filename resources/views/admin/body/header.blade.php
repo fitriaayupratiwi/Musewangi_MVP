@@ -17,10 +17,8 @@
                lg:ml-64
                lg:px-8"
     >
-
         <!-- ================= LEFT HEADER ================= -->
-        <div class="flex items-center">
-
+        <div class="flex items-center gap-3">
             <!-- BURGER BUTTON (MOBILE & TABLET) -->
             <button
                 @click="sidebarToggle = !sidebarToggle"
@@ -52,225 +50,143 @@
                 </svg>
             </button>
 
+            <!-- BREADCRUMB / PAGE TITLE INDICATOR -->
+            <div class="hidden sm:flex items-center gap-2 text-xs text-gray-500 font-medium">
+                <span class="text-[#162544] font-bold">Admin Panel</span>
+                <span class="text-gray-300">/</span>
+                <span class="text-[#C9981C] font-semibold">
+                    @if(request()->routeIs('admin.dashboard'))
+                        Dashboard
+                    @elseif(request()->routeIs('admin.koleksi.*') || request()->routeIs('admin.index'))
+                        Kelola Koleksi
+                    @elseif(request()->routeIs('admin.kategori.*') || request()->routeIs('admin.tambah.kategori'))
+                        Kategori Koleksi
+                    @elseif(request()->routeIs('admin.qrcode.*'))
+                        QR Code Koleksi
+                    @elseif(request()->routeIs('admin.riwayat*'))
+                        Riwayat Aktivitas
+                    @elseif(request()->routeIs('admin.kelolaadmin*'))
+                        Kelola Pengguna
+                    @elseif(request()->routeIs('admin.ulasan.*'))
+                        Moderasi Ulasan
+                    @else
+                        Musewangi
+                    @endif
+                </span>
+            </div>
         </div>
 
         <!-- ================= RIGHT HEADER ================= -->
-        <div class="flex items-center">
+        <div class="flex items-center gap-4">
 
-            <!-- ================= USER ================= -->
+            <!-- USER MENU -->
             <div
                 class="relative"
                 x-data="{ dropdownOpen: false }"
                 @click.outside="dropdownOpen = false"
             >
-
-                <!-- USER BUTTON -->
                 <button
                     type="button"
-                    class="flex
-                           items-center
-                           gap-2
-                           text-[#162544]"
-                    @click="dropdownOpen = !dropdownOpen"
+                    class="flex items-center gap-3 rounded-full focus:outline-none"
+                    @click.prevent="dropdownOpen = !dropdownOpen"
                 >
-
                     <!-- AVATAR -->
-                    <span
-                        class="h-10
-                               w-10
-                               flex
-                               items-center
-                               justify-center
-                               rounded-full
-                               bg-[#162544]
-                               flex-shrink-0"
-                    >
-                        <svg
-                            class="h-7 w-7 text-white"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+                    <span class="h-11 w-11 overflow-hidden rounded-full border-2 border-[#C9981C] flex-shrink-0 shadow-sm">
+                        <img
+                            src="{{ asset('src/avatar/avatar.jpg') }}"
+                            alt="User Avatar"
+                            class="h-full w-full object-cover"
+                            onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name ?? 'Admin') }}&background=162544&color=FFD86B'"
                         >
-                            <circle
-                                cx="12"
-                                cy="8"
-                                r="3.5"
-                                fill="currentColor"
-                            />
-
-                            <path
-                                d="M5 19C5.8 15.8 8.3 14 12 14C15.7 14 18.2 15.8 19 19"
-                                fill="currentColor"
-                            />
-                        </svg>
                     </span>
 
-                    <!-- USER NAME -->
-                    <span
-                        class="hidden
-                               sm:flex
-                               flex-col
-                               items-start
-                               leading-tight
-                               mr-1"
-                    >
-                        <span
-                            class="text-[12px]
-                                   font-bold
-                                   text-[#162544]"
-                        >
-                            {{ Auth::user()->name }}
+                    <!-- USER TEXT -->
+                    <span class="hidden md:flex flex-col text-left leading-tight">
+                        <span class="text-sm font-bold text-[#162544]">
+                            {{ Auth::user()->name ?? 'Administrator' }}
                         </span>
-
-                        <span
-                            class="mt-1
-                                   text-[11px]
-                                   font-medium
-                                   text-[#C9981C]"
-                        >
-                            Administrator
+                        <span class="text-[11px] font-medium text-[#C9981C]">
+                            Admin Musewangi
                         </span>
                     </span>
 
                     <!-- ARROW -->
                     <svg
                         :class="dropdownOpen && 'rotate-180'"
-                        class="h-5
-                               w-5
-                               text-[#162544]
-                               transition-transform
-                               flex-shrink-0"
+                        class="h-4 w-4 text-[#162544] transition-transform flex-shrink-0"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="1.8"
+                        stroke-width="2"
                         viewBox="0 0 24 24"
                     >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M6 9l6 6 6-6"
-                        />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
                     </svg>
-
                 </button>
 
-                <!-- ================= DROPDOWN ================= -->
+                <!-- DROPDOWN -->
                 <div
                     x-show="dropdownOpen"
                     x-transition
-                    class="absolute
-                           right-0
-                           z-50
-                           mt-4
-                           w-[260px]
-                           rounded-2xl
-                           border
-                           border-[#E8DCC0]
-                           bg-white
-                           p-3
-                           shadow-lg"
+                    class="absolute right-0 z-50 mt-3 w-64 rounded-2xl border border-[#E8DCC0] bg-white p-3 shadow-xl"
                 >
-
-                    <!-- USER INFO -->
-                    <span
-                        class="block
-                               font-medium
-                               text-[#162544]"
-                    >
-                        {{ Auth::user()->name }}
-                    </span>
-
-                    <span
-                        class="text-sm
-                               text-gray-500"
-                    >
-                        {{ Auth::user()->email }}
-                    </span>
+                    <div class="px-3 py-2 border-b border-gray-100">
+                        <p class="text-sm font-bold text-[#162544]">
+                            {{ Auth::user()->name ?? 'Admin' }}
+                        </p>
+                        <p class="text-xs text-gray-500 truncate">
+                            {{ Auth::user()->email ?? 'admin@musewangi.banyuwangi.go.id' }}
+                        </p>
+                    </div>
 
                     <!-- KELOLA AKUN -->
                     <a
                         href="{{ route('admin.kelolaadmin') }}"
-                        class="group
-                               mt-3
-                               flex
-                               w-full
-                               items-center
-                               gap-3
-                               rounded-lg
-                               px-3
-                               py-2
-                               font-medium
-                               text-[#162544]
-                               hover:bg-[#F8F5ED]
-                               hover:text-[#C9981C]"
+                        class="mt-2 flex w-full items-center gap-3 rounded-xl px-3 py-2 text-xs font-semibold text-[#162544] hover:bg-[#F8F5ED] hover:text-[#C9981C] transition"
                     >
-                        <svg
-                            class="text-[#162544]
-                                   group-hover:text-[#C9981C]"
-                            width="21"
-                            height="21"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                        >
-                            <circle
-                                cx="12"
-                                cy="8"
-                                r="3"
-                            />
-
-                            <path
-                                d="M5 20c.8-3.2 3.1-5 7-5s6.2 1.8 7 5"
-                            />
-                        </svg>
-
-                        Kelola Akun
+                        <i class="fa-solid fa-user-gear text-sm text-[#C9981C]"></i>
+                        Kelola Pengguna
                     </a>
 
                     <!-- SIGN OUT -->
                     <button
                         id="signoutBtn"
                         type="button"
-                        class="group
-                               mt-1
-                               flex
-                               w-full
-                               items-center
-                               gap-3
-                               rounded-lg
-                               px-3
-                               py-2
-                               font-medium
-                               text-[#162544]
-                               hover:bg-[#F8F5ED]
-                               hover:text-[#C9981C]"
+                        class="mt-1 flex w-full items-center gap-3 rounded-xl px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 transition"
                     >
-                        <svg
-                            class="text-[#162544]
-                                   group-hover:text-[#C9981C]"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M15.1007 19.247C14.6865 19.247 14.3507 18.9112 14.3507 18.497L14.3507 14.245H12.8507V18.497C12.8507 19.7396 13.8581 20.747 15.1007 20.747H18.5007C19.7434 20.747 20.7507 19.7396 20.7507 18.497L20.7507 5.49609C20.7507 4.25345 19.7433 3.24609 18.5007 3.24609H15.1007C13.8581 3.24609 12.8507 4.25345 12.8507 5.49609V9.74501L14.3507 9.74501V5.49609C14.3507 5.08188 14.6865 4.74609 15.1007 4.74609L18.5007 4.74609C18.9149 4.74609 19.2507 5.08188 19.2507 5.49609L19.2507 18.497C19.2507 18.9112 18.9149 19.247 18.5007 19.247H15.1007ZM3.25073 11.9984C3.25073 12.2144 3.34204 12.4091 3.48817 12.546L8.09483 17.1556C8.38763 17.4485 8.86251 17.4487 9.15549 17.1559C9.44848 16.8631 9.44863 16.3882 9.15583 16.0952L5.81116 12.7484L16.0007 12.7484C16.4149 12.7484 16.7507 12.4127 16.7507 11.9984C16.7507 11.5842 16.4149 11.2484 16.0007 11.2484L5.81528 11.2484L9.15585 7.90554C9.44864 7.61255 9.44847 7.13767 9.15547 6.84488C8.86248 6.55209 8.3876 6.55226 8.09481 6.84525C3.52309 11.4202 3.25073 11.7657 3.25073 11.9984Z"
-                                fill="currentColor"
-                            />
-                        </svg>
-
-                        Sign out
+                        <i class="fa-solid fa-arrow-right-from-bracket text-sm"></i>
+                        Sign Out
                     </button>
-
                 </div>
-
             </div>
 
         </div>
-
     </div>
+
+    <!-- LOGOUT FORM -->
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+        @csrf
+    </form>
+
+    <script>
+        document.getElementById("signoutBtn")?.addEventListener("click", function () {
+            Swal.fire({
+                title: "Yakin ingin keluar?",
+                text: "Sesi login Anda akan berakhir.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#C9981C",
+                cancelButtonColor: "#6B7280",
+                confirmButtonText: "Ya, Keluar",
+                cancelButtonText: "Batal",
+                reverseButtons: true,
+                customClass: {
+                    popup: "rounded-2xl shadow-xl border border-[#E8DCC0]"
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logout-form').submit();
+                }
+            });
+        });
+    </script>
 </header>

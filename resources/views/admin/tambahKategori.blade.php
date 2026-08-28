@@ -2,6 +2,13 @@
 <html lang="id">
 
 <head>
+    <!-- Favicon HD Multi-Resolution -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=5">
+    <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon-48x48.png') }}?v=5">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}?v=5">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}?v=5">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}?v=5">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=5">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -37,7 +44,7 @@
                 <i class="fa-solid fa-house text-xs"></i> Dashboard
             </a>
             <i class="fa-solid fa-chevron-right text-xs text-[#B0A080]"></i>
-            <a href="{{ route('admin.kategori.menu') }}" class="hover:text-[#B78921] transition">Kategori</a>
+            <a href="{{ route('admin.kategori.index') }}" class="hover:text-[#B78921] transition">Kategori</a>
             <i class="fa-solid fa-chevron-right text-xs text-[#B0A080]"></i>
             <span class="text-[#1D2745] font-semibold">Tambah</span>
         </nav>
@@ -79,7 +86,7 @@
                         </div>
 
                         <div class="flex items-center justify-between gap-3 pt-4 border-t border-[#F0E4C2]">
-                            <a href="{{ route('admin.kategori.menu') }}"
+                            <a href="{{ route('admin.kategori.index') }}"
                                 class="flex items-center gap-2 rounded-xl border-2 border-[#DDD0A8] bg-white px-5 py-2.5 text-sm font-semibold text-[#555] hover:border-[#B78921] hover:text-[#1D2745] transition">
                                 <i class="fa-solid fa-arrow-left text-xs"></i> Kembali
                             </a>

@@ -2,6 +2,13 @@
 <html lang="id">
 
 <head>
+    <!-- Favicon HD Multi-Resolution -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=5">
+    <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon-48x48.png') }}?v=5">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}?v=5">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}?v=5">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}?v=5">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=5">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -355,7 +362,7 @@
                 </div>
                 <div class="stat-card" style="background: linear-gradient(135deg, #7B5200 0%, #9A6800 100%);">
                     <p class="text-xs text-yellow-300 font-semibold uppercase tracking-widest mb-2">Total Koleksi</p>
-                    <p class="text-4xl font-bold text-white">{{ $kategori->sum('menus_count') }}</p>
+                    <p class="text-4xl font-bold text-white">{{ $kategori->sum('koleksis_count') }}</p>
                     <p class="text-xs text-yellow-100 mt-1">Item di semua kategori</p>
                     <div class="absolute right-5 top-5 opacity-20">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-14 w-14 text-yellow-200" viewBox="0 0 20 20" fill="currentColor">
@@ -367,7 +374,7 @@
                 <div class="stat-card" style="background: linear-gradient(135deg, #1A5C3A 0%, #1F7045 100%);">
                     <p class="text-xs text-green-200 font-semibold uppercase tracking-widest mb-2">Rata-rata / Kategori</p>
                     <p class="text-4xl font-bold text-white">
-                        {{ $kategori->count() > 0 ? round($kategori->avg('menus_count'), 1) : 0 }}
+                        {{ $kategori->count() > 0 ? round($kategori->avg('koleksis_count'), 1) : 0 }}
                     </p>
                     <p class="text-xs text-green-100 mt-1">Koleksi per kategori</p>
                     <div class="absolute right-5 top-5 opacity-20">
@@ -431,32 +438,34 @@
                                         </div>
                                     </div>
                                     <span class="badge-count">
-                                        {{ $item->menus_count }} item
+                                        {{ $item->koleksis_count }} item
                                     </span>
                                 </div>
 
                                 {{-- Progress bar --}}
                                 @php
-                                    $maxCount = $kategori->max('menus_count');
-                                    $pct = $maxCount > 0 ? round(($item->menus_count / $maxCount) * 100) : 0;
+                                    $maxCount = $kategori->max('koleksis_count');
+                                    $pct = $maxCount > 0 ? round(($item->koleksis_count / $maxCount) * 100) : 0;
                                 @endphp
                                 <div class="mb-4">
-                                    <div class="flex justify-between text-xs text-[#9A8F7A] mb-1.5">
-                                        <span>Koleksi</span>
-                                        <span>{{ $pct }}% dari terbanyak</span>
+                                    <div class="flex justify-between text-xs text-[#8A7D6A] mb-1 font-medium">
+                                        <span>Proporsi Koleksi</span>
+                                        <span>{{ $pct }}%</span>
                                     </div>
-                                    <div class="h-1.5 bg-[#F0E4C2] rounded-full overflow-hidden">
-                                        <div class="h-full bg-gradient-to-r from-[#B78921] to-[#E8B84B] rounded-full transition-all duration-700"
-                                            style="width: {{ $pct }}%"></div>
+                                    <div class="w-full bg-[#F0E4C2] rounded-full h-2 overflow-hidden">
+                                        <div
+                                            class="h-2 rounded-full transition-all duration-500"
+                                            style="width: {{ $pct }}%; background: linear-gradient(90deg, #B78921, #E8B84B);"
+                                        ></div>
                                     </div>
                                 </div>
 
                                 <div class="flex items-center justify-between pt-3 border-t border-[#F0E4C2]">
-                                    <span class="text-xs text-[#9A8F7A]">
-                                        <i class="fa-regular fa-clock mr-1"></i>
-                                        {{ $item->created_at ? $item->created_at->format('d M Y') : '-' }}
+                                    <span class="text-xs text-[#8A7D6A]">
+                                        <i class="fa-solid fa-boxes-stacked text-[#C9981C] mr-1"></i>
+                                        {{ $item->koleksis_count }} Koleksi
                                     </span>
-                                    <div class="flex gap-2">
+                                    <div class="flex items-center gap-2">
                                         <button
                                             type="button"
                                             class="btn-edit"
@@ -464,18 +473,18 @@
                                             @click="openEditModal({
                                                 id: {{ $item->id }},
                                                 nama: @js($item->nama),
-                                                updateUrl: @js(route('admin.update.kategori', $item->id))
+                                                updateUrl: '{{ route('admin.update.kategori', $item->id) }}'
                                             })"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
-                                                <path d="M5 13.5V15h1.5L15.06 6.44l-1.5-1.5L5 13.5Zm10.71-8.04a1 1 0 0 0 0-1.42l-.75-.75a1 1 0 0 0-1.42 0l-.86.86 2.17 2.17.86-.86Z" />
+                                                <path d="m13.58 3.58 2.84 2.84a1 1 0 0 1 0 1.42l-9 9a1 1 0 0 1-.44.26l-4 1a1 1 0 0 1-1.22-1.22l1-4a1 1 0 0 1 .26-.44l9-9a1 1 0 0 1 1.42 0l1.14 1.14Z" />
                                             </svg>
                                         </button>
                                         <button
                                             type="button"
                                             class="btn-delete"
                                             title="Hapus Kategori"
-                                            onclick="confirmDelete('{{ route('admin.delete.kategori', $item->id) }}', @js($item->nama), {{ $item->menus_count }})"
+                                            onclick="confirmDelete('{{ route('admin.delete.kategori', $item->id) }}', @js($item->nama), {{ $item->koleksis_count }})"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
                                                 <path d="M6 7h8l-.6 8.2A2 2 0 0 1 11.41 17H8.59a2 2 0 0 1-1.99-1.8L6 7Zm3-4h2a1 1 0 0 1 1 1v1h4v2H4V5h4V4a1 1 0 0 1 1-1Z" />

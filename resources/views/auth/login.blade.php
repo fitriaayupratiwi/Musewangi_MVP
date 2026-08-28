@@ -1,113 +1,175 @@
 <x-guest-layout>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <div class="flex flex-col lg:flex-row w-full min-h-screen bg-[#F8F5ED]">
 
-    <div class="flex flex-col flex-1 w-full lg:w-2/5">
-        <div class="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
-            <div class="mb-5 sm:mb-8">
-                <h1 class="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
-                    Log in
-                </h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                    Masukkan username dan kata sandi Anda untuk masuk!
-                </p>
+        <!-- ================= LEFT COLUMN: LOGIN FORM ================= -->
+        <div class="flex flex-col justify-center items-center w-full lg:w-1/2 p-6 sm:p-10 lg:p-16">
+            <div class="w-full max-w-md space-y-6">
+
+                <!-- LOGO & BRANDING -->
+                <div class="flex flex-col items-center text-center space-y-3">
+                    <div class="w-20 h-20 rounded-2xl bg-[#162544] p-1.5 shadow-lg border-2 border-[#C9981C] flex items-center justify-center transform hover:scale-105 transition">
+                        <img src="{{ asset('favicon.png') }}" alt="Logo Museum Blambangan" class="w-full h-full object-contain rounded-xl">
+                    </div>
+                    <div>
+                        <h1 class="text-2xl sm:text-3xl font-extrabold text-[#162544] tracking-tight">
+                            MUSEWANGI
+                        </h1>
+                        <p class="text-xs sm:text-sm text-gray-500 font-medium mt-1">
+                            Panel Masuk Petugas & Kurator Museum
+                        </p>
+                    </div>
+                </div>
+
+                <!-- SESSION ALERT -->
+                <x-auth-session-status class="mb-4" :status="session('status')" />
+
+                <!-- FORM CARD -->
+                <div class="bg-white p-6 sm:p-8 rounded-3xl border border-[#E8DCC0] shadow-sm space-y-5">
+                    <form method="POST" action="{{ route('login') }}" class="space-y-4">
+                        @csrf
+
+                        <!-- USERNAME / EMAIL -->
+                        <div class="space-y-1.5">
+                            <label for="username" class="block text-xs font-bold text-[#162544] uppercase tracking-wider">
+                                Username atau Email
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                                    <i class="fa-solid fa-user text-xs"></i>
+                                </div>
+                                <input id="username" type="text" name="username"
+                                    value="{{ old('username', 'admin') }}"
+                                    placeholder="Ketik username atau email..."
+                                    required autofocus autocomplete="username"
+                                    class="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-[#E8DCC0] bg-[#FAF8F3] text-[#162544] font-medium placeholder-gray-400 focus:bg-white focus:border-[#C9981C] focus:ring-2 focus:ring-[#C9981C]/20 outline-none transition">
+                            </div>
+                            <x-input-error :messages="$errors->get('username')" class="mt-1 text-xs" />
+                        </div>
+
+                        <!-- PASSWORD -->
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <label for="password" class="block text-xs font-bold text-[#162544] uppercase tracking-wider">
+                                    Kata Sandi
+                                </label>
+                                @if (Route::has('password.request'))
+                                    <a href="{{ route('password.request') }}" class="text-[11px] font-bold text-[#C9981C] hover:underline">
+                                        Lupa sandi?
+                                    </a>
+                                @endif
+                            </div>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                                    <i class="fa-solid fa-lock text-xs"></i>
+                                </div>
+                                <input id="password" type="password" name="password"
+                                    placeholder="••••••••"
+                                    required autocomplete="current-password"
+                                    class="w-full pl-10 pr-11 py-2.5 text-sm rounded-xl border border-[#E8DCC0] bg-[#FAF8F3] text-[#162544] font-medium placeholder-gray-400 focus:bg-white focus:border-[#C9981C] focus:ring-2 focus:ring-[#C9981C]/20 outline-none transition">
+                                <button type="button" onclick="togglePasswordVisibility()"
+                                    class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-[#C9981C] transition"
+                                    aria-label="Tampilkan kata sandi">
+                                    <i id="eyeIcon" class="fa-solid fa-eye text-xs"></i>
+                                </button>
+                            </div>
+                            <x-input-error :messages="$errors->get('password')" class="mt-1 text-xs" />
+                        </div>
+
+                        <!-- REMEMBER ME -->
+                        <div class="flex items-center pt-1">
+                            <label for="remember_me" class="inline-flex items-center cursor-pointer select-none">
+                                <input id="remember_me" type="checkbox" name="remember" checked
+                                    class="w-4 h-4 rounded-md border-gray-300 text-[#C9981C] focus:ring-[#C9981C]">
+                                <span class="ms-2 text-xs font-medium text-gray-600">Ingat sesi saya di perangkat ini</span>
+                            </label>
+                        </div>
+
+                        <!-- SUBMIT BUTTON -->
+                        <button type="submit"
+                            class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#C9981C] to-[#E5B238] hover:from-[#B78921] hover:to-[#D4A028] text-white font-extrabold text-sm shadow-md shadow-[#C9981C]/30 hover:shadow-lg transition transform active:scale-98 flex items-center justify-center gap-2">
+                            <span>Masuk ke Panel</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- BACK TO PUBLIC PAGE -->
+                <div class="text-center pt-2">
+                    <a href="{{ route('home') }}"
+                        class="inline-flex items-center gap-2 text-xs font-bold text-gray-500 hover:text-[#162544] transition">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Kembali ke Halaman Pengunjung / Scan QR</span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ================= RIGHT COLUMN: HERO BANNER (DESKTOP) ================= -->
+        <div class="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-[#0F1F3A] via-[#162544] to-[#0A162B] p-12 overflow-hidden flex-col justify-between text-white">
+
+            <!-- Background Decorative Ornaments -->
+            <div class="absolute -right-24 -top-24 w-96 h-96 rounded-full bg-[#C9981C]/10 blur-3xl pointer-events-none"></div>
+            <div class="absolute -left-24 -bottom-24 w-96 h-96 rounded-full bg-[#C9981C]/10 blur-3xl pointer-events-none"></div>
+
+            <!-- Top Header in Banner -->
+            <div class="relative z-10 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-[#C9981C]/20 border border-[#C9981C]/40 flex items-center justify-center text-[#FFD86B]">
+                        <i class="fa-solid fa-landmark text-base"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold uppercase tracking-wider text-[#FFD86B]">Museum Blambangan</div>
+                        <div class="text-[11px] text-gray-400">Kabupaten Banyuwangi</div>
+                    </div>
+                </div>
+
+                <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-white/10 border border-white/20 text-[#FFD86B]">
+                    v1.0 MVP
+                </span>
             </div>
 
-            <!-- Session Status -->
-            <x-auth-session-status class="mb-4" :status="session('status')" />
-
-
-
-
-            <form method="POST" action="{{ route('login') }}">
-                @csrf
-
-                <!-- Username -->
-                <div>
-                    <x-input-label for="username" :value="__('Username')" />
-                    <x-text-input id="username" class="block mt-1 w-full" type="text" name="username"
-                        :value="old('username')" required autofocus autocomplete="username" />
-                    <x-input-error :messages="$errors->get('username')" class="mt-2" />
+            <!-- Center Artwork & Quote -->
+            <div class="relative z-10 flex flex-col items-center text-center max-w-lg mx-auto my-auto space-y-6">
+                <!-- Center Gapura / Emblem Artwork -->
+                <div class="w-48 h-48 rounded-full bg-[#162544]/60 border-2 border-[#C9981C]/40 flex items-center justify-center p-4 shadow-2xl backdrop-blur-xs transform hover:scale-105 transition duration-500">
+                    <img src="{{ asset('favicon.png') }}" alt="Candi Blambangan" class="w-full h-full object-contain">
                 </div>
 
-                <!-- Password -->
-                <div class="mt-4">
-                    <x-input-label for="password" :value="__('Password')" />
-
-                    <div class="relative mt-1">
-                        <x-text-input id="password" class="block w-full pr-10" type="password" name="password" required
-                            autocomplete="current-password" />
-
-                        <button type="button" onclick="togglePassword('password', 'eyeIconLogin')"
-                            class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-blue-600">
-                            <i id="eyeIconLogin" class="fas fa-eye"></i>
-                        </button>
-                    </div>
-
-                    <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                <div class="space-y-2">
+                    <h2 class="text-2xl font-black text-white tracking-tight">
+                        Preservasi & Digitalisasi Budaya
+                    </h2>
+                    <p class="text-xs sm:text-sm text-[#D8CBA8] leading-relaxed max-w-md">
+                        "Melestarikan warisan luhur peradaban Blambangan melalui inventarisasi cerdas dan pemandu digital interaktif."
+                    </p>
                 </div>
+            </div>
 
-                <!-- Remember Me -->
-                <div class="flex items-center justify-between mt-4">
-                    <label for="remember_me" class="inline-flex items-center">
-                        <input id="remember_me" type="checkbox"
-                            class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
-                            name="remember">
-                        <span class="ms-2 text-sm text-gray-600">{{ __('Ingatkan saya') }}</span>
-                    </label>
+            <!-- Footer in Banner -->
+            <div class="relative z-10 flex items-center justify-between text-[11px] text-gray-400 border-t border-white/10 pt-4">
+                <span>Dinas Kebudayaan & Pariwisata</span>
+                <span>© {{ date('Y') }} MUSEWANGI</span>
+            </div>
 
-
-
-                    @if (Route::has('password.request'))
-                        <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                            href="{{ route('password.request') }}">
-                            {{ __('Lupa kata sandi Anda?') }}
-                        </a>
-                    @endif
-
-                </div>
-
-                <x-primary-button class="mt-4 w-full">
-                    {{ __('Masuk') }}
-                </x-primary-button>
-
-            </form>
         </div>
 
     </div>
 
-
-    <div class="relative hidden lg:flex lg:w-1/2 bg-[#0F1F3A] overflow-hidden">
-
-<!-- Tulisan -->
-<div class="absolute top-16 left-1/2 -translate-x-1/2 text-center w-full px-8 z-10">
-    <h1 class="text-3xl font-bold text-[#F8F5ED]">
-        Selamat Datang di MUSEWANGI
-    </h1>
-
-    <p class="mt-3 text-[#D8CBA8] text-sm">
-        Masuk untuk mulai mengelola inventaris museum.
-    </p>
-</div>
-
-<!-- Gapura -->
-<img src="{{ asset('src/images/gapura1.png') }}" alt="Gapura"
-    class="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 max-w-sm object-contain">
-
+    <!-- SCRIPT TOGGLE PASSWORD -->
     <script>
-        function togglePassword(inputId, iconId) {
-            const input = document.getElementById(inputId);
-            const icon = document.getElementById(iconId);
-
-            if (input.type === "password") {
-                input.type = "text";
-                icon.classList.remove("fa-eye");
-                icon.classList.add("fa-eye-slash");
+        function togglePasswordVisibility() {
+            const pwdInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            if (pwdInput.type === 'password') {
+                pwdInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
             } else {
-                input.type = "password";
-                icon.classList.remove("fa-eye-slash");
-                icon.classList.add("fa-eye");
+                pwdInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
             }
         }
     </script>
-
 </x-guest-layout>

@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin MUSEWANGI | Edit Koleksi</title>
+
+<!-- Favicon HD Multi-Resolution -->
+<link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=5">
+<link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon-48x48.png') }}?v=5">
+<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}?v=5">
+<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}?v=5">
+<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}?v=5">
+<link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 @vite(['resources/css/app.css','resources/js/app.js'])
 </head>
@@ -294,140 +302,102 @@ Foto Koleksi
 </label>
 
 
-<div class="
-mt-3
-w-72
-border
-border-[#C9981C]
-rounded-lg
-bg-gray-50
-p-4
-flex
-flex-col
-items-center
-">
-
-
-<i class="fa-solid fa-cloud-arrow-up text-3xl text-[#162544]"></i>
-
-
-<p class="text-xs text-gray-500 mt-2">
-Pilih foto koleksi
+<div class="mt-3 mb-2">
+<p class="text-xs text-gray-500 mb-3">
+    Unggah foto dari 3 sudut pandang berbeda untuk galeri interaktif pengunjung.
 </p>
 
-<div class="flex gap-3 mt-3">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <!-- 1. TAMPAK DEPAN (UTAMA) -->
+    <div class="border-2 border-dashed border-[#C9981C]/60 rounded-xl bg-gray-50/70 p-4 flex flex-col items-center text-center">
+        <span class="text-xs font-bold text-[#162544] mb-1">1. Tampak Depan (Utama)</span>
+        <span class="text-[10px] text-gray-400 mb-2">Foto utama koleksi</span>
 
+        <img id="previewFotoDepan"
+            src="{{ $collection->fotoDepanUrl() ?: asset('src/images/gapura1.png') }}"
+            class="w-28 h-28 rounded-lg object-cover border border-[#E8DCC0] mb-2 shadow-xs {{ $collection->fotoDepanUrl() ? '' : 'opacity-40' }}">
 
-<label
-for="kameraFoto"
-class="
-bg-[#162544]
-text-white
-px-4
-py-2
-rounded-lg
-cursor-pointer
-text-xs
-flex
-items-center
-gap-2
-">
+        <div class="flex gap-2 mt-auto">
+            <label class="bg-[#162544] hover:bg-[#0F1930] text-white px-3 py-1.5 rounded-lg shadow flex items-center gap-1.5 cursor-pointer text-[11px] transition">
+                <i class="fa fa-camera"></i>
+                <span>Kamera</span>
+                <input type="file" id="kameraFotoDepan" accept="image/*" capture="environment" class="hidden"
+                    onchange="ubahPreviewFotoAngle(event, 'depan')">
+            </label>
+            <label class="bg-[#C9981C] hover:bg-[#A77C14] text-white px-3 py-1.5 rounded-lg shadow flex items-center gap-1.5 cursor-pointer text-[11px] transition">
+                <i class="fa fa-folder"></i>
+                <span>Ubah</span>
+                <input type="file" id="fotoFileDepan" name="foto" accept="image/*" class="hidden"
+                    onchange="ubahPreviewFotoAngle(event, 'depan')">
+            </label>
+        </div>
 
-<i class="fa fa-camera"></i>
-Kamera
+        <button type="button" onclick="kembalikanFotoAngle('depan')"
+            class="mt-2 text-xs text-gray-500 hover:text-red-500 underline">
+            Batal Ubah
+        </button>
+    </div>
 
-</label>
+    <!-- 2. TAMPAK SAMPING -->
+    <div class="border-2 border-dashed border-gray-300 rounded-xl bg-gray-50/70 p-4 flex flex-col items-center text-center">
+        <span class="text-xs font-bold text-[#162544] mb-1">2. Tampak Samping</span>
+        <span class="text-[10px] text-gray-400 mb-2">Foto sudut sisi artefak</span>
 
+        <img id="previewFotoSamping"
+            src="{{ $collection->fotoSampingUrl() ?: asset('src/images/gapura1.png') }}"
+            class="w-28 h-28 rounded-lg object-cover border border-[#E8DCC0] mb-2 shadow-xs {{ $collection->fotoSampingUrl() ? '' : 'opacity-40' }}">
 
-<input
-type="file"
-id="kameraFoto"
-accept="image/*"
-capture="environment"
-class="hidden"
-onchange="ubahPreviewFoto(event)">
+        <div class="flex gap-2 mt-auto">
+            <label class="bg-[#162544] hover:bg-[#0F1930] text-white px-3 py-1.5 rounded-lg shadow flex items-center gap-1.5 cursor-pointer text-[11px] transition">
+                <i class="fa fa-camera"></i>
+                <span>Kamera</span>
+                <input type="file" id="kameraFotoSamping" accept="image/*" capture="environment" class="hidden"
+                    onchange="ubahPreviewFotoAngle(event, 'samping')">
+            </label>
+            <label class="bg-[#C9981C] hover:bg-[#A77C14] text-white px-3 py-1.5 rounded-lg shadow flex items-center gap-1.5 cursor-pointer text-[11px] transition">
+                <i class="fa fa-folder"></i>
+                <span>{{ $collection->foto_samping ? 'Ubah' : 'Pilih' }}</span>
+                <input type="file" id="fotoFileSamping" name="foto_samping" accept="image/*" class="hidden"
+                    onchange="ubahPreviewFotoAngle(event, 'samping')">
+            </label>
+        </div>
 
+        <button type="button" onclick="kembalikanFotoAngle('samping')"
+            class="mt-2 text-xs text-gray-500 hover:text-red-500 underline">
+            Batal Ubah
+        </button>
+    </div>
 
+    <!-- 3. TAMPAK BELAKANG -->
+    <div class="border-2 border-dashed border-gray-300 rounded-xl bg-gray-50/70 p-4 flex flex-col items-center text-center">
+        <span class="text-xs font-bold text-[#162544] mb-1">3. Tampak Belakang</span>
+        <span class="text-[10px] text-gray-400 mb-2">Foto sudut belakang artefak</span>
 
+        <img id="previewFotoBelakang"
+            src="{{ $collection->fotoBelakangUrl() ?: asset('src/images/gapura1.png') }}"
+            class="w-28 h-28 rounded-lg object-cover border border-[#E8DCC0] mb-2 shadow-xs {{ $collection->fotoBelakangUrl() ? '' : 'opacity-40' }}">
 
+        <div class="flex gap-2 mt-auto">
+            <label class="bg-[#162544] hover:bg-[#0F1930] text-white px-3 py-1.5 rounded-lg shadow flex items-center gap-1.5 cursor-pointer text-[11px] transition">
+                <i class="fa fa-camera"></i>
+                <span>Kamera</span>
+                <input type="file" id="kameraFotoBelakang" accept="image/*" capture="environment" class="hidden"
+                    onchange="ubahPreviewFotoAngle(event, 'belakang')">
+            </label>
+            <label class="bg-[#C9981C] hover:bg-[#A77C14] text-white px-3 py-1.5 rounded-lg shadow flex items-center gap-1.5 cursor-pointer text-[11px] transition">
+                <i class="fa fa-folder"></i>
+                <span>{{ $collection->foto_belakang ? 'Ubah' : 'Pilih' }}</span>
+                <input type="file" id="fotoFileBelakang" name="foto_belakang" accept="image/*" class="hidden"
+                    onchange="ubahPreviewFotoAngle(event, 'belakang')">
+            </label>
+        </div>
 
-<label
-for="fotoFile"
-class="
-bg-[#C9981C]
-text-white
-px-4
-py-2
-rounded-lg
-cursor-pointer
-text-xs
-flex
-items-center
-gap-2
-">
-
-<i class="fa fa-folder"></i>
-Pilih Foto
-
-</label>
-
-
-<input
-type="file"
-id="fotoFile"
-name="foto"
-accept="image/*"
-class="hidden"
-onchange="ubahPreviewFoto(event)">
-
-
-
+        <button type="button" onclick="kembalikanFotoAngle('belakang')"
+            class="mt-2 text-xs text-gray-500 hover:text-red-500 underline">
+            Batal Ubah
+        </button>
+    </div>
 </div>
-
-
-
-<img
-id="previewFoto"
-
-src="{{asset('storage/'.$collection->foto)}}"
-
-class="
-mt-3
-w-40
-h-40
-rounded-lg
-object-cover
-border
-">
-
-
-
-<p class="text-xs text-gray-500 mt-2 text-center">
-
-Pilih foto baru jika ingin mengganti foto lama
-
-</p>
-
-
-
-<button
-type="button"
-onclick="hapusFoto()"
-class="
-mt-3
-border
-px-5
-py-2
-rounded-lg
-text-sm">
-
-
-<i class="fa fa-times"></i>
-
-Batal Foto
-
-</button>
-
 </div>
 
 {{-- REKAMAN SUARA DESKRIPSI --}}
@@ -654,45 +624,37 @@ Simpan Perubahan
 
 <script>
 
-// ================= FOTO =================
-let fotoLama = "{{asset('storage/'.$collection->foto)}}";
+// ================= FOTO 3 SUDUT PANDANG =================
+let fotoLamaDepan = "{{ $collection->fotoDepanUrl() ?: asset('src/images/gapura1.png') }}";
+let fotoLamaSamping = "{{ $collection->fotoSampingUrl() ?: asset('src/images/gapura1.png') }}";
+let fotoLamaBelakang = "{{ $collection->fotoBelakangUrl() ?: asset('src/images/gapura1.png') }}";
 
-
-function ubahPreviewFoto(event){
-
+function ubahPreviewFotoAngle(event, angle) {
     let file = event.target.files[0];
+    if (!file) return;
 
-
-    if(file){
-
-        let preview = document.getElementById('previewFoto');
-
-
+    const suffix = angle === 'depan' ? 'Depan' : (angle === 'samping' ? 'Samping' : 'Belakang');
+    let preview = document.getElementById('previewFoto' + suffix);
+    if (preview) {
         preview.src = URL.createObjectURL(file);
-
-
-        console.log("Foto baru dipilih:", file.name);
-
+        preview.classList.remove('opacity-40');
     }
-
 }
 
+function kembalikanFotoAngle(angle) {
+    const suffix = angle === 'depan' ? 'Depan' : (angle === 'samping' ? 'Samping' : 'Belakang');
+    const fileInp = document.getElementById('fotoFile' + suffix);
+    const camInp = document.getElementById('kameraFoto' + suffix);
+    const preview = document.getElementById('previewFoto' + suffix);
 
+    if (fileInp) fileInp.value = "";
+    if (camInp) camInp.value = "";
 
-function hapusFoto(){
-
-    document.getElementById('fotoFile').value="";
-    document.getElementById('kameraFoto').value="";
-
-
-    let preview=document.getElementById('previewFoto');
-
-
-    preview.src=fotoLama;
-
-
-    console.log("Foto dikembalikan");
-
+    if (preview) {
+        if (angle === 'depan') preview.src = fotoLamaDepan;
+        if (angle === 'samping') preview.src = fotoLamaSamping;
+        if (angle === 'belakang') preview.src = fotoLamaBelakang;
+    }
 }
 
 // ================= AUDIO =================

@@ -8,6 +8,14 @@
 
 <title>Admin MUSEWANGI | Detail Koleksi</title>
 
+<!-- Favicon HD Multi-Resolution -->
+<link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=5">
+<link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon-48x48.png') }}?v=5">
+<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}?v=5">
+<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}?v=5">
+<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}?v=5">
+<link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=5">
+
 <link rel="stylesheet" 
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
@@ -85,10 +93,10 @@ border-[#E8DCC0]
 
 
 {{-- FOTO --}}
-@if($collection->foto)
+@if($collection->fotoUrl())
 
 <img 
-src="{{ asset('storage/'.$collection->foto) }}"
+src="{{ $collection->fotoUrl() }}"
 class="
 max-w-md
 max-h-80
@@ -97,7 +105,10 @@ h-auto
 rounded-xl
 object-contain
 shadow
+border
+border-[#E8DCC0]
 "
+alt="{{ $collection->nama_koleksi }}"
 >
 
 @else

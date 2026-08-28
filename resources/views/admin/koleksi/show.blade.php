@@ -2,6 +2,13 @@
 <html lang="id">
 
 <head>
+    <!-- Favicon HD Multi-Resolution -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=5">
+    <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon-48x48.png') }}?v=5">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}?v=5">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}?v=5">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}?v=5">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=5">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -280,7 +287,7 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
                                         <i class="fa-solid fa-qrcode text-[#B78921]"></i> QR Code Koleksi
                                     </p>
                                     <img src="{{ asset($koleksi->qr_code) }}" class="w-32 h-32 mx-auto" alt="QR Code">
-                                    <a href="{{ route('admin.koleksi.qrcode.download', $koleksi->id) }}"
+                                    <a href="{{ route('admin.qrcode.download', $koleksi->id) }}"
                                         class="inline-flex items-center gap-1.5 mt-3 text-xs font-semibold text-[#B78921] hover:text-[#9A7219] transition">
                                         <i class="fa-solid fa-download"></i> Unduh QR Code
                                     </a>
@@ -298,21 +305,21 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5 mb-6">
                                 <div class="info-row">
                                     <span class="info-label">Nama Koleksi</span>
-                                    <span class="info-value">{{ $koleksi->nama }}</span>
+                                    <span class="info-value">{{ $koleksi->nama_koleksi ?: $koleksi->nama }}</span>
                                 </div>
                                 <div class="info-row">
                                     <span class="info-label">Kategori</span>
                                     <span class="info-value">
                                         <span
                                             class="bg-[#FFF3D1] text-[#7B5200] px-3 py-1 rounded-full text-xs font-semibold">
-                                            {{ $koleksi->kategori->nama ?? '-' }}
+                                            {{ $koleksi->category->nama ?? ($koleksi->kategori ?? '-') }}
                                         </span>
                                     </span>
                                 </div>
                                 <div class="info-row">
                                     <span class="info-label">No. Registrasi Baru</span>
                                     <span
-                                        class="info-value font-mono text-[#B78921]">{{ $koleksi->no_registrasi_baru }}</span>
+                                        class="info-value font-mono text-[#B78921]">{{ $koleksi->no_registrasi ?: $koleksi->no_registrasi_baru }}</span>
                                 </div>
                                 <div class="info-row">
                                     <span class="info-label">No. Registrasi Lama</span>

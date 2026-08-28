@@ -12,6 +12,14 @@
 Admin MUSEWANGI | QR Code Koleksi
 </title>
 
+<!-- Favicon HD Multi-Resolution -->
+<link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=5">
+<link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon-48x48.png') }}?v=5">
+<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}?v=5">
+<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}?v=5">
+<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}?v=5">
+<link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=5">
+
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -27,66 +35,111 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+    [x-cloak] { display: none !important; }
+</style>
+
+<script>
+function qrcodeApp() {
+    return {
+        sidebarToggle: false,
+        qrModal: false,
+        qrImage: '',
+        qrName: '',
+        qrUrl: '',
+        labelUrl: '',
+
+        buatQR() {
+            const container = document.getElementById('qrCodeContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            try {
+                if (typeof QRCode !== 'undefined') {
+                    new QRCode(container, {
+                        text: this.qrUrl,
+                        width: 208,
+                        height: 208,
+                        colorDark: '#162544',
+                        colorLight: '#ffffff',
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                    return;
+                }
+            } catch (e) {
+                console.error(e);
+            }
+
+            container.innerHTML = '<img src="https://api.qrserver.com/v1/create-qr-code/?size=208x208&data=' + encodeURIComponent(this.qrUrl) + '" class="w-52 h-52 object-contain" alt="QR Code">';
+        },
+
+        downloadQR() {
+            const container = document.getElementById('qrCodeContainer');
+            const canvas = container ? container.querySelector('canvas') : null;
+            const img = container ? container.querySelector('img') : null;
+
+            if (canvas) {
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                link.download = 'QR-' + (this.qrName || 'koleksi') + '.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else if (img && img.src) {
+                const link = document.createElement('a');
+                link.href = img.src;
+                link.download = 'QR-' + (this.qrName || 'koleksi') + '.png';
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                alert('QR Code belum tersedia.');
+            }
+        },
+
+        printQR() {
+            const container = document.getElementById('qrCodeContainer');
+            const img = container ? (container.querySelector('img') || container.querySelector('canvas')) : null;
+            if (!img) return;
+
+            const src = img.src || (img.toDataURL ? img.toDataURL() : '');
+            const win = window.open('', '_blank', 'width=450,height=550');
+            if (!win) return;
+
+            win.document.write(
+                '<!DOCTYPE html>' +
+                '<html>' +
+                '<head>' +
+                '<title>Cetak QR - ' + this.qrName + '</title>' +
+                '<style>' +
+                'body { font-family: sans-serif; text-align: center; padding: 24px; margin: 0; }' +
+                '.qr-box { border: 2px solid #C9981C; border-radius: 16px; padding: 20px; display: inline-block; max-width: 320px; }' +
+                'img { width: 200px; height: 200px; object-fit: contain; }' +
+                'h2 { font-size: 16px; color: #162544; margin: 12px 0 4px; }' +
+                '.footer { font-size: 10px; color: #999; margin-top: 12px; }' +
+                '</style>' +
+                '</head>' +
+                '<body>' +
+                '<div class="qr-box">' +
+                '<img src="' + src + '">' +
+                '<h2>' + this.qrName + '</h2>' +
+                '<div class="footer">MUSEWANGI &middot; Museum Blambangan Banyuwangi</div>' +
+                '</div>' +
+                '<script>window.onload = function() { window.print(); }<' + '/script>' +
+                '</body>' +
+                '</html>'
+            );
+            win.document.close();
+        }
+    };
+}
+</script>
 </head>
 
-<body
-
-x-data="
-{
-    sidebarToggle: false,
-
-    qrModal: false,
-
-    qrImage: '',
-    qrName: '',
-    qrUrl: '',
-
-    buatQR() {
-
-        const container = document.getElementById('qrCodeContainer');
-
-        container.innerHTML = '';
-
-        new QRCode(container, {
-            text: this.qrUrl,
-            width: 208,
-            height: 208,
-            colorDark: '#162544',
-            colorLight: '#ffffff',
-            correctLevel: QRCode.CorrectLevel.H
-        });
-
-    },
-
-    downloadQR() {
-
-        const container = document.getElementById('qrCodeContainer');
-
-        const canvas = container.querySelector('canvas');
-
-        if (!canvas) {
-            alert('QR Code belum tersedia.');
-            return;
-        }
-
-        const link = document.createElement('a');
-
-        link.href = canvas.toDataURL('image/png');
-
-        link.download = 'QR-' + this.qrName + '.png';
-
-        document.body.appendChild(link);
-
-        link.click();
-
-        document.body.removeChild(link);
-    }
-}
-"
-
-class="bg-[#F8F5ED]"
-
->
+<body x-data="qrcodeApp()" class="bg-[#F8F5ED]">
 
 
 
@@ -211,260 +264,119 @@ overflow-hidden
 
 
 
-<thead
-
-class="
-bg-[#E9DEC7]
-text-[#162544]
-"
-
->
-
-
-<tr>
-
-
-<th class="px-8 py-4 text-left">
-
-Nama
-
-</th>
-
-
-<th class="px-8 py-4 text-left">
-
-No. Registrasi
-
-</th>
-
-
-<th class="px-8 py-4 text-center">
-
-QR Code
-
-</th>
-
-
-<th class="px-8 py-4 text-center">
-
-Aksi
-
-</th>
-
-
-</tr>
-
-
+<thead class="bg-[#E9DEC7] text-[#162544]">
+    <tr>
+        <th class="px-6 py-4 text-center w-24">Foto</th>
+        <th class="px-6 py-4 text-left">Nama Koleksi</th>
+        <th class="px-6 py-4 text-left">No. Registrasi</th>
+        <th class="px-6 py-4 text-center">QR Code</th>
+        <th class="px-6 py-4 text-center">Aksi</th>
+    </tr>
 </thead>
 
-
-
-
-
-
-
-
-
 <tbody>
-
-
 @forelse($koleksis as $koleksi)
-
-
-
-<tr
-
-class="
-border-b
-hover:bg-[#faf7ef]
-transition
-"
-
->
-
-
-
-
-
-{{-- NAMA --}}
-
-
-<td
-
-class="
-px-8
-py-5
-font-semibold
-text-[#162544]
-"
-
->
-
-
-{{$koleksi->nama_koleksi}}
-
-
-</td>
-
-
-
-{{-- NO REGISTRASI --}}
-
-
-<td
-
-class="
-px-8
-py-5
-text-gray-600
-"
-
->
-
-
-{{$koleksi->no_registrasi}}
-
-
-</td>
-
-
-
-{{-- QR CODE PREVIEW --}}
-
-
-<td
-
-class="
-px-8
-py-5
-text-center
-"
-
->
-
-
-
-@if($koleksi->qr_code)
-
-
-
-<img
-
-
-src="{{asset($koleksi->qr_code)}}"
-
-
-class="
-w-10
-h-10
-mx-auto
-object-contain
-pointer-events-none
-select-none
-"
-
->
-
-
-
-@else
-
-
-<div
-
-class="
-w-10
-h-10
-mx-auto
-bg-gray-100
-rounded
-flex
-items-center
-justify-center
-"
-
->
-
-
-<i
-
-class="
-fa-solid
-fa-qrcode
-text-gray-400
-"
-
-></i>
-
-
-</div>
-
-
-@endif
-
-
-</td>
-
-{{-- AKSI --}}
-
-<td class="px-8 py-5">
-<div class="flex justify-center gap-2">
-
-    {{-- LIHAT QR --}}
-    <button
-        type="button"
-        @click="
-            qrName = @js($koleksi->nama_koleksi);
-            qrUrl = @js(route('collection.show', $koleksi->id));
-            qrModal = true;
-
-            $nextTick(() => {
-                buatQR();
-            });
-        "
-        class="w-8 h-8 rounded-md
-               bg-gray-100
-               hover:bg-gray-200
-               flex items-center
-               justify-center
-               transition"
-        title="Lihat QR Code">
-
-        <i class="fa-solid fa-eye text-[#162544] text-xs"></i>
-
-    </button>
-
-    {{-- HAPUS QR --}}
-    <button
-        type="button"
-        class="btn-hapus-qr
-               w-8 h-8
-               rounded-md
-               bg-gray-100
-               hover:bg-red-100
-               flex items-center
-               justify-center
-               transition"
-        data-nama="{{ $koleksi->nama_koleksi }}"
-        title="Hapus QR Code">
-
-        <i class="fa-solid fa-trash text-red-500 text-xs"></i>
-
-    </button>
-
-</div>
-
-</form>
+    <tr class="border-b border-gray-100 hover:bg-[#faf7ef] transition">
+        {{-- FOTO --}}
+        <td class="px-6 py-4 text-center">
+            @if($koleksi->fotoUrl())
+                <img
+                    src="{{ $koleksi->fotoUrl() }}"
+                    alt="{{ $koleksi->nama_koleksi }}"
+                    class="w-14 h-14 rounded-xl object-cover mx-auto bg-[#E8DCC0] border border-[#E8DCC0] shadow-sm"
+                    onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-14 h-14 rounded-xl bg-[#E8DCC0] flex items-center justify-center text-gray-400 mx-auto border border-[#E8DCC0]\'><i class=\'fa fa-image text-lg text-[#C9981C]/70\'></i></div>';">
+            @else
+                <div class="w-14 h-14 rounded-xl bg-[#E8DCC0] flex items-center justify-center text-gray-400 mx-auto border border-[#E8DCC0]">
+                    <i class="fa fa-image text-lg text-[#C9981C]/70"></i>
+                </div>
+            @endif
+        </td>
+
+        {{-- NAMA --}}
+        <td class="px-6 py-4 font-semibold text-[#162544]">
+            {{ $koleksi->nama_koleksi }}
+        </td>
+
+        {{-- NO REGISTRASI --}}
+        <td class="px-6 py-4 font-mono text-gray-600 text-xs">
+            {{ $koleksi->no_registrasi }}
+        </td>
+
+        {{-- QR CODE PREVIEW LANGSUNG TAMPIL --}}
+        <td class="px-6 py-3 text-center">
+            <div
+                @click="
+                    qrName = @js($koleksi->nama_koleksi);
+                    qrReg = @js($koleksi->no_registrasi);
+                    qrUrl = @js($koleksi->publicUrl());
+                    qrModal = true;
+                    $nextTick(() => { buatQR(); });
+                "
+                class="inline-flex items-center justify-center p-1.5 bg-white hover:bg-[#FFF8EA] rounded-xl border border-[#E8DCC0] hover:border-[#C9981C] shadow-sm hover:shadow transition transform hover:scale-105 cursor-pointer group"
+                title="Klik untuk perbesar & cetak QR Code">
+                <img
+                    src="{{ $koleksi->qrCodeDataUri(56) }}"
+                    alt="QR Code {{ $koleksi->nama_koleksi }}"
+                    class="w-12 h-12 object-contain pointer-events-none select-none">
+            </div>
+        </td>
+
+        {{-- AKSI --}}
+        <td class="px-6 py-4">
+            <div class="flex justify-center items-center gap-1.5">
+                {{-- BUKA LINK PUBLIK (TEST SCAN) --}}
+                <a
+                    href="{{ $koleksi->publicUrl() }}"
+                    target="_blank"
+                    class="w-8 h-8 rounded-lg bg-[#EBF5FB] hover:bg-[#D4E6F1] text-[#2980B9] flex items-center justify-center transition"
+                    title="Buka Halaman Publik (Hasil Scan HP)">
+                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                </a>
+
+                {{-- CETAK LABEL ETALASE MUSEUM --}}
+                <a
+                    href="{{ route('admin.qrcode.cetakLabel', $koleksi->id) }}"
+                    target="_blank"
+                    class="w-8 h-8 rounded-lg bg-[#FFF8EA] hover:bg-[#C9981C] text-[#C9981C] hover:text-white border border-[#C9981C]/40 flex items-center justify-center transition shadow-xs"
+                    title="Cetak Label Etalase Museum (Placard Pameran)">
+                    <i class="fa-solid fa-id-card text-xs"></i>
+                </a>
+
+                {{-- LIHAT QR --}}
+                <button
+                    type="button"
+                    @click="
+                        qrName = @js($koleksi->nama_koleksi);
+                        qrReg = @js($koleksi->no_registrasi);
+                        qrUrl = @js($koleksi->publicUrl());
+                        labelUrl = @js(route('admin.qrcode.cetakLabel', $koleksi->id));
+                        qrModal = true;
+                        $nextTick(() => { buatQR(); });
+                    "
+                    class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-[#162544] flex items-center justify-center transition"
+                    title="Perbesar & Cetak Label">
+                    <i class="fa-solid fa-eye text-xs"></i>
+                </button>
+
+                {{-- HAPUS QR --}}
+                <button
+                    type="button"
+                    class="btn-hapus-qr w-8 h-8 rounded-lg bg-gray-100 hover:bg-red-100 text-red-500 flex items-center justify-center transition"
+                    data-nama="{{ $koleksi->nama_koleksi }}"
+                    title="Hapus QR Code">
+                    <i class="fa-solid fa-trash text-xs"></i>
+                </button>
+            </div>
+        </td>
+    </tr>
 @empty
-
-<tr>
-    <td colspan="4" class="text-center py-8 text-gray-500">
-        Tidak ada data koleksi
-    </td>
-</tr>
-
+    <tr>
+        <td colspan="5" class="text-center py-12 text-gray-400">
+            <i class="fa-solid fa-qrcode text-4xl mb-2 text-gray-300 block"></i>
+            Belum ada QR Code koleksi museum.
+        </td>
+    </tr>
 @endforelse
-
 </tbody>
 </table>
 
@@ -475,34 +387,14 @@ text-gray-400
 
 
 <div
+    x-show="qrModal"
+    x-cloak
+    style="display: none;"
+    x-transition
+    class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center">
 
-
-x-show="qrModal"
-
-
-x-transition
-
-
-class="
-fixed
-inset-0
-z-50
-bg-black/50
-backdrop-blur-sm
-flex
-items-center
-justify-center
-"
-
->
-
-
-
-<div
-
-
-@click.away="qrModal=false"
-
+    <div
+        @click.outside="qrModal = false"
 
 class="
 bg-[#F8F5ED]
@@ -543,22 +435,8 @@ text-gray-700
 </button>
 
 
-<h2
-
-class="
-text-xl
-font-bold
-text-[#162544]
-mb-6
-"
-
->
-
-
-QR Code
-
-
-</h2>
+<h2 class="text-xl font-bold text-[#162544] mb-1">QR Code</h2>
+<p class="text-xs text-gray-500 font-medium mb-5" x-text="qrName"></p>
 
 <div
     id="qrCodeContainer"
@@ -572,24 +450,68 @@ QR Code
         items-center
         justify-center
         mb-6
-    "
 ></div>
 
-<button
-    type="button"
-    @click="downloadQR()"
-    class="
-        bg-[#162544]
-        hover:bg-[#0E1830]
-        text-white
-        px-10
-        py-2
-        rounded-lg
-        text-sm
-    "
->
-    Download
-</button>
+<div class="mb-4">
+    <a
+        :href="labelUrl"
+        target="_blank"
+        class="w-full py-2.5 px-4 rounded-xl bg-[#A0731E] hover:bg-[#875F14] text-white font-bold text-xs shadow-md flex items-center justify-center gap-2 transition transform active:scale-95"
+    >
+        <i class="fa-solid fa-id-card text-sm text-[#FFD86B]"></i>
+        <span>Cetak Label Etalase Museum (Placard Pameran)</span>
+    </a>
+</div>
+
+<div class="flex gap-2.5 justify-center">
+    <button
+        type="button"
+        @click="printQR()"
+        class="
+            border border-[#C9981C]
+            text-[#C9981C]
+            hover:bg-[#C9981C]/10
+            px-6
+            py-2
+            rounded-lg
+            text-sm
+            font-bold
+            flex items-center gap-1.5
+            transition
+        "
+    >
+        <i class="fa-solid fa-print"></i> Cetak
+    </button>
+
+    <button
+        type="button"
+        @click="downloadQR()"
+        class="
+            bg-[#162544]
+            hover:bg-[#0E1830]
+            text-white
+            px-6
+            py-2
+            rounded-lg
+            text-sm
+            font-bold
+            flex items-center gap-1.5
+            shadow
+            transition
+        "
+    >
+        <i class="fa-solid fa-download"></i> Download
+    </button>
+</div>
+
+    <div class="mt-4 pt-4 border-t border-[#E8DCC0]/60">
+        <a
+            :href="qrUrl"
+            target="_blank"
+            class="inline-flex items-center gap-1.5 text-xs text-[#2980B9] hover:text-[#1F618D] font-medium hover:underline">
+            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Buka Halaman Pengunjung (Hasil Scan)
+        </a>
+    </div>
 
 
 </div>

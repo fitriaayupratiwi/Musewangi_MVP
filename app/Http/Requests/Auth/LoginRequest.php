@@ -45,12 +45,25 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        // if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-        if (! Auth::attempt($this->only('username', 'password'), $this->boolean('remember'))) {
+        $login = $this->input('username');
+        $password = $this->input('password');
+
+        // Check if input is email or username
+        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+        $loggedIn = Auth::attempt([$field => $login, 'password' => $password], $this->boolean('remember'));
+
+        if (! $loggedIn) {
+            // Fallback: try the other field (email vs username)
+            $altField = ($field === 'email') ? 'username' : 'email';
+            $loggedIn = Auth::attempt([$altField => $login, 'password' => $password], $this->boolean('remember'));
+        }
+
+        if (! $loggedIn) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'username' => trans('auth.failed'),
+                'username' => 'Username/Email atau Password yang Anda masukkan tidak sesuai.',
             ]);
         }
 

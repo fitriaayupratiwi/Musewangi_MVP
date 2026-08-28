@@ -14,6 +14,8 @@ RUN apk add --no-cache \
     nginx \
     curl \
     git \
+    sqlite \
+    sqlite-dev \
     libpng-dev \
     libjpeg-turbo-dev \
     freetype-dev \
@@ -52,9 +54,11 @@ COPY docker/nginx.conf /etc/nginx/http.d/default.conf
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Set ownership and permissions
-RUN chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
+# Create database and storage with write permissions
+RUN mkdir -p /var/www/html/database /var/www/html/storage /var/www/html/bootstrap/cache && \
+    touch /var/www/html/database/database.sqlite && \
+    chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database && \
+    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
 
 EXPOSE 80
 

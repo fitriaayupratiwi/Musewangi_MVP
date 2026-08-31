@@ -328,23 +328,11 @@
 <button
     type="button"
     @click="openAddModal()"
-    class="
-        bg-[#C9981C]
-        hover:bg-[#A77C14]
-        text-white
-        px-5
-        py-3
-        rounded-lg
-        shadow
-        flex
-        items-center
-        gap-2
-        transition
-    "
+    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-[#B78921] to-[#D4A82A] hover:from-[#9A7219] hover:to-[#B78921] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition duration-200"
+    style="box-shadow: 0 4px 14px rgba(183,137,33,0.4);"
 >
-    <i class="fa fa-plus"></i>
-
-    Tambah Kategori
+    <i class="fa-solid fa-plus text-xs"></i>
+    <span>Tambah Kategori</span>
 </button>
     </div>
 

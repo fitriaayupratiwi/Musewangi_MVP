@@ -730,8 +730,8 @@
 
                     const utterance = new SpeechSynthesisUtterance(textToRead);
                     utterance.lang = this.lang === 'id' ? 'id-ID' : 'en-US';
-                    utterance.rate = 0.88; // Natural, clear pacing for museum docent
-                    utterance.pitch = 1.0; // Warm, realistic natural pitch
+                    utterance.rate = 1.05; // Kecepatan narasi lebih cepat & natural
+                    utterance.pitch = 1.0; // Nada suara hangat & ramah
 
                     // Select highest quality human-like Natural HD voice
                     const voices = window.speechSynthesis.getVoices();
@@ -747,7 +747,7 @@
                     }
 
                     const totalLength = textToRead.length;
-                    const estimatedSeconds = Math.max(15, Math.round(totalLength / 13));
+                    const estimatedSeconds = Math.max(10, Math.round(totalLength / 16));
                     let elapsed = 0;
 
                     utterance.onstart = () => {

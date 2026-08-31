@@ -747,6 +747,11 @@
                 case 'error':   toastr.error(" {{ Session::get('message') }} ");   break;
             }
         @endif
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                toastr.warning("{{ $error }}");
+            @endforeach
+        @endif
     </script>
 </body>
 

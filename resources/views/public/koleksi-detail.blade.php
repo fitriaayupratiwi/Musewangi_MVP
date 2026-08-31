@@ -333,12 +333,12 @@
                 </div>
             </div>
 
-            <!-- Audio Controller Box -->
-            <div class="p-4 rounded-2xl bg-[#F8F5ED] border border-[#E8DCC0] flex items-center gap-3.5">
+            <!-- Audio Controller Box (WhatsApp Voice Note Style) -->
+            <div class="p-4 rounded-2xl bg-[#F8F5ED] border border-[#E8DCC0] flex items-center gap-3">
                 <!-- Play/Pause Button -->
                 <button type="button" @click="toggleAudio()"
                     class="w-12 h-12 rounded-full gold-gradient-bg hover:brightness-110 text-[#162544] flex items-center justify-center shadow-md transition spring-tap flex-shrink-0">
-                    <i :class="isPlaying ? 'fa-solid fa-pause text-base' : 'fa-solid fa-play text-base ml-1'"></i>
+                    <i :class="isPlaying ? 'fa-solid fa-pause text-base' : 'fa-solid fa-play text-base ml-0.5'"></i>
                 </button>
 
                 <!-- Audio Track & Progress -->
@@ -348,17 +348,22 @@
                         <span class="font-mono text-[10px] text-gray-500" x-text="audioTime"></span>
                     </div>
 
-                    <!-- Progress Bar -->
+                    <!-- Progress Bar (Scrubbing / Seeking) -->
                     <div @click="seekAudio($event)"
-                        class="w-full h-2.5 bg-white rounded-full overflow-hidden border border-[#E8DCC0] cursor-pointer relative">
-                        <div class="h-full bg-[#C9981C] rounded-full transition-all duration-150" :style="'width: ' + audioProgress + '%'"></div>
+                        class="w-full h-3 bg-white rounded-full overflow-hidden border border-[#E8DCC0] cursor-pointer relative flex items-center p-0.5 group">
+                        <div class="h-full bg-gradient-to-r from-[#B78921] to-[#C9981C] rounded-full transition-all duration-150 relative" :style="'width: ' + audioProgress + '%'">
+                            <!-- WhatsApp style scrubber thumb dot -->
+                            <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-[#162544] border-2 border-white shadow-xs"></div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Speaker Icon -->
-                <div class="text-[#C9981C] text-lg px-1">
-                    <i :class="isPlaying ? 'fa-solid fa-volume-high animate-pulse' : 'fa-solid fa-volume-low'"></i>
-                </div>
+                <!-- WhatsApp Speed Toggle Pill (1x, 1.25x, 1.5x, 2x, 0.75x) -->
+                <button type="button" @click="cycleSpeed()"
+                    class="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-[#E9DEC7] text-[#162544] hover:bg-[#C9981C] hover:text-white transition spring-tap border border-[#D4C9A8] flex items-center justify-center min-w-[42px] shadow-2xs flex-shrink-0"
+                    title="Ubah Kecepatan Suara">
+                    <span x-text="audioSpeed + 'x'"></span>
+                </button>
             </div>
 
             <!-- Hidden Audio Element -->
@@ -585,10 +590,14 @@
                 reviewModal: false,
                 userRating: 5,
                 isPlaying: false,
+                audioSpeed: 1,
+                speedOptions: [1, 1.25, 1.5, 2, 0.75],
                 audioTime: '0:00 / 1:24',
                 audioProgress: 0,
                 scrollProgress: 0,
                 showScrollTop: false,
+                currentText: '',
+                lastSpokenCharIndex: 0,
                 defaultPhoto: "{{ $collection->fotoUrl() }}",
                 fotoDepan: "{{ $collection->fotoDepanUrl() }}",
                 fotoSamping: "{{ $collection->fotoSampingUrl() ?: $collection->fotoUrl() }}",
@@ -635,6 +644,7 @@
                         audio.addEventListener('ended', () => {
                             this.isPlaying = false;
                             this.audioProgress = 0;
+                            this.lastSpokenCharIndex = 0;
                             this.audioTime = '0:00 / ' + this.formatTime(audio.duration || 84);
                         });
                     }
@@ -644,6 +654,7 @@
                     if (this.lang !== newLang) {
                         this.stopAudio();
                         this.lang = newLang;
+                        this.lastSpokenCharIndex = 0;
                     }
                 },
 
@@ -677,12 +688,30 @@
                     return m + ':' + (s < 10 ? '0' : '') + s;
                 },
 
+                cycleSpeed() {
+                    const idx = this.speedOptions.indexOf(this.audioSpeed);
+                    const nextIdx = (idx + 1) % this.speedOptions.length;
+                    this.audioSpeed = this.speedOptions[nextIdx];
+
+                    // 1. Ubah speed file audio MP3 (jika ada)
+                    const audio = document.getElementById('audio-player');
+                    if (audio) {
+                        audio.playbackRate = this.audioSpeed;
+                    }
+
+                    // 2. Ubah speed speech synthesis WhatsApp-style
+                    if ('speechSynthesis' in window && this.isPlaying) {
+                        this.playSpeechFromIndex(this.lastSpokenCharIndex);
+                    }
+                },
+
                 toggleAudio() {
                     const audio = document.getElementById('audio-player');
                     const hasRealAudio = audio && audio.src && !audio.src.endsWith('/') && !audio.src.includes('undefined') && !audio.src.includes('null');
 
                     if (hasRealAudio) {
                         if (audio.paused) {
+                            audio.playbackRate = this.audioSpeed;
                             audio.play().then(() => {
                                 this.isPlaying = true;
                             }).catch(() => {
@@ -703,35 +732,44 @@
                         return;
                     }
 
-                    // 1. If currently speaking and active -> Pause
+                    // 1. Jika sedang bicara -> Pause / Jeda
                     if (window.speechSynthesis.speaking && !window.speechSynthesis.paused && this.isPlaying) {
                         window.speechSynthesis.pause();
                         this.isPlaying = false;
                         return;
                     }
 
-                    // 2. If currently paused -> Resume
+                    // 2. Jika sedang dijeda -> Resume / Lanjutkan
                     if (window.speechSynthesis.paused) {
                         window.speechSynthesis.resume();
                         this.isPlaying = true;
                         return;
                     }
 
-                    // 3. Otherwise start new speech playback
+                    // 3. Mulai bicara dari awal atau titik terakhir
+                    this.playSpeechFromIndex(0);
+                },
+
+                playSpeechFromIndex(charOffset = 0) {
                     window.speechSynthesis.cancel();
 
                     const namaKoleksi = "{{ addslashes($collection->nama_koleksi) }}";
                     const deskripsiId = "{{ addslashes(str_replace(["\r", "\n"], ' ', $collection->deskripsi ?? '')) }}";
                     const deskripsiEn = "{{ addslashes(str_replace(["\r", "\n"], ' ', $collection->deskripsiEn())) }}";
 
-                    const textToRead = this.lang === 'id'
+                    const fullText = this.lang === 'id'
                         ? (namaKoleksi + '. ' + deskripsiId)
                         : (namaKoleksi + '. ' + deskripsiEn);
 
-                    const utterance = new SpeechSynthesisUtterance(textToRead);
+                    this.currentText = fullText;
+                    const textSlice = charOffset > 0 && charOffset < fullText.length ? fullText.substring(charOffset) : fullText;
+
+                    const utterance = new SpeechSynthesisUtterance(textSlice);
                     utterance.lang = this.lang === 'id' ? 'id-ID' : 'en-US';
-                    utterance.rate = 1.05; // Kecepatan narasi lebih cepat & natural
-                    utterance.pitch = 1.0; // Nada suara hangat & ramah
+                    
+                    // Set speech speed dynamically based on WhatsApp speed toggle
+                    utterance.rate = Math.max(0.6, Math.min(2.5, this.audioSpeed * 1.05));
+                    utterance.pitch = 1.0;
 
                     // Select highest quality human-like Natural HD voice
                     const voices = window.speechSynthesis.getVoices();
@@ -746,9 +784,8 @@
                         utterance.voice = naturalVoice;
                     }
 
-                    const totalLength = textToRead.length;
-                    const estimatedSeconds = Math.max(10, Math.round(totalLength / 16));
-                    let elapsed = 0;
+                    const totalLength = fullText.length;
+                    const estimatedSeconds = Math.max(10, Math.round(totalLength / (15 * this.audioSpeed)));
 
                     utterance.onstart = () => {
                         this.isPlaying = true;
@@ -756,10 +793,12 @@
                     };
 
                     utterance.onboundary = (event) => {
-                        if (event.charIndex) {
-                            const pct = Math.min(100, Math.round((event.charIndex / totalLength) * 100));
+                        if (event.charIndex !== undefined) {
+                            const globalIndex = charOffset + event.charIndex;
+                            this.lastSpokenCharIndex = globalIndex;
+                            const pct = Math.min(100, Math.round((globalIndex / totalLength) * 100));
                             this.audioProgress = pct;
-                            elapsed = Math.round((event.charIndex / totalLength) * estimatedSeconds);
+                            const elapsed = Math.round((globalIndex / totalLength) * estimatedSeconds);
                             this.audioTime = this.formatTime(elapsed) + ' / ' + this.formatTime(estimatedSeconds);
                         }
                     };
@@ -767,10 +806,13 @@
                     utterance.onend = () => {
                         this.isPlaying = false;
                         this.audioProgress = 100;
+                        this.lastSpokenCharIndex = 0;
                         this.audioTime = this.formatTime(estimatedSeconds) + ' / ' + this.formatTime(estimatedSeconds);
                         setTimeout(() => {
-                            this.audioProgress = 0;
-                            this.audioTime = '0:00 / ' + this.formatTime(estimatedSeconds);
+                            if (!this.isPlaying) {
+                                this.audioProgress = 0;
+                                this.audioTime = '0:00 / ' + this.formatTime(estimatedSeconds);
+                            }
                         }, 1200);
                     };
 
@@ -792,6 +834,7 @@
                     }
                     this.isPlaying = false;
                     this.audioProgress = 0;
+                    this.lastSpokenCharIndex = 0;
                 },
 
                 seekAudio(event) {
@@ -804,6 +847,12 @@
                     const audio = document.getElementById('audio-player');
                     if (audio && audio.duration) {
                         audio.currentTime = (pct / 100) * audio.duration;
+                    } else if ('speechSynthesis' in window && this.currentText) {
+                        const targetChar = Math.round((pct / 100) * this.currentText.length);
+                        this.lastSpokenCharIndex = targetChar;
+                        if (this.isPlaying) {
+                            this.playSpeechFromIndex(targetChar);
+                        }
                     }
                 }
             };

@@ -15,23 +15,24 @@ class PublicCollectionController extends Controller
     public function home()
     {
         try {
-            if (Collection::count() === 0) {
-                \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
-            }
             $collections = Collection::with('category')->latest()->get();
+            if ($collections->isEmpty()) {
+                \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+                $collections = Collection::with('category')->latest()->get();
+            }
             $categories = Category::withCount('koleksis')->get();
-            $totalCollections = Collection::count();
-            $totalCategories = Category::count();
-            $featuredCollection = Collection::with('category')->first();
+            $totalCollections = $collections->count();
+            $totalCategories = $categories->count();
+            $featuredCollection = $collections->first();
         } catch (\Throwable $e) {
             try {
                 \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
                 \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
                 $collections = Collection::with('category')->latest()->get();
                 $categories = Category::withCount('koleksis')->get();
-                $totalCollections = Collection::count();
-                $totalCategories = Category::count();
-                $featuredCollection = Collection::with('category')->first();
+                $totalCollections = $collections->count();
+                $totalCategories = $categories->count();
+                $featuredCollection = $collections->first();
             } catch (\Throwable $ex) {
                 $collections = collect();
                 $categories = collect();

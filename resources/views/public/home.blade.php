@@ -358,7 +358,7 @@
                         <!-- Foto Artefak -->
                         <div class="w-16 h-16 rounded-xl overflow-hidden bg-[#E9DEC7] flex-shrink-0 border border-[#E8DCC0] relative shadow-xs">
                             @if($item->fotoUrl())
-                                <img src="{{ $item->fotoUrl() }}" alt="{{ $item->nama_koleksi }}" class="w-full h-full object-cover group-hover:scale-108 transition duration-300">
+                                <img src="{{ $item->fotoUrl() }}" alt="{{ $item->nama_koleksi }}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-108 transition duration-300">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-[#C9981C]/70">
                                     <i class="fa-solid fa-landmark text-lg"></i>

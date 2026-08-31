@@ -22,9 +22,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Force HTTPS in production / Railway proxy
-        if (config('app.env') === 'production' || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
-            URL::forceScheme('https');
+        // Force HTTPS in production / Railway proxy (kecuali jika dijalankan di localhost / 127.0.0.1)
+        if (!app()->runningInConsole()) {
+            $host = request()->getHost();
+            $isLocal = in_array($host, ['localhost', '127.0.0.1', '::1']) || str_ends_with($host, '.test') || str_ends_with($host, '.local');
+            if (!$isLocal && (config('app.env') === 'production' || request()->header('X-Forwarded-Proto') === 'https')) {
+                URL::forceScheme('https');
+            }
         }
         // Auto-initialize SQLite database file if it doesn't exist
         try {

@@ -23,9 +23,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-    <!-- Tailwind CSS (Standalone Mobile) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
+    <!-- Vite Compiled Assets (Tailwind & Alpine) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- html5-qrcode Library -->

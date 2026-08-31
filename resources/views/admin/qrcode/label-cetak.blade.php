@@ -14,10 +14,10 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}?v=5">
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=5">
 
-    <!-- Google Fonts: Playfair Display / Cinzel & Plus Jakarta Sans -->
+    <!-- Google Fonts: Cinzel, Playfair Display, Lora, Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,400&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -29,24 +29,97 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #EDE8DE;
-            color: #2D251D;
+            color: #1F1A14;
             -webkit-font-smoothing: antialiased;
         }
 
         .font-serif-title {
+            font-family: 'Cinzel', 'Playfair Display', Georgia, serif;
+        }
+
+        .font-serif-subtitle {
             font-family: 'Playfair Display', Georgia, serif;
+        }
+
+        .font-serif-body {
+            font-family: 'Lora', Georgia, 'Times New Roman', serif;
         }
 
         /* Placard Card Dimensions (Standard Museum Placard Landscape ~ 210mm x 148mm) */
         .museum-placard {
             width: 210mm;
             min-height: 148mm;
-            background: #FAF6ED;
+            background: #FCFAF5;
             position: relative;
             box-sizing: border-box;
-            border-radius: 4px;
-            box-shadow: 0 12px 35px rgba(35, 25, 15, 0.12);
+            border-radius: 8px;
+            box-shadow: 0 15px 40px rgba(35, 25, 15, 0.15);
             overflow: hidden;
+            border: 1px solid #E2D1B3;
+        }
+
+        /* Inner ornamental border frame */
+        .placard-inner-frame {
+            position: absolute;
+            inset: 8px;
+            border: 1.5px solid #D6B97E;
+            border-radius: 6px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Table header bronze styling matching Canva */
+        .table-bronze-header {
+            background: #B07D1E;
+            color: #ffffff;
+            font-weight: 700;
+            text-align: center;
+            padding: 5px 10px;
+            border-top-left-radius: 7px;
+            border-top-right-radius: 7px;
+            font-size: 11.5px;
+            letter-spacing: 0.2px;
+        }
+
+        .table-bronze-container {
+            border: 1.5px solid #C4A265;
+            border-top: none;
+            border-bottom-left-radius: 7px;
+            border-bottom-right-radius: 7px;
+            overflow: hidden;
+            background: #FFFFFF;
+        }
+
+        .table-bronze-container table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9.5px;
+        }
+
+        .table-bronze-container td {
+            padding: 4px 8px;
+            border-bottom: 1px solid #C4A265;
+            border-right: 1px solid #C4A265;
+            color: #1E1308;
+        }
+
+        .table-bronze-container tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table-bronze-container td:last-child {
+            border-right: none;
+        }
+
+        .table-bronze-container td.label-col {
+            font-weight: 700;
+            width: 46%;
+            background: #FFFFFF;
+        }
+
+        .table-bronze-container td.val-col {
+            text-align: center;
+            background: #FFFFFF;
         }
 
         /* Print Media Settings */
@@ -72,7 +145,7 @@
 
             .museum-placard {
                 box-shadow: none !important;
-                border-radius: 0 !important;
+                border: 1px solid #D6B97E !important;
                 page-break-inside: avoid;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
@@ -121,25 +194,39 @@
     <div class="print-wrapper flex justify-center w-full">
 
         <!-- ============================================================== -->
-        <!-- MUSEUM SHOWCASE PLACARD (Persis Desain Contoh media_1787747280787) -->
+        <!-- MUSEUM SHOWCASE PLACARD (Persis Desain Canva media_1788155142055) -->
         <!-- ============================================================== -->
-        <div class="museum-placard p-8 flex gap-6 relative">
+        <div class="museum-placard p-7 flex gap-5 relative">
 
-            <!-- ── LEFT FLANK ORNAMENT: GOLDEN GAJAH OLING & SWEEPING RIBBON ── -->
+            <!-- Inner Golden Frame -->
+            <div class="placard-inner-frame"></div>
+
+            <!-- ── LEFT FLANK ORNAMENT: GOLDEN GAJAH OLING & SWEEPING RIBBON (CANVA STYLE) ── -->
             <div class="absolute left-0 bottom-0 top-0 w-36 pointer-events-none overflow-hidden select-none z-0">
-                <svg viewBox="0 0 160 460" class="w-full h-full" fill="none">
-                    <!-- Outer sweeping golden curve -->
-                    <path d="M 45 450 C 35 340, 28 240, 58 160 C 85 85, 125 45, 155 12"
-                        stroke="#C4942A" stroke-width="4.5" stroke-linecap="round" />
+                <svg viewBox="0 0 160 480" class="w-full h-full" fill="none">
+                    <!-- Subtle damask / batik pattern background watermark on left -->
+                    <g opacity="0.08" fill="#B07D1E">
+                        <circle cx="25" cy="80" r="18" />
+                        <circle cx="25" cy="160" r="18" />
+                        <circle cx="25" cy="240" r="18" />
+                        <circle cx="25" cy="320" r="18" />
+                        <path d="M 10 70 Q 25 50 40 70 Q 25 90 10 70 Z" />
+                        <path d="M 10 150 Q 25 130 40 150 Q 25 170 10 150 Z" />
+                        <path d="M 10 230 Q 25 210 40 230 Q 25 250 10 230 Z" />
+                    </g>
+
+                    <!-- Outer sweeping golden curve line -->
+                    <path d="M 38 460 C 26 350, 20 250, 48 160 C 72 85, 115 45, 145 15"
+                        stroke="#B8860B" stroke-width="4.5" stroke-linecap="round" />
 
                     <!-- Inner parallel thin golden curve -->
-                    <path d="M 28 445 C 20 345, 15 250, 42 170 C 68 98, 108 58, 138 25"
-                        stroke="#D5A942" stroke-width="1.8" stroke-linecap="round" opacity="0.85" />
+                    <path d="M 22 455 C 12 355, 8 260, 32 170 C 56 98, 98 58, 128 28"
+                        stroke="#D4A82A" stroke-width="1.8" stroke-linecap="round" opacity="0.8" />
 
                     <!-- Bottom-Left Gajah Oling & Floral Medallion -->
-                    <g transform="translate(8, 315) scale(0.85)" opacity="0.95">
+                    <g transform="translate(6, 335) scale(0.9)" opacity="0.95">
                         <!-- Floral Petals -->
-                        <g fill="#B88424" stroke="#8E6110" stroke-width="1">
+                        <g fill="#B8860B" stroke="#8E6110" stroke-width="1">
                             <path d="M 45 50 C 25 35, 15 15, 28 5 C 42 -5, 55 15, 50 35 Z" />
                             <path d="M 50 45 C 50 20, 65 5, 80 15 C 92 25, 80 45, 60 52 Z" />
                             <path d="M 52 55 C 75 50, 95 60, 95 75 C 95 90, 75 88, 60 70 Z" />
@@ -149,152 +236,142 @@
 
                         <!-- Central Gajah Oling Spiral / Core -->
                         <circle cx="48" cy="54" r="16" fill="#C5962C" stroke="#7A520C" stroke-width="2" />
-                        <circle cx="48" cy="54" r="11" fill="#FAF6ED" stroke="#B88424" stroke-width="2" />
+                        <circle cx="48" cy="54" r="11" fill="#FCFAF5" stroke="#B8860B" stroke-width="2" />
                         <path d="M 48 45 C 53 45, 56 49, 56 54 C 56 58, 51 61, 46 58 C 42 55, 43 50, 47 49"
                             fill="none" stroke="#7A520C" stroke-width="2.5" stroke-linecap="round" />
 
                         <!-- Flowing lower sulur leaves -->
                         <path d="M 30 75 C 10 90, 5 115, 20 130 C 35 120, 30 95, 30 75 Z" fill="#C5962C" />
-                        <path d="M 42 85 C 32 105, 30 130, 48 140 C 58 128, 50 102, 42 85 Z" fill="#D5A942" />
-                        <path d="M 12 110 C -5 125, -2 145, 12 152 C 22 142, 18 125, 12 110 Z" fill="#B88424" opacity="0.8" />
+                        <path d="M 42 85 C 32 105, 30 130, 48 140 C 58 128, 50 102, 42 85 Z" fill="#D4A82A" />
+                        <path d="M 12 110 C -5 125, -2 145, 12 152 C 22 142, 18 125, 12 110 Z" fill="#B8860B" opacity="0.85" />
                     </g>
                 </svg>
             </div>
 
-            <!-- ── LEFT COLUMN: TITLE & BILINGUAL NARRATIVE ────────── -->
-            <div class="flex-1 min-w-0 pl-16 z-10 flex flex-col justify-between">
+            <!-- ── LEFT COLUMN: TITLE & BILINGUAL NARRATIVE (CANVA STYLE) ────────── -->
+            <div class="flex-1 min-w-0 pl-14 z-10 flex flex-col justify-between">
                 <div>
-                    <!-- Subtitle / Kategori -->
-                    <h3 class="font-serif-title text-[#A77218] text-xs sm:text-[13px] font-bold tracking-wide leading-tight mb-1">
-                        {{ $koleksi->jenis_benda ?? ($koleksi->kategori ?? 'Tablet Tanah Liat') }}
+                    <!-- Subtitle / Kategori (e.g. Patung Arca) -->
+                    <h3 class="font-serif-subtitle text-[#A66E1E] text-base sm:text-[17px] font-bold tracking-wide leading-tight mb-1">
+                        {{ $koleksi->jenis_benda ?? ($koleksi->kategori ?? 'Patung Arca') }}
                     </h3>
 
-                    <!-- Main Title (Nama Koleksi) -->
-                    <h2 class="font-serif-title text-[#1D140C] text-2xl sm:text-[27px] font-black tracking-tight leading-tight mb-2">
+                    <!-- Main Title (e.g. Arca Jaladwara / Stupika) -->
+                    <h2 class="font-serif-title text-[#1E1308] text-2xl sm:text-[28px] font-black tracking-tight leading-tight mb-2">
                         {{ $koleksi->nama_koleksi }}
                     </h2>
 
-                    <!-- Decorative Gold Divider (Emblem / Floral Wings) -->
-                    <div class="my-2 flex items-center gap-1.5 text-[#C4942A]">
-                        <svg class="h-3.5 w-24 text-[#C4942A]" viewBox="0 0 100 16" fill="currentColor">
-                            <path d="M 0 8 Q 20 8 35 7 Q 42 3 48 8 Q 42 13 35 9 Q 20 8 0 8 Z" opacity="0.75" />
-                            <circle cx="50" cy="8" r="2.8" />
-                            <circle cx="42" cy="8" r="1.5" />
-                            <circle cx="58" cy="8" r="1.5" />
-                            <path d="M 100 8 Q 80 8 65 7 Q 58 3 52 8 Q 58 13 65 9 Q 80 8 100 8 Z" opacity="0.75" />
+                    <!-- Decorative Golden Filigree Divider (Canva Style) -->
+                    <div class="my-2 flex items-center justify-start gap-1">
+                        <svg class="h-3.5 w-32 text-[#B8860B]" viewBox="0 0 120 16" fill="currentColor">
+                            <path d="M 0 8 Q 25 8 45 7 Q 52 2 60 8 Q 52 14 45 9 Q 25 8 0 8 Z" opacity="0.8" />
+                            <circle cx="60" cy="8" r="3.2" />
+                            <circle cx="51" cy="8" r="1.6" />
+                            <circle cx="69" cy="8" r="1.6" />
+                            <path d="M 120 8 Q 95 8 75 7 Q 68 2 60 8 Q 68 14 75 9 Q 95 8 120 8 Z" opacity="0.8" />
                         </svg>
                     </div>
 
-                    <!-- Narasi Bahasa Indonesia -->
-                    <div class="text-[10px] sm:text-[10.5px] text-[#2D251D] leading-relaxed text-justify space-y-1 font-normal">
+                    <!-- Narasi Bahasa Indonesia (Justify & Serif) -->
+                    <div class="font-serif-body text-[10.5px] sm:text-[11.2px] text-[#1F1A14] leading-relaxed text-justify space-y-1 font-normal">
                         <p>
-                            {{ $koleksi->deskripsi ?? 'Bodhisattva merupakan tablet tanah liat yang berbentuk oval dengan penggambaran Dhyani Bodhisattva berada di tengah dengan penggambaran Bodhisattva tersebut sedang duduk di atas tempat duduk (Padmasana) dalam posisi Ardhaparyanka (kaki kanan menjuntai ke bawah dan kaki kiri bersila di atas tempat duduk). Tangan kanannya ditampilkan dalam posisi Waramudra (agak terbuka), sementara tangan kirinya menggenggam tangkai bunga teratai (Utpala). Figur Bodhisattva ini mengenakan mahkota serta kalung sebagai atribut tambahan. Selain itu, terdapat lima baris inskripsi beraksara Jawa Kuno.' }}
+                            {{ $koleksi->deskripsi ?? 'Arca Jaladwara merupakan pancuran air yang digunakan di candi-candi atau pemandian kuno untuk menyalurkan air. Arca ini digambarkan dalam posisi duduk dengan bagian kepala dan tangan kanan hilang. Arca ini menggunakan selendang yang dikenakan dari kiri melintang ke pinggang kanan (Upawita), dan tangan kanan yang menggunakan gelang bertumpu pada kaki kiri.' }}
                         </p>
                     </div>
 
-                    <!-- Thin Horizontal Divider -->
-                    <div class="my-2.5 flex items-center justify-center gap-2">
-                        <span class="h-[1px] w-full bg-[#D8BE8E]"></span>
-                        <i class="fa-solid fa-diamond text-[#B78526] text-[7px]"></i>
-                        <span class="h-[1px] w-full bg-[#D8BE8E]"></span>
+                    <!-- Second Decorative Golden Filigree Divider (Canva Style) -->
+                    <div class="my-2.5 flex items-center justify-start gap-1">
+                        <svg class="h-3.5 w-32 text-[#B8860B]" viewBox="0 0 120 16" fill="currentColor">
+                            <path d="M 0 8 Q 25 8 45 7 Q 52 2 60 8 Q 52 14 45 9 Q 25 8 0 8 Z" opacity="0.8" />
+                            <circle cx="60" cy="8" r="3.2" />
+                            <circle cx="51" cy="8" r="1.6" />
+                            <circle cx="69" cy="8" r="1.6" />
+                            <path d="M 120 8 Q 95 8 75 7 Q 68 2 60 8 Q 68 14 75 9 Q 95 8 120 8 Z" opacity="0.8" />
+                        </svg>
                     </div>
 
-                    <!-- Narasi Bahasa Inggris (Bilingual) -->
-                    <div class="text-[9.5px] sm:text-[10px] text-[#2D251D] leading-relaxed text-justify space-y-1 font-normal">
+                    <!-- Narasi Bahasa Inggris (Bilingual, Justify & Serif) -->
+                    <div class="font-serif-body text-[10px] sm:text-[10.5px] text-[#1F1A14] leading-relaxed text-justify space-y-1 font-normal">
                         <p>
                             {{ $koleksi->deskripsiEn() }}
                         </p>
                     </div>
                 </div>
-
-                <!-- Footer halus (jika ada sisa ruang) -->
-                <div class="pt-2 flex items-center justify-between text-[8px] text-gray-400 font-semibold tracking-wider uppercase border-t border-[#D8BE8E]/40">
-                    <span>Museum Blambangan</span>
-                    <span>Banyuwangi</span>
-                </div>
             </div>
 
-            <!-- ── RIGHT COLUMN: INFO TABLES & OFFICIAL QR CODE ────── -->
-            <div class="w-[74mm] flex-shrink-0 z-10 flex flex-col justify-between space-y-3">
+            <!-- ── RIGHT COLUMN: INFO TABLES & OFFICIAL QR CODE (CANVA STYLE) ────── -->
+            <div class="w-[76mm] flex-shrink-0 z-10 flex flex-col justify-between space-y-3">
 
-                <!-- TABLE 1: INFORMASI UMUM -->
-                <div class="space-y-1">
-                    <!-- Brown Ochre Header Bar -->
-                    <div class="bg-[#A97824] text-white text-center py-1 px-3 rounded-md shadow-2xs">
-                        <h4 class="text-[11px] font-extrabold uppercase tracking-wide">
-                            Informasi Umum
-                        </h4>
+                <!-- TABLE 1: INFORMASI UMUM (CANVA DESIGN) -->
+                <div>
+                    <div class="table-bronze-header">
+                        Informasi Umum
                     </div>
 
-                    <!-- Table Rows -->
-                    <div class="rounded-md overflow-hidden border border-[#D4B886] bg-white">
-                        <table class="w-full text-[9px] leading-tight divide-y divide-[#D4B886]">
-                            <tr class="divide-x divide-[#D4B886]">
-                                <td class="px-2 py-1 font-bold text-[#1D140C] w-[46%] bg-white">No. Registrasi Baru</td>
-                                <td class="px-2 py-1 text-center font-mono text-[#1D140C] bg-white">{{ $koleksi->no_registrasi }}</td>
+                    <div class="table-bronze-container">
+                        <table>
+                            <tr>
+                                <td class="label-col">No. Registrasi Baru</td>
+                                <td class="val-col font-mono">{{ $koleksi->no_registrasi }}</td>
                             </tr>
-                            <tr class="divide-x divide-[#D4B886]">
-                                <td class="px-2 py-1 font-bold text-[#1D140C] bg-white">No. Registrasi Lama</td>
-                                <td class="px-2 py-1 text-center font-mono text-[#1D140C] bg-white">{{ $koleksi->no_registrasi_lama ?? '002/ BWI/ 2024' }}</td>
+                            <tr>
+                                <td class="label-col">No. Registrasi Lama</td>
+                                <td class="val-col font-mono">{{ $koleksi->no_registrasi_lama ?? '080/ BWI/ 2024' }}</td>
                             </tr>
-                            <tr class="divide-x divide-[#D4B886]">
-                                <td class="px-2 py-1 font-bold text-[#1D140C] bg-white">Tanggal Registrasi</td>
-                                <td class="px-2 py-1 text-center text-[#1D140C] bg-white">{{ $koleksi->created_at ? $koleksi->created_at->translatedFormat('d F Y') : '04 Maret 2026' }}</td>
+                            <tr>
+                                <td class="label-col">Tanggal Registrasi</td>
+                                <td class="val-col">{{ $koleksi->created_at ? $koleksi->created_at->translatedFormat('d F Y') : '11 Maret 2026' }}</td>
                             </tr>
-                            <tr class="divide-x divide-[#D4B886]">
-                                <td class="px-2 py-1 font-bold text-[#1D140C] bg-white">Jenis Benda</td>
-                                <td class="px-2 py-1 text-center text-[#1D140C] bg-white">{{ $koleksi->jenis_benda ?? ($koleksi->kategori ?? 'Tablet Tanah Liat') }}</td>
+                            <tr>
+                                <td class="label-col">Jenis Benda</td>
+                                <td class="val-col">{{ $koleksi->jenis_benda ?? ($koleksi->kategori ?? 'Arca') }}</td>
                             </tr>
-                            <tr class="divide-x divide-[#D4B886]">
-                                <td class="px-2 py-1 font-bold text-[#1D140C] bg-white">Tahun Pembuatan</td>
-                                <td class="px-2 py-1 text-center text-[#1D140C] bg-white">{{ $koleksi->tahun_pembuatan ?? '1972' }}</td>
+                            <tr>
+                                <td class="label-col">Tahun Pembuatan</td>
+                                <td class="val-col">{{ $koleksi->tahun_pembuatan ?? 'Abad ke-8' }}</td>
                             </tr>
-                            <tr class="divide-x divide-[#D4B886]">
-                                <td class="px-2 py-1 font-bold text-[#1D140C] bg-white">Asal</td>
-                                <td class="px-2 py-1 text-center text-[#1D140C] bg-white leading-tight">{{ $koleksi->asal ?? 'Tambakrejo, Muncar, Banyuwangi' }}</td>
+                            <tr>
+                                <td class="label-col">Asal</td>
+                                <td class="val-col leading-tight">{{ $koleksi->asal ?? 'Tombokrejo, Muncar, Banyuwangi' }}</td>
                             </tr>
                         </table>
                     </div>
                 </div>
 
-                <!-- TABLE 2: INFORMASI UMUM (SPESIFIKASI FISIK) -->
-                <div class="space-y-1">
-                    <!-- Brown Ochre Header Bar -->
-                    <div class="bg-[#A97824] text-white text-center py-1 px-3 rounded-md shadow-2xs">
-                        <h4 class="text-[11px] font-extrabold uppercase tracking-wide">
-                            Informasi Umum
-                        </h4>
+                <!-- TABLE 2: INFORMASI UMUM / DIMENSI & BAHAN (CANVA DESIGN) -->
+                <div>
+                    <div class="table-bronze-header">
+                        Informasi Umum
                     </div>
 
-                    <!-- Table Rows -->
-                    <div class="rounded-md overflow-hidden border border-[#D4B886] bg-white">
-                        <table class="w-full text-[9px] leading-tight divide-y divide-[#D4B886]">
-                            <tr class="divide-x divide-[#D4B886]">
-                                <td class="px-2 py-1 font-bold text-[#1D140C] w-[46%] bg-white">Diameter</td>
-                                <td class="px-2 py-1 text-center text-[#1D140C] bg-white">{{ $koleksi->diameter() }}</td>
+                    <div class="table-bronze-container">
+                        <table>
+                            <tr>
+                                <td class="label-col">Tinggi</td>
+                                <td class="val-col">{{ $koleksi->tinggi ?? ($koleksi->diameter() ?: '25,5 cm') }}</td>
                             </tr>
-                            <tr class="divide-x divide-[#D4B886]">
-                                <td class="px-2 py-1 font-bold text-[#1D140C] bg-white">Tebal</td>
-                                <td class="px-2 py-1 text-center text-[#1D140C] bg-white">{{ $koleksi->tebal() }}</td>
+                            <tr>
+                                <td class="label-col">Lebar</td>
+                                <td class="val-col">{{ $koleksi->lebar ?? ($koleksi->tebal() ?: '23 cm') }}</td>
                             </tr>
-                            <tr class="divide-x divide-[#D4B886]">
-                                <td class="px-2 py-1 font-bold text-[#1D140C] bg-white">Bahan</td>
-                                <td class="px-2 py-1 text-center text-[#1D140C] bg-white">{{ $koleksi->bahan() }}</td>
+                            <tr>
+                                <td class="label-col">Bahan</td>
+                                <td class="val-col">{{ $koleksi->bahan() }}</td>
                             </tr>
                         </table>
                     </div>
                 </div>
 
-                <!-- QR CODE ETALASE CARD (Persis Contoh Tanpa Teks Tambahan) -->
-                <div class="flex justify-end pt-1">
-                    <div class="bg-white rounded-xl p-2 border border-[#D4B886] shadow-xs flex items-center justify-center relative w-28 h-28">
+                <!-- QR CODE ETALASE CARD (CANVA DESIGN) -->
+                <div class="flex justify-end pt-0.5">
+                    <div class="bg-white rounded-2xl p-2.5 border-2 border-[#C4A265] shadow-xs flex items-center justify-center relative w-28 h-28">
                         <!-- Vector SVG QR Code -->
-                        <img src="{{ $koleksi->qrCodeDataUri(160) }}"
+                        <img src="{{ $koleksi->qrCodeDataUri(180) }}"
                             alt="QR Code {{ $koleksi->nama_koleksi }}"
                             class="w-full h-full object-contain">
 
-                        <!-- Museum Emblem in the center of QR -->
-                        <div class="absolute inset-0 m-auto w-6 h-6 rounded-full bg-[#162544] border border-[#C9981C] flex items-center justify-center shadow-xs overflow-hidden pointer-events-none">
+                        <!-- Museum Emblem in the center of QR (Same as Canva) -->
+                        <div class="absolute inset-0 m-auto w-7 h-7 rounded-full bg-[#162544] border-2 border-[#C9981C] flex items-center justify-center shadow-xs overflow-hidden pointer-events-none">
                             <img src="{{ asset('favicon.png') }}" alt="Logo" class="w-4 h-4 object-contain">
                         </div>
                     </div>

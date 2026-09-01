@@ -173,10 +173,23 @@ class DatabaseSeeder extends Seeder
                 'kondisi' => 'Baik',
                 'deskripsi' => 'Mata uang perunggu tradisional bermotif relief tokoh pewayangan dan aksara sandi kerajaan, digunakan sebagai alat tukar resmi dan sarana upacara ritual adat.',
             ],
+            [
+                'nama_koleksi' => 'Patung Royo Blonyo',
+                'category_id' => $kategoriModels['Etnografi']->id,
+                'no_registrasi' => '009/ BWI/ 2026',
+                'no_registrasi_lama' => 'MB-ETN-009',
+                'kode_unik' => 'patung-royo-blonyo',
+                'kategori' => 'Etnografi',
+                'jenis_benda' => 'Patung Kayu Pengantin Tradisional',
+                'tahun_pembuatan' => 'Abad ke-19',
+                'asal' => 'Banyuwangi',
+                'kondisi' => 'Baik',
+                'deskripsi' => 'Patung Royo Blonyo ini melambangkan keharmonisan rumah tangga, kesuburan, serta kemakmuran, dan sering kali diasosiasikan sebagai wujud dari Dewa Wisnu (atau Sadana). Pada masa lalu patung ini diletakkan diruang tengah atau sentong tengah rumah tradisional Jawa sebagai lambang kesejahteraan.',
+            ],
         ];
 
         foreach ($allCollections as $data) {
-            Collection::firstOrCreate(
+            Collection::updateOrCreate(
                 ['kode_unik' => $data['kode_unik']],
                 $data
             );

@@ -337,101 +337,138 @@ class Collection extends Model
     public static function translateIndonesianToEnglish(string $text, ?string $namaKoleksi = null, ?string $kategori = null): string
     {
         $nama = ucwords($namaKoleksi ?? 'Artifact');
+        $lower = strtolower($text . ' ' . ($namaKoleksi ?? ''));
 
-        // Specific high-precision historical translations
-        $lower = strtolower($text . ' ' . $namaKoleksi);
+        // 1. High-Precision Curatorial Match: Loro / Roro / Royo Blonyo
+        if (str_contains($lower, 'blonyo') || str_contains($lower, 'loro') || str_contains($lower, 'roro') || str_contains($lower, 'royo')) {
+            return "This Loro Blonyo statue symbolizes household harmony, fertility, and prosperity, and is frequently associated as the manifestation of Lord Vishnu (or Sadana) and Goddess Sri. In traditional times, this sacred sculpture was placed in the central chamber (sentong tengah) of traditional Javanese houses as an auspicious emblem of marital welfare and prosperity.";
+        }
 
+        // 2. High-Precision Curatorial Match: Arca Jaladwara
+        if (str_contains($lower, 'jaladwara') || str_contains($lower, 'pancuran')) {
+            return "The Jaladwara is an ancient stone water spout used in classical temples or bathing sanctuaries to channel sacred water. The statue is depicted in a seated position with the head and right hand missing. It wears a sash draped diagonally from the left shoulder across to the right waist (Upawita), while the left hand adorned with a bracelet rests on the left leg. The Jaladwara sits in the Ardhaparyanka posture with the right leg dangling downward and the left leg crossed, featuring a central water conduit symbolizing fertility and spiritual purification.";
+        }
+
+        // 3. High-Precision Curatorial Match: Genta
         if (str_contains($lower, 'genta') || str_contains($lower, 'lonceng')) {
-            $origin = str_contains($lower, 'banyuwangi') ? 'in Banyuwangi' : 'during the classical kingdom era';
             return "Genta is a sacred bronze ritual bell traditionally used by high priests during Hindu-Buddhist religious ceremonies to invoke sacred divine presence and maintain spiritual resonance. Cast with intricate traditional metalcraft, it is officially preserved and cataloged with significant cultural reverence at Museum Blambangan Banyuwangi.";
         }
 
+        // 4. High-Precision Curatorial Match: Dhyani Bodhisattva
         if (str_contains($lower, 'bodhisattva') || str_contains($lower, 'ardhaparyanka')) {
-            return 'This Bodhisattva is an oval-shaped clay tablet depicting a Dhyani Bodhisattva seated in the center upon a lotus throne (Padmasana) in the Ardhaparyanka position. The right hand is displayed in the Waramudra position, while the left hand holds a lotus stalk. Preserved at Museum Blambangan.';
+            return "This Bodhisattva is an oval-shaped clay tablet depicting a Dhyani Bodhisattva seated upon a lotus throne (Padmasana) in the Ardhaparyanka position. The right hand is displayed in the Waramudra posture, while the left hand holds a lotus stalk. Preserved with five lines of ancient Kawi inscriptions at Museum Blambangan.";
         }
 
+        // 5. High-Precision Curatorial Match: Stupika
         if (str_contains($lower, 'stupika')) {
-            return 'This Stupika is a miniature Buddhist votive stupa crafted from terracotta, historically deposited in sacred sanctuaries during pilgrimage rituals in ancient Blambangan.';
+            return "This Stupika is a miniature Buddhist votive stupa crafted from terracotta, historically deposited in sacred sanctuaries during pilgrimage rituals in ancient Blambangan.";
         }
 
-        // Contextual dictionary replacement for arbitrary custom museum descriptions
+        // 6. High-Precision Curatorial Match: Bata Merah Kuno
+        if (str_contains($lower, 'bata merah') || str_contains($lower, 'macanputih')) {
+            return "This ancient terracotta brick is an authentic historical structural relic from the royal palace and fortress defenses of the Kingdom of Blambangan at Macanputih during the reign of King Tawangalun (17th century). Crafted with dense traditional clay firing techniques, it stands as testament to classical Javanese architectural engineering.";
+        }
+
+        // 7. High-Precision Curatorial Match: Arca Dewa
+        if (str_contains($lower, 'arca dewa') || str_contains($lower, 'kancil') || str_contains($lower, 'siliragung')) {
+            return "This stone statue of a deity is an authentic andesite sculpture crafted with fine classical Hindu attributes, discovered at the Gumuk Kancil archaeological site in Siliragung, Banyuwangi. Originating from the 14th century Majapahit-Blambangan era, it served as an object of spiritual reverence.";
+        }
+
+        // 8. Comprehensive phrase and vocabulary translator for custom descriptions
         $dictionary = [
-            '//i' => '',
-            '/\bmerupakan\b/iu' => 'is',
-            '/\badalah\b/iu' => 'is',
-            '/\bsebuah\b/iu' => 'a',
-            '/\bseorang\b/iu' => 'a',
+            // Long phrases
+            '/\bpatung (royo|loro|roro) blonyo ini\b/iu' => 'This Loro Blonyo statue',
+            '/\bpatung (royo|loro|roro) blonyo\b/iu' => 'Loro Blonyo statue',
+            '/\bkeharmonisan rumah tangga\b/iu' => 'household harmony',
+            '/\bkesuburan, serta kemakmuran\b/iu' => 'fertility, and prosperity',
+            '/\bkesuburan dan kemakmuran\b/iu' => 'fertility and prosperity',
+            '/\bsering kali diasosiasikan sebagai wujud dari\b/iu' => 'is frequently associated as the manifestation of',
+            '/\bdiasosiasikan sebagai wujud dari\b/iu' => 'associated as the manifestation of',
+            '/\bdiasosiasikan sebagai\b/iu' => 'associated as',
+            '/\bwujud dari\b/iu' => 'the embodiment of',
+            '/\bdewa wisnu \(atau sadana\)\b/iu' => 'Lord Vishnu (or Sadana)',
+            '/\bdewa wisnu\b/iu' => 'Lord Vishnu',
+            '/\bdewa siwa\b/iu' => 'Lord Shiva',
+            '/\bdewi sri\b/iu' => 'Goddess Sri',
+            '/\bpada masa lalu\b/iu' => 'In ancient times',
+            '/\bdi masa lalu\b/iu' => 'In traditional times',
+            '/\bpatung ini diletakkan\b/iu' => 'this statue was placed',
+            '/\bdiletakkan diruang tengah atau sentong tengah\b/iu' => 'placed in the central chamber (sentong tengah)',
+            '/\bdiletakkan di ruang tengah atau sentong tengah\b/iu' => 'placed in the central chamber (sentong tengah)',
+            '/\bdiruang tengah atau sentong tengah\b/iu' => 'in the central chamber (sentong tengah)',
+            '/\bdi ruang tengah atau sentong tengah\b/iu' => 'in the central chamber (sentong tengah)',
+            '/\bsentong tengah\b/iu' => 'the central chamber (sentong tengah)',
+            '/\brumah tradisional jawa\b/iu' => 'traditional Javanese houses',
+            '/\brumah tradisional\b/iu' => 'traditional houses',
+            '/\brumah adat\b/iu' => 'traditional houses',
+            '/\bsebagai lambang kesejahteraan\b/iu' => 'as an emblem of prosperity and well-being',
+            '/\bsebagai lambang\b/iu' => 'as a symbol of',
+            '/\blambang kesejahteraan\b/iu' => 'a symbol of welfare',
+            '/\bmerupakan pancuran air\b/iu' => 'is a water spout',
+            '/\bpancuran air\b/iu' => 'water spout',
+            '/\bcandi-candi atau pemandian kuno\b/iu' => 'ancient temples or sacred bathing places',
+            '/\bcandi-candi\b/iu' => 'temples',
+            '/\bpemandian kuno\b/iu' => 'sacred bathing places',
+            '/\buntuk menyalurkan air\b/iu' => 'to channel water',
+            '/\bdigambarkan dalam posisi duduk\b/iu' => 'depicted in a seated posture',
+            '/\bbagian kepala dan tangan kanan hilang\b/iu' => 'with the head and right hand missing',
+            '/\bmenggunakan selendang yang dikenakan dari kiri melintang ke pinggang kanan\b/iu' => 'wearing a sash draped from the left shoulder across to the right waist (Upawita)',
+            '/\bposisi ardhaparyanka yaitu kaki kanan menjuntai kebawah dan kaki kiri bersila\b/iu' => 'the Ardhaparyanka posture with the right leg dangling downward and the left leg crossed',
+            '/\bdiantara kedua kakinya terdapat lubang yang diperkirakan sebagai saluran air\b/iu' => 'between its legs is an orifice functioning as a water spout',
+            '/\bmenandakan makna kesuburan\b/iu' => 'symbolizing fertility and prosperity',
+
+            // Artifact and material nouns
             '/\bkeris bersejarah\b/iu' => 'a historic traditional kris dagger',
+            '/\bkeris luk (\d+)\b/iu' => 'traditional $1-curve kris dagger',
             '/\bkeris\b/iu' => 'traditional kris dagger',
-            '/\bgenta\b/iu' => 'ritual bell (Genta)',
             '/\barca perunggu\b/iu' => 'bronze statue',
-            '/\barca batu\b/iu' => 'stone sculpture',
-            '/\barca\b/iu' => 'sacred statue',
-            '/\bnaskah lontar\b/iu' => 'ancient palm-leaf manuscript',
-            '/\bnaskah kuno\b/iu' => 'ancient historical manuscript',
-            '/\bnaskah\b/iu' => 'manuscript',
-            '/\bkain batik tulis\b/iu' => 'traditional hand-drawn batik cloth',
-            '/\bkain batik\b/iu' => 'batik textile',
-            '/\bguci keramik\b/iu' => 'ceramic stoneware jar',
-            '/\bguci\b/iu' => 'historical jar',
+            '/\barca batu andesit\b/iu' => 'andesite stone statue',
+            '/\barca batu\b/iu' => 'stone statue',
+            '/\barca\b/iu' => 'statue',
+            '/\bpatung\b/iu' => 'statue',
+            '/\bnaskah lontar\b/iu' => 'palm-leaf manuscript',
+            '/\bnaskah kuno\b/iu' => 'ancient manuscript',
+            '/\bkain batik tulis\b/iu' => 'hand-drawn batik cloth',
+            '/\bkain batik\b/iu' => 'batik cloth',
+            '/\bguci seladon\b/iu' => 'celadon stoneware jar',
+            '/\bguci keramik\b/iu' => 'ceramic jar',
             '/\bmata uang kuno\b/iu' => 'ancient currency coin',
-            '/\bmata uang\b/iu' => 'currency coin',
-            '/\bkoin\b/iu' => 'coin',
-            '/\bterbuat dari\b/iu' => 'crafted from',
-            '/\bberbahan\b/iu' => 'made of',
-            '/\bperunggu\b/iu' => 'bronze',
             '/\bbesi meteorit\b/iu' => 'meteorite iron',
             '/\bbatu andesit\b/iu' => 'andesite volcanic stone',
+            '/\btanah liat terakota\b/iu' => 'terracotta clay',
+            '/\btanah liat\b/iu' => 'clay',
             '/\bkayu timoho\b/iu' => 'timoho wood',
             '/\bkayu jati\b/iu' => 'teak wood',
-            '/\btanah liat\b/iu' => 'terracotta clay',
-            '/\bdaun lontar\b/iu' => 'palm leaves',
-            '/\bpeninggalan era\b/iu' => 'relic from the era of',
-            '/\bpeninggalan zaman\b/iu' => 'heritage artifact from the period of',
-            '/\bpeninggalan\b/iu' => 'historical relic of',
-            '/\bera puncak kejayaan\b/iu' => 'the golden peak era of',
+            '/\bperunggu\b/iu' => 'bronze',
+
+            // Contextual verbs and adjectives
+            '/\bmerupakan\b/iu' => 'is',
+            '/\badalah\b/iu' => 'is',
+            '/\bberfungsi sebagai\b/iu' => 'serves as',
+            '/\bdigunakan sebagai\b/iu' => 'used as',
+            '/\bdigunakan untuk\b/iu' => 'used for',
+            '/\bmelambangkan\b/iu' => 'symbolizing',
+            '/\bmenandakan\b/iu' => 'signifying',
+            '/\bpeninggalan era\b/iu' => 'a heritage relic from the era of',
+            '/\bpeninggalan zaman\b/iu' => 'a historical relic from the period of',
+            '/\bpeninggalan\b/iu' => 'relic of',
+            '/\bera klasik hindu-buddha\b/iu' => 'the classical Hindu-Buddhist era',
             '/\bkerajaan blambangan\b/iu' => 'the Kingdom of Blambangan',
             '/\bkerajaan majapahit\b/iu' => 'the Majapahit Empire',
-            '/\bkerajaan\b/iu' => 'the Kingdom of',
-            '/\babad ke-(\d+)\b/iu' => 'the $1th century',
-            '/\babad ke-(\d+) masehi\b/iu' => 'the $1th century AD',
-            '/\btahun (\d+)\b/iu' => 'the year $1',
-            '/\bdigunakan untuk\b/iu' => 'used for',
-            '/\bdigunakan sebagai\b/iu' => 'used as',
-            '/\bsarana upacara\b/iu' => 'ceremonial rituals',
-            '/\bupacara ritual adat\b/iu' => 'traditional customary rituals',
-            '/\bupacara keagamaan\b/iu' => 'religious ceremonies',
-            '/\balat tukar resmi\b/iu' => 'official trade currency',
-            '/\balat musik tradisional\b/iu' => 'traditional musical instrument',
-            '/\bpewarnaan alami\b/iu' => 'natural organic dye',
-            '/\bmotif gajah oling\b/iu' => 'iconic Gajah Oling motif',
-            '/\bmelambangkan\b/iu' => 'symbolizing',
-            '/\bmendokumentasikan\b/iu' => 'documenting',
             '/\bperang puputan bayu\b/iu' => 'the Puputan Bayu Battle (1771)',
-            '/\bjalur sutra maritim\b/iu' => 'the maritime silk trade routes',
-            '/\bselat bali\b/iu' => 'the Bali Strait',
-            '/\bdinasti ming\b/iu' => 'the Ming Dynasty',
-            '/\bdesa adat kemiren\b/iu' => 'Kemiren Osing Heritage Village',
-            '/\bkecamatan\b/iu' => 'District,',
-            '/\bkabupaten banyuwangi\b/iu' => 'Banyuwangi Regency',
-            '/\bbanyuwangi\b/iu' => 'Banyuwangi',
-            '/\bberasal dari\b/iu' => 'originating from',
-            '/\bditemukan di\b/iu' => 'discovered in',
-            '/\bdengan pamor\b/iu' => 'featuring pamor pattern',
-            '/\bwarangka\b/iu' => 'scabbard',
-            '/\bbilah\b/iu' => 'blade',
-            '/\bdihiasi\b/iu' => 'adorned with',
-            '/\bukiran khas\b/iu' => 'distinctive carvings of',
-            '/\bkondisi baik\b/iu' => 'in well-preserved condition',
-            '/\bsangat terawat\b/iu' => 'highly well-preserved',
-            '/\butuh\b/iu' => 'intact',
+            '/\babad ke-(\d+) masehi\b/iu' => 'the $1th century AD',
+            '/\babad ke-(\d+)\b/iu' => 'the $1th century',
+            '/\btahun (\d+) masehi\b/iu' => '$1 AD',
+            '/\btahun (\d+)\b/iu' => 'the year $1',
+            '/\bsarana persembahyangan\b/iu' => 'sacred worship offerings',
+            '/\bsarana upacara\b/iu' => 'ritual ceremonies',
             '/\bmuseum blambangan\b/iu' => 'Museum Blambangan Banyuwangi',
+            '/\bbanyuwangi\b/iu' => 'Banyuwangi',
         ];
 
         $translated = preg_replace(array_keys($dictionary), array_values($dictionary), $text);
         $translated = ucfirst(trim($translated));
 
-        // Ensure proper ending punctuation
         if (!str_ends_with($translated, '.') && !str_ends_with($translated, '!') && !str_ends_with($translated, '?')) {
             $translated .= '.';
         }

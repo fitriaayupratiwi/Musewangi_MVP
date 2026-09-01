@@ -159,7 +159,7 @@
     </style>
 </head>
 
-<body class="min-h-screen p-4 sm:p-8 flex flex-col items-center justify-start">
+<body x-data="{ showPhoto: true }" class="min-h-screen p-4 sm:p-8 flex flex-col items-center justify-start">
 
     <!-- ACTION CONTROLS (Screen only, hidden on print) -->
     <div class="no-print w-full max-w-4xl mb-6 bg-white rounded-2xl p-4 shadow-sm border border-[#E8DCC0] flex flex-wrap items-center justify-between gap-4">
@@ -175,15 +175,33 @@
             </div>
         </div>
 
-        <div class="flex items-center gap-2.5">
+        <div class="flex items-center flex-wrap gap-2.5">
+            <!-- Toggle Tampilkan Foto Koleksi -->
+            <button type="button" @click="showPhoto = !showPhoto"
+                class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-[#D4B886] text-xs font-bold transition"
+                :class="showPhoto ? 'bg-[#FFF8EA] text-[#7B5200] border-[#B78921]' : 'bg-gray-100 text-gray-600'">
+                <i class="fa-solid" :class="showPhoto ? 'fa-image text-[#B78921]' : 'fa-image-slash'"></i>
+                <span x-text="showPhoto ? 'Foto Aktif' : 'Tanpa Foto'"></span>
+            </button>
+
+            <!-- Test Link Scan Langsung -->
+            <a href="{{ $koleksi->publicUrl() }}" target="_blank"
+                class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#F0F4FF] hover:bg-[#E0EAFF] text-[#2B4C7E] font-bold text-xs border border-[#C5D7F8] transition"
+                title="Buka halaman hasil scan QR">
+                <i class="fa-solid fa-qrcode text-sm text-[#3B66A6]"></i>
+                <span>Uji Hasil Scan</span>
+            </a>
+
+            <!-- Tombol Cetak / Print -->
             <button type="button" onclick="window.print()"
-                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#C9981C] hover:bg-[#B78921] text-white font-extrabold text-xs shadow-md transition transform active:scale-95">
+                class="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-[#B78921] to-[#D4A82A] hover:from-[#9A7219] hover:to-[#B78921] text-white font-extrabold text-xs shadow-md transition transform active:scale-95">
                 <i class="fa-solid fa-print text-sm"></i>
                 <span>Cetak Label (Print)</span>
             </button>
 
+            <!-- Tombol Simpan PDF -->
             <button type="button" onclick="window.print()"
-                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#162544] hover:bg-[#0E1830] text-white font-bold text-xs shadow transition">
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#162544] hover:bg-[#0E1830] text-white font-bold text-xs shadow transition">
                 <i class="fa-solid fa-file-pdf text-sm text-[#FFD86B]"></i>
                 <span>Simpan PDF</span>
             </button>
@@ -194,7 +212,7 @@
     <div class="print-wrapper flex justify-center w-full">
 
         <!-- ============================================================== -->
-        <!-- MUSEUM SHOWCASE PLACARD (Persis Desain Canva media_1788155142055) -->
+        <!-- MUSEUM SHOWCASE PLACARD (Persis Desain Canva media_1788234784308) -->
         <!-- ============================================================== -->
         <div class="museum-placard p-7 flex gap-5 relative">
 
@@ -275,7 +293,7 @@
                     <!-- Narasi Bahasa Indonesia (Justify & Serif) -->
                     <div class="font-serif-body text-[10.5px] sm:text-[11.2px] text-[#1F1A14] leading-relaxed text-justify space-y-1 font-normal">
                         <p>
-                            {{ $koleksi->deskripsi ?? 'Arca Jaladwara merupakan pancuran air yang digunakan di candi-candi atau pemandian kuno untuk menyalurkan air. Arca ini digambarkan dalam posisi duduk dengan bagian kepala dan tangan kanan hilang. Arca ini menggunakan selendang yang dikenakan dari kiri melintang ke pinggang kanan (Upawita), dan tangan kanan yang menggunakan gelang bertumpu pada kaki kiri.' }}
+                            {{ $koleksi->deskripsi ?? 'Arca Jaladwara merupakan pancuran air yang digunakan di candi-candi atau pemandian kuno untuk menyalurkan air. Arca ini digambarkan dalam posisi duduk dengan bagian kepala dan tangan kanan hilang. Arca ini menggunakan selendang yang dikenakan dari kiri melintang ke pinggang kanan (Upawita), dan tangan kanan yang menggunakan gelang bertumpu pada kaki kiri. Arca Jaladwara tersebut duduk dalam posisi Ardhaparyanka yaitu kaki kanan menjuntai kebawah dan kaki kiri bersila. Diantara kedua kakinya terdapat lubang yang diperkirakan sebagai saluran air yang menandakan makna kesuburan.' }}
                         </p>
                     </div>
 
@@ -362,9 +380,25 @@
                     </div>
                 </div>
 
-                <!-- QR CODE ETALASE CARD (CANVA DESIGN) -->
-                <div class="flex justify-end pt-0.5">
-                    <div class="bg-white rounded-2xl p-2.5 border-2 border-[#C4A265] shadow-xs flex items-center justify-center relative w-28 h-28">
+                <!-- BOTTOM ROW: FOTO KOLEKSI & OFFICIAL QR CODE ETALASE -->
+                <div class="flex items-center gap-2.5 pt-0.5" :class="showPhoto ? 'justify-between' : 'justify-end'">
+                    <!-- 1. FOTO ARTEFAK KOLEKSI MUSEUM -->
+                    <div x-show="showPhoto" class="flex-1 h-28 bg-white rounded-2xl p-1 border-2 border-[#C4A265] shadow-xs flex items-center justify-center overflow-hidden relative">
+                        @if($koleksi->fotoUrl())
+                            <img src="{{ $koleksi->fotoUrl() }}"
+                                alt="{{ $koleksi->nama_koleksi }}"
+                                class="w-full h-full object-cover rounded-xl"
+                                onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full rounded-xl bg-[#FAF6ED] flex flex-col items-center justify-center text-[#B07D1E] text-[10px] font-bold\'><i class=\'fa-solid fa-landmark text-2xl mb-1 opacity-60\'></i><span>Museum Blambangan</span></div>';">
+                        @else
+                            <div class="w-full h-full rounded-xl bg-[#FAF6ED] flex flex-col items-center justify-center text-[#B07D1E] text-[10px] font-bold">
+                                <i class="fa-solid fa-landmark text-2xl mb-1 opacity-60"></i>
+                                <span>Museum Blambangan</span>
+                            </div>
+                        @endif
+                    </div>
+
+                    <!-- 2. QR CODE ETALASE CARD (CANVA DESIGN - SCANNABLE 100%) -->
+                    <div class="w-28 h-28 flex-shrink-0 bg-white rounded-2xl p-2 border-2 border-[#C4A265] shadow-xs flex items-center justify-center relative">
                         <!-- Vector SVG QR Code -->
                         <img src="{{ $koleksi->qrCodeDataUri(180) }}"
                             alt="QR Code {{ $koleksi->nama_koleksi }}"
